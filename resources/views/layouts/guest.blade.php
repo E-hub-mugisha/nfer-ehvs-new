@@ -554,7 +554,7 @@
         }
 
         /* Responsive */
-        @@media (max-width: 860px) {
+        @media (max-width: 860px) {
             .auth-brand-panel {
                 display: none;
             }
