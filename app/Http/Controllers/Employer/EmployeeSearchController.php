@@ -153,7 +153,7 @@ class EmployeeSearchController extends Controller
             // 5. Create initial employment record linked to this employer
             EmploymentRecord::create([
                 'employee_id'   => $employee->id,
-                'employer_id'   => Auth::id(),
+                'employer_id'   => Auth::user()->employer->id,
                 'position'      => $request->position,
                 'department'    => $request->department,
                 'contract_type' => $request->contract_type,
@@ -201,10 +201,9 @@ class EmployeeSearchController extends Controller
             return back()->with('warning', 'This employee is already in your active workforce.');
         }
 
-        $employer = Auth::user();
         EmploymentRecord::create([
-            'employee_id'   => $employee->id,
-            'employer_id'   => $employer->id,
+            'employee_id'       => $employee->id,
+            'employer_id'       => Auth::user()->employer->id,
             'job_title'      => $request->job_title,
             'department'    => $request->department,
             'employment_status' => $request->employment_status,

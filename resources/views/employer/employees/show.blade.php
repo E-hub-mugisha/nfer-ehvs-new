@@ -108,7 +108,7 @@
                                         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                                             <div>
                                                 <h6 class="fw-semibold mb-0">
-                                                    {{ $record->position ?? 'Unknown Position' }}
+                                                    {{ $record->job_title ?? 'Unknown job title' }}
                                                 </h6>
                                                 <small class="text-muted">{{ $record->department ?? '' }}</small>
                                             </div>

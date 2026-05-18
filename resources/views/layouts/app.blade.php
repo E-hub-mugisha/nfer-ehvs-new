@@ -560,9 +560,9 @@
                 Employees
             </a>
 
-            <a href="/employment-records">
+            <a href="{{ route('employer.employees.records.index') }}">
                 <span class="nav-icon"><i class="bi bi-journal-text"></i></span>
-                Employment History
+                Employment Records
             </a>
 
             <a href="{{ route('employer.search.index') }}">

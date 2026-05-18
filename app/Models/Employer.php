@@ -23,7 +23,7 @@ class Employer extends Model
     }
 
     public function employmentRecords()
-{
-    return $this->hasMany(EmploymentRecord::class);
-}
+    {
+        return $this->hasMany(EmploymentRecord::class);
+    }
 }

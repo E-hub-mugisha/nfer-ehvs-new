@@ -2,63 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
+use App\Models\Employer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmploymentRecordController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $employerId = Employer::where('user_id', Auth::user()->id)->value('id');
+
+        $employees = Employee::whereHas('employmentRecords', function ($query) use ($employerId) {
+                $query->where('employer_id', $employerId);
+            })
+            ->with(['employmentRecords' => function ($query) use ($employerId) {
+                $query->where('employer_id', $employerId)->latest();
+            }])
+            ->orderBy('first_name')
+            ->paginate(15);
+
+        return view('employer.employees.records.index', compact('employees'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(Employee $employee)
     {
-        //
-    }
+        $employerId = Employer::where('user_id', Auth::user()->id)->value('id');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $isLinked = $employee->employmentRecords()
+            ->where('employer_id', $employerId)
+            ->exists();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        abort_unless($isLinked, 403, 'You do not have access to this employee profile.');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        $employmentRecords = $employee->employmentRecords()
+            ->where('employer_id', $employerId)
+            ->latest()
+            ->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('employer.employees.records.show', compact('employee', 'employmentRecords'));
     }
 }
