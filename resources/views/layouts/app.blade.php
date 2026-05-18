@@ -555,7 +555,7 @@
 
             <div class="nav-section-label">Workforce</div>
 
-            <a href="/employees">
+            <a href="{{ route('employer.employees.index') }}">
                 <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
                 Employees
             </a>
@@ -565,9 +565,9 @@
                 Employment History
             </a>
 
-            <a href="/verify-nid">
+            <a href="{{ route('employer.search.index') }}">
                 <span class="nav-icon"><i class="bi bi-search"></i></span>
-                Verify Employee
+                Search Employee
             </a>
 
             <div class="nav-section-label">Admin</div>

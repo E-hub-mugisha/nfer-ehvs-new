@@ -82,4 +82,18 @@ Route::post('/my-disputes', [DisputeController::class, 'store'])
 Route::get('/my-disputes/{id}', [DisputeController::class, 'show'])
     ->name('disputes.show');
 
+Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer.')->group(function () {
+
+    Route::get('employees',          [App\Http\Controllers\Employer\EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('employees/{employee}', [App\Http\Controllers\Employer\EmployeeController::class, 'show'])->name('employees.show');
+
+    // Employee Search
+    Route::get('search',            [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
+    Route::post('search',            [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');
+    Route::get('search/result/{employee}', [App\Http\Controllers\Employer\EmployeeSearchController::class, 'result'])->name('search.result');
+    Route::get('search/create',     [App\Http\Controllers\Employer\EmployeeSearchController::class, 'create'])->name('search.create');
+    Route::post('search/store',      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'store'])->name('search.store');
+    // Add this inside the same route group:
+    Route::post('search/link/{employee}', [App\Http\Controllers\Employer\EmployeeSearchController::class, 'link'])->name('search.link');
+});
 require __DIR__ . '/auth.php';
