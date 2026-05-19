@@ -4,6 +4,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeDashboardController;
+use App\Http\Controllers\Employer\EmployerDashboardController;
+use App\Http\Controllers\Employer\EmployerDisputeController;
+use App\Http\Controllers\Employer\EmployerProfileController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GovernmentController;
@@ -33,8 +36,8 @@ Route::resource('employers', EmployerController::class)
 Route::get('/admin/dashboard', [AdminController::class, 'index'])
     ->middleware(['auth', 'role:admin']);
 
-Route::get('/employer/dashboard', [EmployerController::class, 'index'])
-    ->middleware(['auth', 'role:employer']);
+Route::get('/employer/dashboard', [EmployerDashboardController::class, 'index'])
+    ->middleware(['auth', 'role:employer'])->name('employer.dashboard');
 
 Route::get('/employee/dashboard', [EmployeeDashboardController::class, 'index'])
     ->middleware(['auth'])->name('employee.dashboard');
@@ -99,6 +102,28 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
     Route::get('search/create',                [App\Http\Controllers\Employer\EmployeeSearchController::class, 'create'])->name('search.create');
     Route::post('search/store',                [App\Http\Controllers\Employer\EmployeeSearchController::class, 'store'])->name('search.store');
     Route::post('search/link/{employee}',      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'link'])->name('search.link');
+
+    // Profile
+    Route::get('/profile/create', [EmployerProfileController::class, 'create'])
+        ->name('profile.create');
+
+    Route::post('/profile', [EmployerProfileController::class, 'store'])
+        ->name('profile.store');
+
+    Route::get('/profile/edit', [EmployerProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [EmployerProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::get('/disputes', [EmployerDisputeController::class, 'index'])
+        ->name('disputes.index');
+
+    Route::get('/disputes/{id}', [EmployerDisputeController::class, 'show'])
+        ->name('disputes.show');
+
+    Route::patch('/disputes/{id}', [EmployerDisputeController::class, 'updateStatus'])
+        ->name('disputes.updateStatus');
 });
 
 

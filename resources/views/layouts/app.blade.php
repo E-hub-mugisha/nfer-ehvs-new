@@ -572,9 +572,9 @@
 
             <div class="nav-section-label">Admin</div>
 
-            <a href="/disputes">
+            <a href="{{ route('employer.disputes.index') }}">
                 <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
-                Claims & Disputes
+                Disputes
             </a>
 
             <a href="/reports">
