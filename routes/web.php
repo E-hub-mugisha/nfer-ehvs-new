@@ -54,7 +54,18 @@ Route::post('/employee/profile/store', [EmployeeDashboardController::class, 'sto
 Route::get('/government/dashboard', [GovernmentController::class, 'index'])
     ->middleware(['auth', 'role:government']);
 
+Route::get('/government/employees', [App\Http\Controllers\Government\EmployeeController::class, 'index'])
+    ->name('government.employees.index');
+Route::get('/government/employees/{employee}', [App\Http\Controllers\Government\EmployeeController::class, 'show'])
+    ->name('government.employees.show');
+
+    Route::get('/government/employers', [App\Http\Controllers\Government\EmployerController::class, 'index'])
+    ->name('government.employers.index');
+Route::get('/government/employers/{employer}', [App\Http\Controllers\Government\EmployerController::class, 'show'])
+    ->name('government.employers.show');
+
 Route::resource('employment-records', EmploymentRecordController::class);
+
 
 Route::resource('disputes', DisputeController::class);
 

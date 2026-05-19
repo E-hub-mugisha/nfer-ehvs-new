@@ -12,34 +12,34 @@ use Illuminate\Support\Facades\Auth;
 class GovernmentController extends Controller
 {
     public function index()
-{
-    $employees = Employee::count();
+    {
+        $employees = Employee::count();
 
-    $employers = Employer::count();
+        $employers = Employer::count();
 
-    $verifiedEmployers =
-        Employer::where(
-            'status',
-            'verified'
-        )->count();
+        $verifiedEmployers =
+            Employer::where(
+                'status',
+                'verified'
+            )->count();
 
-    $records =
-        EmploymentRecord::count();
+        $records =
+            EmploymentRecord::count();
 
-    $disputes =
-        Dispute::count();
+        $disputes =
+            Dispute::count();
 
-    return view(
-        'government.dashboard',
-        compact(
-            'employees',
-            'employers',
-            'verifiedEmployers',
-            'records',
-            'disputes'
-        )
-    );
-}
+        return view(
+            'government.dashboard',
+            compact(
+                'employees',
+                'employers',
+                'verifiedEmployers',
+                'records',
+                'disputes'
+            )
+        );
+    }
     public function approveEmployer($id)
     {
         $employer = Employer::findOrFail($id);

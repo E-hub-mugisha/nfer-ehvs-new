@@ -514,9 +514,14 @@
 
             <div class="nav-section-label">Operations</div>
 
-            <a href="/government/employers">
+            <a href="{{ route('government.employees.index') }}">
                 <span class="nav-icon"><i class="bi bi-building-check"></i></span>
-                Verify Employers
+                Employees
+            </a>
+
+            <a href="{{ route('government.employers.index') }}">
+                <span class="nav-icon"><i class="bi bi-building"></i></span>
+                Employers
             </a>
 
             <a href="/employment-records">
