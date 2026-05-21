@@ -575,14 +575,17 @@
                 Search Employee
             </a>
 
-            <a href="{{ route('employer.transfer-requests.index') }}">
+            <!-- sent transfer requests -->
+            <div class="nav-section-label">Transfers</div>
+
+            <a href="{{ route('employer.transfer.sent') }}">
                 <span class="nav-icon"><i class="bi bi-arrow-right-circle"></i></span>
-                Transfer Requests
+                Sent Requests
             </a>
 
-            <a href="{{ route('employer.transfer-requests.search') }}">
+            <a href="{{ route('employer.transfer.received') }}">
                 <span class="nav-icon"><i class="bi bi-arrow-left-circle"></i></span>
-                Search Requests
+                Received Requests
             </a>
 
             <div class="nav-section-label">Admin</div>

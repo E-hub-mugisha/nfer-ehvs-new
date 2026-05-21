@@ -126,7 +126,7 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
     // Search
     Route::get('search',              [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
     Route::post('search',             [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');
-    Route::get('search/{employee}',   [App\Http\Controllers\Employer\EmployeeSearchController::class, 'show'])->name('search.result');
+    Route::get('search/result/{employee}',   [App\Http\Controllers\Employer\EmployeeSearchController::class, 'result'])->name('search.result');
     Route::post('search/{employee}/link',     [App\Http\Controllers\Employer\EmployeeSearchController::class, 'link'])->name('search.link');
 
     // Transfer requests — sent by this employer
