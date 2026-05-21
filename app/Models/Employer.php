@@ -26,4 +26,12 @@ class Employer extends Model
     {
         return $this->hasMany(EmploymentRecord::class);
     }
+    public function sentTransferRequests()
+    {
+        return $this->hasMany(TransferRequest::class, 'requesting_employer_id');
+    }
+    public function receivedTransferRequests()
+    {
+        return $this->hasMany(TransferRequest::class, 'current_employer_id');
+    }
 }

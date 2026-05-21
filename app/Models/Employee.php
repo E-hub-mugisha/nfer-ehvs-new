@@ -28,4 +28,9 @@ class Employee extends Model
     {
         return $this->hasMany(EmploymentRecord::class);
     }
+
+    public function transferRequests()
+    {
+        return $this->hasMany(TransferRequest::class);
+    }
 }

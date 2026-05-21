@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\EmployeeCredentialsMail;
 use App\Models\Employee;
 use App\Models\EmploymentRecord;
+use App\Models\TransferRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -73,7 +74,30 @@ class EmployeeSearchController extends Controller
             ->whereNull('end_date')
             ->exists();
 
-        return view('employer.search.result', compact('employee', 'employmentRecords', 'alreadyLinked'));
+        $currentEmployer = Auth::user()->employer;
+
+        $employmentRecords = $employee->employmentRecords()
+            ->with('employer')
+            ->orderByDesc('start_date')
+            ->get();
+
+        // Is the employee already linked to THIS employer (active)?
+        $alreadyLinked = $employmentRecords
+            ->where('employer_id', $currentEmployer->id)
+            ->whereNull('end_date')
+            ->isNotEmpty();
+
+        // Active record with a DIFFERENT employer
+        $activeRecord = $employmentRecords->whereNull('end_date')->first();
+
+        // Pending transfer request from this employer
+        $pendingTransfer = TransferRequest::where('employee_id', $employee->id)
+            ->where('requesting_employer_id', $currentEmployer->id)
+            ->where('status', 'pending')
+            ->first();
+
+
+        return view('employer.search.result', compact('employee', 'employmentRecords', 'alreadyLinked', 'activeRecord', 'pendingTransfer'));
     }
 
     // ─────────────────────────────────────────────

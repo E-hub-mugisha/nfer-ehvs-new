@@ -10,7 +10,9 @@ use App\Http\Controllers\Employer\EmployerProfileController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GovernmentController;
+use App\Http\Controllers\GovernmentDisputeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransferRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -66,6 +68,13 @@ Route::get('/government/employers/{employer}', [App\Http\Controllers\Government\
 
 Route::resource('employment-records', EmploymentRecordController::class);
 
+Route::prefix('government')->name('government.')->middleware(['auth', 'role:government'])->group(function () {
+
+    Route::get('/disputes',                  [GovernmentDisputeController::class, 'index'])->name('disputes.index');
+    Route::get('/disputes/{dispute}',        [GovernmentDisputeController::class, 'show'])->name('disputes.show');
+    Route::patch('/disputes/{dispute}/status', [GovernmentDisputeController::class, 'updateStatus'])->name('disputes.updateStatus');
+
+});
 
 Route::resource('disputes', DisputeController::class);
 
@@ -107,13 +116,32 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
     Route::get('get/employees/{employee}/records', [App\Http\Controllers\EmploymentRecordController::class, 'show'])->name('employees.records.show');
 
     // Employee Search
-    Route::get('search',                       [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
-    Route::post('search',                      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');
-    Route::get('search/result/{employee}',     [App\Http\Controllers\Employer\EmployeeSearchController::class, 'result'])->name('search.result');
+    // Route::get('search',                       [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
+    // Route::post('search',                      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');
+    // Route::get('search/result/{employee}',     [App\Http\Controllers\Employer\EmployeeSearchController::class, 'result'])->name('search.result');
     Route::get('search/create',                [App\Http\Controllers\Employer\EmployeeSearchController::class, 'create'])->name('search.create');
     Route::post('search/store',                [App\Http\Controllers\Employer\EmployeeSearchController::class, 'store'])->name('search.store');
-    Route::post('search/link/{employee}',      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'link'])->name('search.link');
+    // Route::post('search/link/{employee}',      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'link'])->name('search.link');
 
+    // Search
+    Route::get('search',              [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
+    Route::post('search',             [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');
+    Route::get('search/{employee}',   [App\Http\Controllers\Employer\EmployeeSearchController::class, 'show'])->name('search.result');
+    Route::post('search/{employee}/link',     [App\Http\Controllers\Employer\EmployeeSearchController::class, 'link'])->name('search.link');
+
+    // Transfer requests — sent by this employer
+    Route::post('search/{employee}/transfer', [TransferRequestController::class, 'store'])
+         ->name('transfer.store');
+    Route::get('transfers/sent',              [TransferRequestController::class, 'sent'])
+         ->name('transfer.sent');
+
+    // Transfer requests — received by this employer
+    Route::get('transfers/received',          [TransferRequestController::class, 'received'])
+         ->name('transfer.received');
+    Route::patch('transfers/{transfer}/approve', [TransferRequestController::class, 'approve'])
+         ->name('transfer.approve');
+    Route::patch('transfers/{transfer}/reject',  [TransferRequestController::class, 'reject'])
+         ->name('transfer.reject');
     // Profile
     Route::get('/profile/create', [EmployerProfileController::class, 'create'])
         ->name('profile.create');
@@ -135,6 +163,8 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
 
     Route::patch('/disputes/{id}', [EmployerDisputeController::class, 'updateStatus'])
         ->name('disputes.updateStatus');
+
+    
 });
 
 

@@ -529,7 +529,7 @@
                 Employment Records
             </a>
 
-            <a href="/disputes">
+            <a href="{{ route('government.disputes.index') }}">
                 <span class="nav-icon"><i class="bi bi-exclamation-diamond"></i></span>
                 Disputes
             </a>
@@ -573,6 +573,16 @@
             <a href="{{ route('employer.search.index') }}">
                 <span class="nav-icon"><i class="bi bi-search"></i></span>
                 Search Employee
+            </a>
+
+            <a href="{{ route('employer.transfer-requests.index') }}">
+                <span class="nav-icon"><i class="bi bi-arrow-right-circle"></i></span>
+                Transfer Requests
+            </a>
+
+            <a href="{{ route('employer.transfer-requests.search') }}">
+                <span class="nav-icon"><i class="bi bi-arrow-left-circle"></i></span>
+                Search Requests
             </a>
 
             <div class="nav-section-label">Admin</div>
