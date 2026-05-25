@@ -128,9 +128,7 @@ class EmployeeSearchController extends Controller
             'photo'      => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
 
             // Initial employment record
-            'position'      => ['required', 'string', 'max:150'],
             'department'    => ['nullable', 'string', 'max:150'],
-            'contract_type' => ['required', 'in:Full-Time,Part-Time,Contract,Intern'],
             'start_date'    => ['required', 'date'],
             'salary'        => ['nullable', 'numeric', 'min:0'],
         ]);
@@ -178,11 +176,10 @@ class EmployeeSearchController extends Controller
             EmploymentRecord::create([
                 'employee_id'   => $employee->id,
                 'employer_id'   => Auth::user()->employer->id,
-                'position'      => $request->position,
+                'job_title'      => $request->job_title,
                 'department'    => $request->department,
-                'contract_type' => $request->contract_type,
+                'employment_status' => 'active',
                 'start_date'    => $request->start_date,
-                'salary'        => $request->salary,
             ]);
 
             // 6. Send credentials to employee's email
@@ -230,7 +227,7 @@ class EmployeeSearchController extends Controller
             'employer_id'       => Auth::user()->employer->id,
             'job_title'      => $request->job_title,
             'department'    => $request->department,
-            'employment_status' => $request->employment_status,
+            'employment_status' => 'active',
             'start_date'    => $request->start_date,
             'end_date'        => $request->end_date,
         ]);
