@@ -33,4 +33,9 @@ class Employee extends Model
     {
         return $this->hasMany(TransferRequest::class);
     }
+
+    public function disputes()
+    {
+        return $this->hasMany(Dispute::class);
+    }
 }

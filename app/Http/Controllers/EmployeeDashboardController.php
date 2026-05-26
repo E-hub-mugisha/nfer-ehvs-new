@@ -203,15 +203,20 @@ class EmployeeDashboardController extends Controller
             ->with('success', 'Profile created successfully.');
     }
 
-     /**
+    /**
      * Show logged-in employee profile
      */
     public function show()
     {
         $user = Auth::user();
 
-        $employee = Employee::with(['user', 'employmentRecords'])
-            ->where('user_id', $user->id)
+        $employee = Employee::with([
+            'user',
+            'employmentRecords.employer',
+            'transferRequests.requestingEmployer',
+            'transferRequests.currentEmployer',
+            'disputes',
+        ])->where('user_id', $user->id)
             ->first();
 
         if (!$employee) {

@@ -4,1351 +4,842 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFER-EHVS — National Employment History Verification System</title>
+    <title>NFER-EHVS — Employment History Verification</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Google Fonts: Syne (display) + Plus Jakarta Sans (body) -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
-        /* ─── CSS Variables ─── */
         :root {
-            --navy:       #091422;
-            --navy-mid:   #0e2039;
-            --navy-soft:  #152a48;
-            --gold:       #d4943a;
-            --gold-light: #e8b96b;
-            --gold-pale:  rgba(212,148,58,0.12);
-            --white:      #ffffff;
-            --off-white:  #f6f8fc;
-            --muted:      #8094ae;
-            --border:     rgba(255,255,255,0.08);
-            --radius-sm:  10px;
-            --radius-md:  16px;
-            --radius-lg:  24px;
+            --navy:    #0b1f3a;
+            --gold:    #c8873a;
+            --gold-lt: #e8b96b;
+            --white:   #ffffff;
+            --surface: #f8f9fc;
+            --muted:   #6b7e99;
+            --border:  #e3e8f0;
         }
 
-        /* ─── Base ─── */
         *, *::before, *::after { box-sizing: border-box; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 16px;
-            background: var(--off-white);
-            color: #1a2e45;
+            background: var(--white);
+            color: var(--navy);
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, h5 {
+        h1, h2, h3, h4, h5, .brand {
             font-family: 'Syne', sans-serif;
         }
 
-        /* ─── Navbar ─── */
-        .site-nav {
-            background: rgba(9, 20, 34, 0.92);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-            padding: 0;
+        /* ── Nav ── */
+        .nav-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11,31,58,0.97);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
         }
 
-        .site-nav .container {
-            height: 68px;
+        .nav-inner {
+            height: 62px;
             display: flex;
             align-items: center;
+            gap: 32px;
         }
 
-        .nav-brand {
-            font-family: 'Syne', sans-serif;
-            font-size: 20px;
+        .brand {
+            font-size: 18px;
             font-weight: 800;
-            color: var(--white) !important;
-            letter-spacing: -0.3px;
+            color: var(--white);
             text-decoration: none;
+            letter-spacing: -0.2px;
         }
 
-        .nav-brand span {
-            color: var(--gold);
-        }
+        .brand em { color: var(--gold); font-style: normal; }
 
-        .site-nav .nav-link {
-            color: rgba(255,255,255,0.65) !important;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 0.4rem 1rem !important;
-            border-radius: 6px;
-            transition: color 0.2s, background 0.2s;
-        }
-
-        .site-nav .nav-link:hover {
-            color: var(--white) !important;
-            background: rgba(255,255,255,0.06);
-        }
-
-        .btn-nav-outline {
-            border: 1px solid rgba(255,255,255,0.25);
-            color: var(--white) !important;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 7px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .btn-nav-outline:hover {
-            border-color: var(--gold);
-            background: var(--gold-pale);
-        }
-
-        .btn-nav-solid {
-            background: var(--gold);
-            color: var(--navy) !important;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 7px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s, transform 0.15s;
-        }
-
-        .btn-nav-solid:hover {
-            background: var(--gold-light);
-            transform: translateY(-1px);
-        }
-
-        /* ─── Hero ─── */
-        .hero {
-            min-height: 100vh;
-            background: var(--navy);
-            position: relative;
+        .nav-links {
             display: flex;
             align-items: center;
-            overflow: hidden;
+            gap: 4px;
+            margin-left: auto;
         }
 
-        /* Dot grid pattern */
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
-            background-size: 36px 36px;
+        .nav-links a {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.55);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: color 0.18s, background 0.18s;
         }
 
-        /* Gold gradient orb */
-        .hero::after {
-            content: '';
-            position: absolute;
-            width: 700px;
-            height: 700px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(212,148,58,0.18) 0%, transparent 70%);
-            top: -200px;
-            right: -100px;
-            pointer-events: none;
+        .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.07); }
+
+        .btn-pill {
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 7px 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.18s;
         }
 
-        .hero-eyebrow {
+        .btn-pill-outline {
+            color: rgba(255,255,255,0.75);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-pill-outline:hover { color: var(--white); border-color: rgba(255,255,255,0.5); }
+
+        .btn-pill-gold {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
+        .btn-pill-gold:hover { background: var(--gold-lt); color: var(--navy); }
+
+        /* ── Hero ── */
+        .hero {
+            background: var(--navy);
+            padding: 90px 0 80px;
+        }
+
+        .hero-tag {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
+            gap: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
             text-transform: uppercase;
             color: var(--gold);
-            background: var(--gold-pale);
-            border: 1px solid rgba(212,148,58,0.3);
-            border-radius: 50px;
-            padding: 6px 14px;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
+        }
+
+        .hero-tag::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
         }
 
         .hero-title {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(40px, 5.5vw, 68px);
+            font-size: clamp(36px, 4.5vw, 58px);
             font-weight: 800;
-            line-height: 1.08;
             color: var(--white);
-            letter-spacing: -1.5px;
-            margin-bottom: 24px;
+            line-height: 1.1;
+            letter-spacing: -1.2px;
+            margin-bottom: 20px;
         }
 
-        .hero-title .accent {
-            color: var(--gold);
-        }
+        .hero-title span { color: var(--gold); }
 
         .hero-desc {
-            font-size: 17px;
-            color: rgba(255,255,255,0.55);
+            font-size: 16px;
+            color: rgba(255,255,255,0.5);
             line-height: 1.75;
-            max-width: 500px;
-            margin-bottom: 40px;
+            max-width: 440px;
+            margin-bottom: 36px;
         }
 
-        .btn-hero-primary {
+        .btn-lg-gold {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             background: var(--gold);
             color: var(--navy);
             font-weight: 600;
-            font-size: 15px;
-            padding: 14px 28px;
-            border-radius: 10px;
+            font-size: 14.5px;
+            padding: 13px 26px;
+            border-radius: 8px;
             text-decoration: none;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            transition: all 0.18s;
         }
 
-        .btn-hero-primary:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(212,148,58,0.35);
-            color: var(--navy);
-        }
+        .btn-lg-gold:hover { background: var(--gold-lt); color: var(--navy); transform: translateY(-1px); }
 
-        .btn-hero-ghost {
+        .btn-lg-ghost {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: transparent;
-            color: rgba(255,255,255,0.75);
+            color: rgba(255,255,255,0.6);
             font-weight: 500;
-            font-size: 15px;
-            padding: 14px 28px;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.18);
+            font-size: 14.5px;
+            padding: 13px 26px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
             text-decoration: none;
-            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            transition: all 0.18s;
         }
 
-        .btn-hero-ghost:hover {
-            border-color: rgba(255,255,255,0.4);
-            color: var(--white);
-            background: rgba(255,255,255,0.05);
+        .btn-lg-ghost:hover { color: var(--white); border-color: rgba(255,255,255,0.35); }
+
+        /* ── Verify Card ── */
+        .v-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 32px;
         }
 
-        /* ─── Verify Card ─── */
-        .verify-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.12);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-radius: var(--radius-lg);
-            padding: 36px;
-            position: relative;
-        }
-
-        .verify-card-header {
+        .v-card-head {
             display: flex;
             align-items: center;
-            gap: 14px;
-            margin-bottom: 28px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
-        .verify-card-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            background: var(--gold-pale);
-            border: 1px solid rgba(212,148,58,0.3);
+        .v-card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(200,135,58,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             color: var(--gold);
         }
 
-        .verify-card-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 18px;
+        .v-card-title {
+            font-size: 16px;
             font-weight: 700;
             color: var(--white);
             margin: 0;
         }
 
-        .verify-card-sub {
+        .v-card-sub {
             font-size: 12px;
-            color: var(--muted);
+            color: rgba(255,255,255,0.4);
             margin: 0;
         }
 
-        .verify-card label {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.45);
+        .v-label {
             display: block;
-            margin-bottom: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 7px;
         }
 
-        .verify-card input {
+        .v-input {
             width: 100%;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 10px;
-            padding: 14px 16px;
-            font-size: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 14px;
             color: var(--white);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: border-color 0.2s, background 0.2s;
             outline: none;
+            transition: border-color 0.18s;
         }
 
-        .verify-card input::placeholder { color: rgba(255,255,255,0.25); }
-        .verify-card input:focus {
-            border-color: var(--gold);
-            background: rgba(212,148,58,0.07);
-        }
+        .v-input::placeholder { color: rgba(255,255,255,0.2); }
+        .v-input:focus { border-color: var(--gold); }
 
         .btn-verify {
             width: 100%;
             background: var(--gold);
             color: var(--navy);
             border: none;
-            border-radius: 10px;
-            padding: 14px;
-            font-size: 15px;
+            border-radius: 8px;
+            padding: 13px;
+            font-size: 14px;
             font-weight: 600;
             font-family: 'Plus Jakarta Sans', sans-serif;
             cursor: pointer;
-            transition: background 0.2s, transform 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 7px;
+            transition: background 0.18s;
         }
 
-        .btn-verify:hover {
-            background: var(--gold-light);
-            transform: translateY(-1px);
-        }
+        .btn-verify:hover { background: var(--gold-lt); }
 
-        .verify-note {
+        .v-note {
             text-align: center;
-            font-size: 12px;
-            color: rgba(255,255,255,0.3);
-            margin-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            font-size: 11.5px;
+            color: rgba(255,255,255,0.25);
+            margin-top: 14px;
         }
 
-        /* Trusted-by strip */
-        .trusted-strip {
-            background: var(--navy-mid);
+        /* ── Partners strip ── */
+        .partners {
+            background: var(--surface);
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
-            padding: 18px 0;
+            padding: 16px 0;
         }
 
-        .trusted-strip-inner {
+        .partners-inner {
             display: flex;
             align-items: center;
-            gap: 32px;
+            gap: 8px 28px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
-        .trusted-label {
-            font-size: 11px;
+        .p-label {
+            font-size: 10.5px;
+            font-weight: 700;
             letter-spacing: 1.4px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
-            font-weight: 600;
-            white-space: nowrap;
+            color: #aab4c2;
         }
 
-        .trusted-org {
+        .p-sep { color: var(--border); }
+
+        .p-name {
             font-size: 13px;
             font-weight: 600;
-            color: rgba(255,255,255,0.45);
-            letter-spacing: 0.3px;
-            white-space: nowrap;
+            color: #8a97aa;
         }
 
-        /* ─── Stats ─── */
-        .stats-section {
-            background: var(--off-white);
-            padding: 80px 0;
-        }
+        /* ── Features ── */
+        .section { padding: 80px 0; }
 
-        .stat-card {
-            background: var(--white);
-            border: 1px solid #e8edf5;
-            border-radius: var(--radius-md);
-            padding: 32px 28px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 48px rgba(14, 32, 57, 0.1);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-        }
-
-        .stat-card.c-gold::before  { background: var(--gold); }
-        .stat-card.c-blue::before  { background: #2563eb; }
-        .stat-card.c-green::before { background: #16a34a; }
-        .stat-card.c-slate::before { background: #475569; }
-
-        .stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card.c-gold .stat-icon  { background: rgba(212,148,58,0.12); color: var(--gold); }
-        .stat-card.c-blue .stat-icon  { background: rgba(37,99,235,0.1);  color: #2563eb; }
-        .stat-card.c-green .stat-icon { background: rgba(22,163,74,0.1);  color: #16a34a; }
-        .stat-card.c-slate .stat-icon { background: rgba(71,85,105,0.1);  color: #475569; }
-
-        .stat-num {
-            font-family: 'Syne', sans-serif;
-            font-size: 40px;
-            font-weight: 800;
-            color: var(--navy);
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: var(--muted);
-            font-weight: 500;
-        }
-
-        /* ─── Features ─── */
-        .features-section {
-            background: var(--white);
-            padding: 100px 0;
-        }
-
-        .section-eyebrow {
-            display: inline-block;
+        .eyebrow {
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 1.8px;
             text-transform: uppercase;
             color: var(--gold);
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(30px, 3.5vw, 44px);
-            font-weight: 800;
-            color: var(--navy);
-            line-height: 1.15;
-            letter-spacing: -0.5px;
-            margin-bottom: 0;
-        }
-
-        .section-desc {
-            font-size: 16px;
-            color: var(--muted);
-            line-height: 1.7;
-            max-width: 520px;
-            margin: 16px auto 0;
-        }
-
-        .feature-card {
-            background: var(--off-white);
-            border: 1px solid #e8edf5;
-            border-radius: var(--radius-md);
-            padding: 32px;
-            height: 100%;
-            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
-            position: relative;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 60px rgba(14, 32, 57, 0.1);
-            border-color: rgba(212,148,58,0.35);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            background: var(--navy);
-            color: var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 24px;
-        }
-
-        .feature-card h4 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--navy);
+            display: block;
             margin-bottom: 12px;
         }
 
-        .feature-card p {
-            font-size: 14px;
-            color: var(--muted);
-            line-height: 1.7;
+        .section-h {
+            font-size: clamp(26px, 3vw, 38px);
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.4px;
+            line-height: 1.2;
             margin-bottom: 0;
         }
 
-        .feature-tag {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            background: var(--gold-pale);
-            color: var(--gold);
-            border: 1px solid rgba(212,148,58,0.25);
-            padding: 4px 10px;
-            border-radius: 50px;
+        .section-p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-top: 12px;
         }
 
-        /* ─── Timeline Section ─── */
-        .timeline-section {
+        .feat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 26px;
+            height: 100%;
+            transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+        }
+
+        .feat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(11,31,58,0.08);
+            border-color: rgba(200,135,58,0.3);
+        }
+
+        .feat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             background: var(--navy);
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .timeline-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
-            background-size: 36px 36px;
-        }
-
-        .timeline-section .section-title,
-        .timeline-section .section-desc {
-            color: var(--white);
-        }
-
-        .timeline-section .section-desc {
-            color: rgba(255,255,255,0.5);
-        }
-
-        .timeline-track {
-            position: relative;
-            padding-left: 28px;
-        }
-
-        .timeline-track::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 6px;
-            bottom: 6px;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--gold), rgba(212,148,58,0.2));
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-bottom: 36px;
-        }
-
-        .timeline-item:last-child { padding-bottom: 0; }
-
-        .timeline-dot {
-            position: absolute;
-            left: -34px;
-            top: 4px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            background: var(--navy);
-        }
-
-        .timeline-dot.active {
-            background: var(--gold);
-            box-shadow: 0 0 0 4px rgba(212,148,58,0.25);
-        }
-
-        .timeline-year {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1.4px;
-            text-transform: uppercase;
             color: var(--gold);
-            margin-bottom: 4px;
-        }
-
-        .timeline-role {
-            font-family: 'Syne', sans-serif;
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--white);
-            margin-bottom: 2px;
-        }
-
-        .timeline-company {
-            font-size: 14px;
-            color: rgba(255,255,255,0.45);
-        }
-
-        .timeline-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 3px 10px;
-            border-radius: 50px;
-            margin-top: 8px;
-        }
-
-        .status-verified {
-            background: rgba(22,163,74,0.15);
-            color: #4ade80;
-            border: 1px solid rgba(74,222,128,0.2);
-        }
-
-        .status-active {
-            background: rgba(212,148,58,0.15);
-            color: var(--gold-light);
-            border: 1px solid rgba(212,148,58,0.3);
-        }
-
-        /* Verification steps card */
-        .verify-steps-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: var(--radius-lg);
-            padding: 36px;
-        }
-
-        .step-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .step-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .step-row:first-child { padding-top: 0; }
-
-        .step-num {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: var(--gold-pale);
-            border: 1px solid rgba(212,148,58,0.3);
-            color: var(--gold);
-            font-size: 13px;
-            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .step-content h6 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 2px;
-        }
-
-        .step-content p {
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            margin: 0;
-        }
-
-        /* ─── Analytics ─── */
-        .analytics-section {
-            background: var(--off-white);
-            padding: 100px 0;
-        }
-
-        .progress-item {
+            font-size: 22px;
             margin-bottom: 20px;
         }
 
-        .progress-item:last-child { margin-bottom: 0; }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .progress-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a2e45;
-        }
-
-        .progress-pct {
-            font-size: 14px;
+        .feat-card h4 {
+            font-size: 16px;
             font-weight: 700;
+            margin-bottom: 8px;
             color: var(--navy);
-            font-family: 'Syne', sans-serif;
         }
 
-        .progress-bar-track {
-            height: 8px;
-            background: #e8edf5;
+        .feat-card p {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        .feat-badge {
+            display: inline-block;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--gold);
+            background: rgba(200,135,58,0.1);
+            border: 1px solid rgba(200,135,58,0.2);
+            padding: 3px 9px;
             border-radius: 50px;
+            margin-bottom: 14px;
+        }
+
+        /* ── Steps ── */
+        .steps-section { background: var(--navy); padding: 80px 0; }
+
+        .steps-section .section-h { color: var(--white); }
+        .steps-section .section-p  { color: rgba(255,255,255,0.45); }
+
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 14px;
             overflow: hidden;
         }
 
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 50px;
-            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fill-blue   { background: linear-gradient(90deg, #2563eb, #60a5fa); }
-        .fill-gold   { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
-        .fill-red    { background: linear-gradient(90deg, #dc2626, #f87171); }
-
-        .security-list-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 0;
-            border-bottom: 1px solid #e8edf5;
-        }
-
-        .security-list-item:last-child { border-bottom: none; }
-
-        .security-check {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: rgba(22,163,74,0.1);
-            color: #16a34a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-
-        .security-text {
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a2e45;
-        }
-
-        /* ─── CTA ─── */
-        .cta-section {
+        .step-cell {
             background: var(--navy);
-            padding: 100px 0;
-            position: relative;
-            overflow: hidden;
+            padding: 28px 24px;
         }
 
-        .cta-section::after {
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(212,148,58,0.15) 0%, transparent 70%);
-            bottom: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            pointer-events: none;
-        }
-
-        .cta-title {
+        .step-num {
             font-family: 'Syne', sans-serif;
-            font-size: clamp(30px, 4vw, 50px);
+            font-size: 32px;
             font-weight: 800;
-            color: var(--white);
-            letter-spacing: -0.5px;
+            color: rgba(200,135,58,0.3);
+            line-height: 1;
             margin-bottom: 16px;
         }
 
-        .cta-desc {
-            font-size: 16px;
-            color: rgba(255,255,255,0.5);
-            max-width: 480px;
-            margin: 0 auto 40px;
+        .step-cell h5 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+
+        .step-cell p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.4);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* ── Stats row ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .stat-cell {
+            background: var(--white);
+            padding: 28px 24px;
+        }
+
+        .stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            background: var(--navy);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(28px, 3.5vw, 44px);
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+
+        .cta-section p {
+            font-size: 15px;
+            color: rgba(255,255,255,0.45);
+            max-width: 420px;
+            margin: 0 auto 36px;
             line-height: 1.7;
         }
 
-        .btn-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--gold);
-            color: var(--navy);
-            font-weight: 600;
-            font-size: 16px;
-            padding: 16px 36px;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        }
-
-        .btn-cta:hover {
-            background: var(--gold-light);
-            transform: translateY(-2px);
-            box-shadow: 0 16px 40px rgba(212,148,58,0.35);
-            color: var(--navy);
-        }
-
-        /* ─── Footer ─── */
+        /* ── Footer ── */
         .site-footer {
-            background: #06101c;
+            background: #07111f;
             border-top: 1px solid rgba(255,255,255,0.06);
-            padding: 60px 0 32px;
+            padding: 52px 0 28px;
         }
 
         .footer-brand {
-            font-family: 'Syne', sans-serif;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--white);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        .footer-brand span { color: var(--gold); }
+        .footer-brand em { color: var(--gold); font-style: normal; }
 
         .footer-tagline {
-            font-size: 14px;
-            color: rgba(255,255,255,0.4);
-            line-height: 1.6;
-            max-width: 280px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.35);
+            line-height: 1.65;
+            max-width: 260px;
         }
 
-        .footer-heading {
-            font-size: 11px;
+        .footer-col-head {
+            font-size: 10.5px;
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
-            margin-bottom: 18px;
+            color: rgba(255,255,255,0.25);
+            margin-bottom: 16px;
         }
 
         .footer-link {
             display: block;
-            font-size: 14px;
-            color: rgba(255,255,255,0.5);
+            font-size: 13.5px;
+            color: rgba(255,255,255,0.45);
             text-decoration: none;
-            margin-bottom: 10px;
-            transition: color 0.2s;
+            margin-bottom: 9px;
+            transition: color 0.18s;
         }
 
         .footer-link:hover { color: var(--white); }
 
-        .footer-divider {
-            border-color: rgba(255,255,255,0.06);
-            margin: 40px 0 24px;
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin-top: 40px;
+            padding-top: 22px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
         }
 
         .footer-copy {
-            font-size: 13px;
-            color: rgba(255,255,255,0.25);
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.22);
         }
 
-        /* ─── Utilities ─── */
-        .divider-line {
-            display: inline-block;
-            width: 40px;
-            height: 3px;
-            background: var(--gold);
-            border-radius: 2px;
-            margin-bottom: 18px;
+        @media (max-width: 768px) {
+            .nav-links .hide-mob { display: none; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- ═══ NAVBAR ═══ -->
-    <nav class="site-nav sticky-top">
-        <div class="container">
-            <a class="nav-brand me-auto" href="#">NFER<span>-EHVS</span></a>
+<!-- NAV -->
+<nav class="nav-wrap">
+    <div class="container nav-inner">
+        <a href="#" class="brand">NFER<em>-EHVS</em></a>
 
-            <button class="navbar-toggler border-0 ms-2" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navMain"
-                style="color:white;">
-                <i class="bi bi-list fs-4"></i>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navMain">
-                <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
-                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#verification">Verification</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#analytics">Analytics</a></li>
-                    <li class="nav-item ms-lg-2">
-                        <a href="/login" class="btn-nav-outline">Login</a>
-                    </li>
-                    <li class="nav-item ms-lg-2">
-                        <a href="/register" class="btn-nav-solid">Get Started</a>
-                    </li>
-                </ul>
-            </div>
+        <div class="nav-links">
+            <a href="#features" class="hide-mob">Features</a>
+            <a href="#how" class="hide-mob">How It Works</a>
+            <a href="/login" class="btn-pill btn-pill-outline ms-2">Login</a>
+            <a href="/register" class="btn-pill btn-pill-gold ms-2">Get Started</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- ═══ HERO ═══ -->
-    <section class="hero">
-        <div class="container position-relative" style="z-index:1;">
-            <div class="row align-items-center g-5">
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
 
-                <div class="col-lg-6">
-                    <div class="hero-eyebrow">
-                        <i class="bi bi-shield-check"></i>
-                        Rwanda Workforce Registry
-                    </div>
-
-                    <h1 class="hero-title">
-                        National <span class="accent">Employment</span><br>
-                        History Verification<br>
-                        System
-                    </h1>
-
-                    <p class="hero-desc">
-                        Securely manage employee records, verify employment history,
-                        resolve disputes, and empower employers and government
-                        institutions with trusted workforce intelligence.
-                    </p>
-
-                    <div class="d-flex flex-wrap gap-3">
-                        <a href="/register" class="btn-hero-primary">
-                            Get Started <i class="bi bi-arrow-right"></i>
-                        </a>
-                        <a href="/verify-nid" class="btn-hero-ghost">
-                            <i class="bi bi-search"></i> Verify Employment
-                        </a>
-                    </div>
+            <div class="col-lg-6">
+                <div class="hero-tag">Rwanda Workforce Registry</div>
+                <h1 class="hero-title">
+                    National <span>Employment</span><br>
+                    Verification System
+                </h1>
+                <p class="hero-desc">
+                    Securely verify employment history, manage records,
+                    and connect employers with trusted workforce intelligence — all in one platform.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/register" class="btn-lg-gold">Get Started <i class="bi bi-arrow-right"></i></a>
+                    <a href="/verify-nid" class="btn-lg-ghost"><i class="bi bi-search"></i> Verify Employment</a>
                 </div>
+            </div>
 
-                <div class="col-lg-6">
-                    <div class="verify-card">
-                        <div class="verify-card-header">
-                            <div class="verify-card-icon">
-                                <i class="bi bi-person-vcard"></i>
-                            </div>
-                            <div>
-                                <p class="verify-card-title">Quick NID Verification</p>
-                                <p class="verify-card-sub">Instant employment history lookup</p>
-                            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <div class="v-card">
+                    <div class="v-card-head">
+                        <div class="v-card-icon"><i class="bi bi-person-vcard"></i></div>
+                        <div>
+                            <p class="v-card-title">Quick NID Lookup</p>
+                            <p class="v-card-sub">Instant employment history</p>
                         </div>
-
-                        <form action="/verify-nid">
-                            <div class="mb-3">
-                                <label>National ID Number</label>
-                                <input type="text" name="nid" placeholder="e.g. 1199880012345678">
-                            </div>
-                            <div class="mb-4">
-                                <label>Full Name (optional)</label>
-                                <input type="text" name="name" placeholder="First and Last name">
-                            </div>
-                            <button type="submit" class="btn-verify">
-                                <i class="bi bi-search"></i>
-                                Search Employment History
-                            </button>
-                        </form>
-
-                        <p class="verify-note">
-                            <i class="bi bi-lock-fill"></i>
-                            Secured by 256-bit encryption · Government certified
-                        </p>
                     </div>
+
+                    <form action="/verify-nid">
+                        <div class="mb-3">
+                            <label class="v-label">National ID Number</label>
+                            <input class="v-input" type="text" name="nid" placeholder="e.g. 1199880012345678">
+                        </div>
+                        <div class="mb-4">
+                            <label class="v-label">Full Name <span style="opacity:.5">(optional)</span></label>
+                            <input class="v-input" type="text" name="name" placeholder="First and Last name">
+                        </div>
+                        <button type="submit" class="btn-verify">
+                            <i class="bi bi-search"></i> Search Employment History
+                        </button>
+                    </form>
+
+                    <p class="v-note"><i class="bi bi-lock-fill me-1"></i>256-bit encryption · Government certified</p>
                 </div>
-
             </div>
-        </div>
-    </section>
 
-    <!-- Trusted by strip -->
-    <div class="trusted-strip">
-        <div class="container">
-            <div class="trusted-strip-inner">
-                <span class="trusted-label">Trusted by</span>
-                <span class="trusted-org">Ministry of Public Service</span>
-                <span style="color:rgba(255,255,255,0.12);">·</span>
-                <span class="trusted-org">Rwanda Development Board</span>
-                <span style="color:rgba(255,255,255,0.12);">·</span>
-                <span class="trusted-org">National Social Security Fund</span>
-                <span style="color:rgba(255,255,255,0.12);">·</span>
-                <span class="trusted-org">Rwanda Revenue Authority</span>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERS -->
+<div class="partners">
+    <div class="container partners-inner">
+        <span class="p-label">Trusted by</span>
+        <span class="p-name">Ministry of Public Service</span>
+        <span class="p-sep">·</span>
+        <span class="p-name">Rwanda Development Board</span>
+        <span class="p-sep">·</span>
+        <span class="p-name">National Social Security Fund</span>
+        <span class="p-sep">·</span>
+        <span class="p-name">Rwanda Revenue Authority</span>
+    </div>
+</div>
+
+<!-- STATS -->
+<section class="section" style="background: var(--surface); padding-top: 60px; padding-bottom: 60px;">
+    <div class="container">
+        <div class="stats-row">
+            <div class="stat-cell">
+                <div class="stat-num" data-count="25000">0</div>
+                <div class="stat-label">Employees Registered</div>
+            </div>
+            <div class="stat-cell">
+                <div class="stat-num" data-count="3200">0</div>
+                <div class="stat-label">Verified Employers</div>
+            </div>
+            <div class="stat-cell">
+                <div class="stat-num" data-count="1250">0</div>
+                <div class="stat-label">Verifications Done</div>
+            </div>
+            <div class="stat-cell">
+                <div class="stat-num" data-count="98">0</div>
+                <div class="stat-label">Accuracy Rate</div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- ═══ STATS ═══ -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-3 col-6">
-                    <div class="stat-card c-gold">
-                        <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
-                        <div class="stat-num" data-count="25000">0</div>
-                        <div class="stat-label">Employees Registered</div>
-                    </div>
+<!-- FEATURES -->
+<section class="section" id="features">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-5">
+                <span class="eyebrow">Platform Capabilities</span>
+                <h2 class="section-h">Everything for Workforce Verification</h2>
+            </div>
+            <div class="col-lg-5 offset-lg-1 d-flex align-items-end">
+                <p class="section-p">Designed for employees, employers, and government institutions across Rwanda.</p>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <span class="feat-badge">Core</span>
+                    <div class="feat-icon"><i class="bi bi-person-badge"></i></div>
+                    <h4>Employee Profiles</h4>
+                    <p>Verified records with complete employment history, performance remarks, and real-time status.</p>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-card c-blue">
-                        <div class="stat-icon"><i class="bi bi-building"></i></div>
-                        <div class="stat-num" data-count="3200">0</div>
-                        <div class="stat-label">Verified Employers</div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <span class="feat-badge">Gov-Approved</span>
+                    <div class="feat-icon"><i class="bi bi-building-check"></i></div>
+                    <h4>Employer Verification</h4>
+                    <p>Government-approved employer accounts with audit logs, activity tracking, and compliance reporting.</p>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-card c-green">
-                        <div class="stat-icon"><i class="bi bi-patch-check"></i></div>
-                        <div class="stat-num" data-count="1250">0</div>
-                        <div class="stat-label">Employment Verifications</div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <span class="feat-badge">Insights</span>
+                    <div class="feat-icon"><i class="bi bi-bar-chart-line"></i></div>
+                    <h4>Analytics Dashboard</h4>
+                    <p>Workforce insights and national employment analytics in one government-grade interface.</p>
                 </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-card c-slate">
-                        <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
-                        <div class="stat-num" data-count="98">0</div>
-                        <div class="stat-label">Verification Accuracy %</div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="bi bi-link-45deg"></i></div>
+                    <h4>Blockchain Audit Trail</h4>
+                    <p>Immutable, tamper-proof records anchored on a distributed ledger for maximum trust.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="bi bi-file-earmark-check"></i></div>
+                    <h4>Certified Documents</h4>
+                    <p>Issue government-certified employment certificates accepted by all registered institutions.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="bi bi-shield-lock"></i></div>
+                    <h4>Dispute Resolution</h4>
+                    <p>Structured dispute filing and resolution workflows with government mediator oversight.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ═══ FEATURES ═══ -->
-    <section class="features-section" id="features">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="section-eyebrow">Platform Capabilities</span>
-                <h2 class="section-title">Everything You Need for<br>Workforce Verification</h2>
-                <p class="section-desc">Designed for employees, employers, and government institutions across Rwanda.</p>
+<!-- HOW IT WORKS -->
+<section class="steps-section" id="how">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-5">
+                <span class="eyebrow" style="color:var(--gold);">How It Works</span>
+                <h2 class="section-h">Verify Any Worker in 4 Steps</h2>
             </div>
-
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <span class="feature-tag">Core</span>
-                        <div class="feature-icon"><i class="bi bi-person-badge"></i></div>
-                        <h4>Employee Profiles</h4>
-                        <p>Create and manage verified employee records with complete employment history, performance remarks, and real-time verification status.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <span class="feature-tag">Gov-Approved</span>
-                        <div class="feature-icon"><i class="bi bi-building-check"></i></div>
-                        <h4>Employer Verification</h4>
-                        <p>Government-approved employer verification with comprehensive audit logs, activity tracking, and compliance reporting dashboards.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <span class="feature-tag">Insights</span>
-                        <div class="feature-icon"><i class="bi bi-bar-chart-line"></i></div>
-                        <h4>Analytics Dashboard</h4>
-                        <p>Workforce insights, dispute monitoring, and national employment analytics — all in one intuitive government-grade interface.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="bi bi-link-45deg"></i></div>
-                        <h4>Blockchain Audit Trail</h4>
-                        <p>Immutable, tamper-proof verification records anchored on a distributed ledger for maximum institutional trust.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="bi bi-file-earmark-check"></i></div>
-                        <h4>Certified Documents</h4>
-                        <p>Issue government-certified employment certificates and verification letters accepted by all registered institutions.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
-                        <h4>Dispute Resolution</h4>
-                        <p>Structured dispute filing, review, and resolution workflows with government mediator oversight and audit logging.</p>
-                    </div>
-                </div>
+            <div class="col-lg-5 offset-lg-1 d-flex align-items-end">
+                <p class="section-p">Instant, trusted access to verified employment records — no manual calls, no forged references.</p>
             </div>
         </div>
-    </section>
 
-    <!-- ═══ VERIFICATION / TIMELINE ═══ -->
-    <section class="timeline-section" id="verification">
-        <div class="container position-relative" style="z-index:1;">
-            <div class="row align-items-start g-5">
-
-                <div class="col-lg-5">
-                    <span class="section-eyebrow">Employment Timeline</span>
-                    <h2 class="section-title" style="color:white;">Verify Any Worker's<br>Full Employment History</h2>
-                    <p class="section-desc">Employers get instant, trusted access to verified employment records using National ID — no manual calls, no forged references.</p>
-
-                    <div class="timeline-track mt-5">
-                        <div class="timeline-item">
-                            <div class="timeline-dot active"></div>
-                            <div class="timeline-year">2025 — Current</div>
-                            <div class="timeline-role">Operations Coordinator</div>
-                            <div class="timeline-company">RwandaTech Solutions Ltd</div>
-                            <span class="timeline-status status-active">
-                                <i class="bi bi-circle-fill" style="font-size:7px;"></i> Active
-                            </span>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-year">2024</div>
-                            <div class="timeline-role">HR Assistant</div>
-                            <div class="timeline-company">Grand Legacy Hotel</div>
-                            <span class="timeline-status status-verified">
-                                <i class="bi bi-patch-check-fill" style="font-size:11px;"></i> Verified
-                            </span>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-year">2023</div>
-                            <div class="timeline-role">Customer Support Officer</div>
-                            <div class="timeline-company">PrideConnect Rwanda</div>
-                            <span class="timeline-status status-verified">
-                                <i class="bi bi-patch-check-fill" style="font-size:11px;"></i> Verified
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-7">
-                    <div class="verify-steps-card">
-                        <p style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:white;margin-bottom:24px;">How Verification Works</p>
-
-                        <div class="step-row">
-                            <div class="step-num">01</div>
-                            <div class="step-content">
-                                <h6>Enter National ID</h6>
-                                <p>Employer or institution inputs the worker's 16-digit NID number into the portal.</p>
-                            </div>
-                        </div>
-                        <div class="step-row">
-                            <div class="step-num">02</div>
-                            <div class="step-content">
-                                <h6>Authenticate Request</h6>
-                                <p>The system validates requester credentials and logs the access for audit purposes.</p>
-                            </div>
-                        </div>
-                        <div class="step-row">
-                            <div class="step-num">03</div>
-                            <div class="step-content">
-                                <h6>Retrieve Verified History</h6>
-                                <p>NFER-EHVS returns the complete employment timeline — verified by each previous employer.</p>
-                            </div>
-                        </div>
-                        <div class="step-row">
-                            <div class="step-num">04</div>
-                            <div class="step-content">
-                                <h6>Download Certificate</h6>
-                                <p>Generate and download an official, government-signed verification certificate.</p>
-                            </div>
-                        </div>
-
-                        <a href="/verify-nid" class="btn-verify mt-4" style="display:flex;max-width:300px;">
-                            <i class="bi bi-search"></i> Try a Verification Now
-                        </a>
-                    </div>
-                </div>
-
+        <div class="step-grid">
+            <div class="step-cell">
+                <div class="step-num">01</div>
+                <h5>Enter National ID</h5>
+                <p>Input the worker's 16-digit NID number into the portal.</p>
+            </div>
+            <div class="step-cell">
+                <div class="step-num">02</div>
+                <h5>Authenticate Request</h5>
+                <p>The system validates credentials and logs access for audit purposes.</p>
+            </div>
+            <div class="step-cell">
+                <div class="step-num">03</div>
+                <h5>Retrieve History</h5>
+                <p>NFER-EHVS returns the complete verified employment timeline.</p>
+            </div>
+            <div class="step-cell">
+                <div class="step-num">04</div>
+                <h5>Download Certificate</h5>
+                <p>Generate an official, government-signed verification certificate.</p>
             </div>
         </div>
-    </section>
 
-    <!-- ═══ ANALYTICS ═══ -->
-    <section class="analytics-section" id="analytics">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="section-eyebrow">Workforce Intelligence</span>
-                <h2 class="section-title">Government Workforce Analytics</h2>
-                <p class="section-desc">Real-time employment insights and verification intelligence for decision-makers.</p>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card border-0 rounded-4 p-4 shadow-sm h-100">
-                        <h5 class="fw-bold mb-4" style="font-family:'Syne',sans-serif;color:var(--navy);">Employment Distribution</h5>
-
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-name">Active Employment</span>
-                                <span class="progress-pct">75%</span>
-                            </div>
-                            <div class="progress-bar-track">
-                                <div class="progress-bar-fill fill-blue" style="width:75%"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-name">Pending Verification</span>
-                                <span class="progress-pct">15%</span>
-                            </div>
-                            <div class="progress-bar-track">
-                                <div class="progress-bar-fill fill-gold" style="width:15%"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-item">
-                            <div class="progress-header">
-                                <span class="progress-name">Disputes / Flagged</span>
-                                <span class="progress-pct">10%</span>
-                            </div>
-                            <div class="progress-bar-track">
-                                <div class="progress-bar-fill fill-red" style="width:10%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card border-0 rounded-4 p-4 shadow-sm h-100">
-                        <h5 class="fw-bold mb-4" style="font-family:'Syne',sans-serif;color:var(--navy);">Security & Compliance</h5>
-
-                        <div class="security-list-item">
-                            <div class="security-check"><i class="bi bi-check-lg"></i></div>
-                            <span class="security-text">Blockchain-ready immutable audit trail</span>
-                        </div>
-                        <div class="security-list-item">
-                            <div class="security-check"><i class="bi bi-check-lg"></i></div>
-                            <span class="security-text">Government employer verification & approval</span>
-                        </div>
-                        <div class="security-list-item">
-                            <div class="security-check"><i class="bi bi-check-lg"></i></div>
-                            <span class="security-text">Full activity tracking & access logs</span>
-                        </div>
-                        <div class="security-list-item">
-                            <div class="security-check"><i class="bi bi-check-lg"></i></div>
-                            <span class="security-text">Secure, government-signed certificates</span>
-                        </div>
-                        <div class="security-list-item">
-                            <div class="security-check"><i class="bi bi-check-lg"></i></div>
-                            <span class="security-text">256-bit SSL encryption on all data transfers</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ CTA ═══ -->
-    <section class="cta-section">
-        <div class="container text-center position-relative" style="z-index:1;">
-            <div class="divider-line"></div>
-            <h2 class="cta-title">Start Verifying Employment<br>Records Today</h2>
-            <p class="cta-desc">Secure, trusted, and government-ready employment verification platform for modern workforce management in Rwanda.</p>
-            <a href="/register" class="btn-cta">
-                Create Free Account <i class="bi bi-arrow-right"></i>
+        <div class="mt-4">
+            <a href="/verify-nid" class="btn-lg-gold">
+                <i class="bi bi-search"></i> Try a Verification
             </a>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- ═══ FOOTER ═══ -->
-    <footer class="site-footer">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-4">
-                    <div class="footer-brand">NFER<span>-EHVS</span></div>
-                    <p class="footer-tagline">National Employment History Verification System — powering trusted workforce intelligence across Rwanda.</p>
-                </div>
-                <div class="col-lg-2 col-6">
-                    <div class="footer-heading">Platform</div>
-                    <a href="#features" class="footer-link">Features</a>
-                    <a href="#verification" class="footer-link">Verification</a>
-                    <a href="#analytics" class="footer-link">Analytics</a>
-                    <a href="/register" class="footer-link">Get Started</a>
-                </div>
-                <div class="col-lg-2 col-6">
-                    <div class="footer-heading">Resources</div>
-                    <a href="#" class="footer-link">Documentation</a>
-                    <a href="#" class="footer-link">API Reference</a>
-                    <a href="#" class="footer-link">Privacy Policy</a>
-                    <a href="#" class="footer-link">Terms of Use</a>
-                </div>
-                <div class="col-lg-4">
-                    <div class="footer-heading">Government Partners</div>
-                    <p style="font-size:13px;color:rgba(255,255,255,0.35);line-height:1.7;">
-                        Ministry of Public Service · Rwanda Development Board ·
-                        National Social Security Fund · Rwanda Revenue Authority
-                    </p>
-                </div>
+<!-- CTA -->
+<section class="cta-section">
+    <div class="container position-relative" style="z-index:1;">
+        <h2>Start Verifying Employment<br>Records Today</h2>
+        <p>Secure, government-ready employment verification for modern workforce management in Rwanda.</p>
+        <a href="/register" class="btn-lg-gold" style="font-size:15px; padding: 14px 32px;">
+            Create Free Account <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <div class="footer-brand">NFER<em>-EHVS</em></div>
+                <p class="footer-tagline">National Employment History Verification System — trusted workforce intelligence across Rwanda.</p>
             </div>
-
-            <hr class="footer-divider">
-
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-                <p class="footer-copy mb-0">© 2026 NFER-EHVS. All rights reserved. Republic of Rwanda.</p>
-                <p class="footer-copy mb-0">Built with <i class="bi bi-heart-fill" style="color:var(--gold);font-size:11px;"></i> for workforce transparency</p>
+            <div class="col-6 col-lg-2">
+                <div class="footer-col-head">Platform</div>
+                <a href="#features" class="footer-link">Features</a>
+                <a href="#how" class="footer-link">How It Works</a>
+                <a href="/register" class="footer-link">Get Started</a>
+            </div>
+            <div class="col-6 col-lg-2">
+                <div class="footer-col-head">Resources</div>
+                <a href="#" class="footer-link">Documentation</a>
+                <a href="#" class="footer-link">API Reference</a>
+                <a href="#" class="footer-link">Privacy Policy</a>
+            </div>
+            <div class="col-lg-4">
+                <div class="footer-col-head">Government Partners</div>
+                <p style="font-size:13px;color:rgba(255,255,255,0.3);line-height:1.75;">
+                    Ministry of Public Service · Rwanda Development Board ·
+                    National Social Security Fund · Rwanda Revenue Authority
+                </p>
             </div>
         </div>
-    </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="footer-bottom">
+            <span class="footer-copy">© 2026 NFER-EHVS. All rights reserved. Republic of Rwanda.</span>
+            <span class="footer-copy">Built for workforce transparency</span>
+        </div>
+    </div>
+</footer>
 
-    <script>
-        /* ── Animated stat counters ── */
-        const formatNum = (n, max) => {
-            if (max >= 10000) return (n >= 1000 ? (n / 1000).toFixed(1) + 'K+' : n);
-            if (max === 98) return n + '%';
-            return n.toLocaleString() + '+';
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const fmt = (n, max) => {
+        if (max >= 10000) return (n >= 1000 ? (n / 1000).toFixed(1) + 'K+' : n + '+');
+        if (max === 98)   return n + '%';
+        return n.toLocaleString() + '+';
+    };
+
+    const animateCount = (el) => {
+        const target = +el.dataset.count;
+        const start  = performance.now();
+        const dur    = 1600;
+        const tick   = (now) => {
+            const p = Math.min((now - start) / dur, 1);
+            el.textContent = fmt(Math.round((1 - Math.pow(1 - p, 3)) * target), target);
+            if (p < 1) requestAnimationFrame(tick);
         };
+        requestAnimationFrame(tick);
+    };
 
-        const animateCounter = (el) => {
-            const target = parseInt(el.dataset.count);
-            const duration = 1800;
-            const startTime = performance.now();
-            const step = (now) => {
-                const progress = Math.min((now - startTime) / duration, 1);
-                const ease = 1 - Math.pow(1 - progress, 4);
-                const current = Math.round(ease * target);
-                el.textContent = formatNum(current, target);
-                if (progress < 1) requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-        };
-
-        const observer = new IntersectionObserver((entries) => {
+    document.querySelectorAll('[data-count]').forEach(el => {
+        const obs = new IntersectionObserver((entries) => {
             entries.forEach(e => {
-                if (e.isIntersecting) {
-                    animateCounter(e.target);
-                    observer.unobserve(e.target);
-                }
+                if (e.isIntersecting) { animateCount(e.target); obs.unobserve(e.target); }
             });
-        }, { threshold: 0.4 });
-
-        document.querySelectorAll('[data-count]').forEach(el => observer.observe(el));
-    </script>
+        }, { threshold: 0.5 });
+        obs.observe(el);
+    });
+</script>
 
 </body>
 </html>
