@@ -38,4 +38,10 @@ class Employee extends Model
     {
         return $this->hasMany(Dispute::class);
     }
+
+    // Accessor for full name
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }   
 }

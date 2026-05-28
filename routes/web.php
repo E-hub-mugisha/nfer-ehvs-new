@@ -12,6 +12,7 @@ use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GovernmentController;
 use App\Http\Controllers\GovernmentDisputeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransferRequestController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,19 +62,31 @@ Route::get('/government/employees', [App\Http\Controllers\Government\EmployeeCon
 Route::get('/government/employees/{employee}', [App\Http\Controllers\Government\EmployeeController::class, 'show'])
     ->name('government.employees.show');
 
-    Route::get('/government/employers', [App\Http\Controllers\Government\EmployerController::class, 'index'])
+Route::get('/government/employers', [App\Http\Controllers\Government\EmployerController::class, 'index'])
     ->name('government.employers.index');
 Route::get('/government/employers/{employer}', [App\Http\Controllers\Government\EmployerController::class, 'show'])
     ->name('government.employers.show');
 
 Route::resource('employment-records', EmploymentRecordController::class);
 
-Route::prefix('government')->name('government.')->middleware(['auth', 'role:government'])->group(function () {
+Route::prefix('government')->name('government.')->middleware(['auth'])->group(function () {
 
     Route::get('/disputes',                  [GovernmentDisputeController::class, 'index'])->name('disputes.index');
     Route::get('/disputes/{dispute}',        [GovernmentDisputeController::class, 'show'])->name('disputes.show');
     Route::patch('/disputes/{dispute}/status', [GovernmentDisputeController::class, 'updateStatus'])->name('disputes.updateStatus');
 
+    Route::get('employment-records',          [GovernmentController::class, 'indexEmploymentRecord'])->name('employment-records.index');
+    Route::get('employment-records/{employmentRecord}', [GovernmentController::class, 'show'])->name('employment-records.show');
+
+    // Transfer Requests
+    Route::get('transfer-requests',          [GovernmentController::class, 'indexTransferRequest'])->name('transfer-requests.index');
+    Route::get('transfer-requests/{transferRequest}', [GovernmentController::class, 'showTransferRequest'])->name('transfer-requests.show');
+    Route::patch('/transfer-requests/{transferRequest}/approve', [GovernmentController::class, 'approve'])->name('transfer-requests.approve');
+    Route::patch('/transfer-requests/{transferRequest}/reject',  [GovernmentController::class, 'reject'])->name('transfer-requests.reject');
+
+    // Reports
+    Route::get('/reports',              [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export/{type}', [ReportController::class, 'export'])->name('reports.export');
 });
 
 Route::resource('disputes', DisputeController::class);
@@ -131,17 +144,17 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
 
     // Transfer requests — sent by this employer
     Route::post('search/{employee}/transfer', [TransferRequestController::class, 'store'])
-         ->name('transfer.store');
+        ->name('transfer.store');
     Route::get('transfers/sent',              [TransferRequestController::class, 'sent'])
-         ->name('transfer.sent');
+        ->name('transfer.sent');
 
     // Transfer requests — received by this employer
     Route::get('transfers/received',          [TransferRequestController::class, 'received'])
-         ->name('transfer.received');
+        ->name('transfer.received');
     Route::patch('transfers/{transfer}/approve', [TransferRequestController::class, 'approve'])
-         ->name('transfer.approve');
+        ->name('transfer.approve');
     Route::patch('transfers/{transfer}/reject',  [TransferRequestController::class, 'reject'])
-         ->name('transfer.reject');
+        ->name('transfer.reject');
     // Profile
     Route::get('/profile/create', [EmployerProfileController::class, 'create'])
         ->name('profile.create');
@@ -163,8 +176,6 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
 
     Route::patch('/disputes/{id}', [EmployerDisputeController::class, 'updateStatus'])
         ->name('disputes.updateStatus');
-
-    
 });
 
 

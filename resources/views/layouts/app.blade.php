@@ -450,7 +450,7 @@
             </div>
             <div>
                 <div class="brand-text">NFER-EHVS</div>
-                <div class="brand-sub">Employment Hub</div>
+                <!-- <div class="brand-sub">Employment Hub</div> -->
             </div>
         </div>
 
@@ -524,7 +524,7 @@
                 Employers
             </a>
 
-            <a href="/employment-records">
+            <a href="{{ route('government.employment-records.index') }}">
                 <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
                 Employment Records
             </a>
@@ -536,14 +536,14 @@
 
             <div class="nav-section-label">Insights</div>
 
-            <a href="/reports">
+            <a href="{{ route('government.reports.index') }}">
                 <span class="nav-icon"><i class="bi bi-pie-chart"></i></span>
                 National Reports
             </a>
 
-            <a href="/analytics">
+            <a href="{{ route('government.transfer-requests.index') }}">
                 <span class="nav-icon"><i class="bi bi-graph-up-arrow"></i></span>
-                Analytics
+                Transfers
             </a>
 
             @endif
@@ -595,10 +595,10 @@
                 Disputes
             </a>
 
-            <a href="/reports">
+            <!-- <a href="/reports">
                 <span class="nav-icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
                 Reports
-            </a>
+            </a> -->
 
             @endif
 
@@ -658,10 +658,10 @@
 
             <div class="d-flex align-items-center gap-3">
 
-                <a href="/notifications" class="notif-btn">
+                <!-- <a href="/notifications" class="notif-btn">
                     <i class="bi bi-bell"></i>
                     <span class="notif-dot"></span>
-                </a>
+                </a> -->
 
                 <div class="user-box">
                     <div class="user-info">
