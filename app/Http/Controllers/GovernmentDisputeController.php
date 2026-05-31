@@ -51,7 +51,7 @@ class GovernmentDisputeController extends Controller
     public function updateStatus(Request $request, Dispute $dispute)
     {
         $request->validate([
-            'status' => ['required', 'in:pending,under_review,resolved,rejected'],
+            'status' => ['required', 'in:pending,under-review,resolved,rejected'],
         ]);
 
         $dispute->update(['status' => $request->status]);

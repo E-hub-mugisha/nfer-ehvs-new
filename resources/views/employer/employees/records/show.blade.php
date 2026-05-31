@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
         <div>
             <a href="{{ route('employer.employees.records.index') }}"
-               class="btn btn-sm btn-outline-secondary me-2">
+                class="btn btn-sm btn-outline-secondary me-2">
                 <i class="bi bi-arrow-left me-1"></i> Back to Employees
             </a>
             <span class="text-muted small">Employment Records</span>
@@ -23,12 +23,13 @@
 
                 @if($employee->photo)
                     <img src="{{ asset($employee->photo) }}"
-                         class="rounded-circle mx-auto mb-3 border border-3 border-primary object-fit-cover"
-                         width="110" height="110">
+                        class="rounded-circle mx-auto mb-3 border border-3 border-primary object-fit-cover"
+                        width="110" height="110"
+                        alt="{{ $employee->first_name }} {{ $employee->last_name }}">
                 @else
                     <div class="rounded-circle bg-primary bg-opacity-10 text-primary
                                 d-flex align-items-center justify-content-center fw-bold mx-auto mb-3"
-                         style="width:110px;height:110px;font-size:36px;">
+                        style="width:110px;height:110px;font-size:36px;">
                         {{ strtoupper(substr($employee->first_name,0,1) . substr($employee->last_name,0,1)) }}
                     </div>
                 @endif
@@ -51,14 +52,14 @@
                         ['Date of Birth', \Carbon\Carbon::parse($employee->dob)->format('d M Y')
                                           . ' <span class="text-muted">('
                                           . \Carbon\Carbon::parse($employee->dob)->age . ' yrs)</span>'],
-                        ['Phone',    $employee->phone    ?? '—'],
-                        ['District', $employee->district ?? '—'],
-                        ['Sector',   $employee->sector   ?? '—'],
+                        ['Phone',        $employee->phone    ?? '—'],
+                        ['District',     $employee->district ?? '—'],
+                        ['Sector',       $employee->sector   ?? '—'],
                     ] as [$label, $value])
-                        <li class="d-flex justify-content-between py-2 border-bottom">
-                            <span class="text-muted">{{ $label }}</span>
-                            <span class="fw-semibold text-end">{!! $value !!}</span>
-                        </li>
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">{{ $label }}</span>
+                        <span class="fw-semibold text-end">{!! $value !!}</span>
+                    </li>
                     @endforeach
                 </ul>
             </div>
@@ -74,6 +75,7 @@
                         <span class="badge bg-primary ms-2">{{ $employmentRecords->count() }}</span>
                     </h6>
                 </div>
+
                 <div class="card-body p-0">
                     @if($employmentRecords->isEmpty())
                         <div class="text-center py-5 text-muted">
@@ -88,10 +90,10 @@
                                 {{-- Timeline dot --}}
                                 <div class="d-flex flex-column align-items-center">
                                     <div class="rounded-circle {{ $record->end_date ? 'bg-secondary' : 'bg-success' }}"
-                                         style="width:12px;height:12px;margin-top:4px;flex-shrink:0;"></div>
+                                        style="width:12px;height:12px;margin-top:4px;flex-shrink:0;"></div>
                                     @if(!$loop->last)
                                         <div class="bg-secondary bg-opacity-25 flex-grow-1"
-                                             style="width:2px;margin-top:4px;"></div>
+                                            style="width:2px;margin-top:4px;"></div>
                                     @endif
                                 </div>
 
@@ -105,9 +107,18 @@
                                                     <small class="text-muted">{{ $record->department }}</small>
                                                 @endif
                                             </div>
+
                                             <span class="badge {{ $record->end_date ? 'bg-secondary' : 'bg-success' }}">
                                                 {{ $record->end_date ? 'Ended' : 'Current' }}
                                             </span>
+
+                                            {{-- Edit button — targets this record's own modal by unique ID --}}
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-primary py-0 px-2"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editModal{{ $record->id }}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
                                         </div>
 
                                         <hr class="my-2">
@@ -146,6 +157,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             @endforeach
                         </div>
@@ -156,4 +168,179 @@
 
     </div>
 </div>
+
+
+{{-- ============================================================
+     Per-record Edit Modals — one modal per record, unique IDs.
+     Rendered by Blade, zero JavaScript required.
+     ============================================================ --}}
+@foreach($employmentRecords as $record)
+<div class="modal fade" id="editModal{{ $record->id }}" tabindex="-1"
+     aria-labelledby="editModalLabel{{ $record->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header border-bottom px-4 py-3">
+                <h6 class="modal-title fw-bold" id="editModalLabel{{ $record->id }}">
+                    <i class="bi bi-pencil-square me-2 text-primary"></i>Edit Employment Record
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="POST"
+                  action="{{ route('employer.employees.records.update', ['record' => $record->id]) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body px-4 py-4">
+
+                    @if($errors->any())
+                    <div class="alert alert-danger small py-2">
+                        <ul class="mb-0 ps-3">
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <div class="row g-3">
+
+                        {{-- Job Title --}}
+                        <div class="col-sm-6">
+                            <label for="job_title_{{ $record->id }}" class="form-label fw-semibold small">
+                                Job Title <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                id="job_title_{{ $record->id }}"
+                                name="job_title"
+                                class="form-control @error('job_title') is-invalid @enderror"
+                                value="{{ old('job_title', $record->job_title) }}"
+                                placeholder="e.g. Software Engineer"
+                                required>
+                            @error('job_title')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Department --}}
+                        <div class="col-sm-6">
+                            <label for="department_{{ $record->id }}" class="form-label fw-semibold small">
+                                Department
+                            </label>
+                            <input type="text"
+                                id="department_{{ $record->id }}"
+                                name="department"
+                                class="form-control @error('department') is-invalid @enderror"
+                                value="{{ old('department', $record->department) }}"
+                                placeholder="e.g. Engineering">
+                            @error('department')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Start Date --}}
+                        <div class="col-sm-6">
+                            <label for="start_date_{{ $record->id }}" class="form-label fw-semibold small">
+                                Start Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date"
+                                id="start_date_{{ $record->id }}"
+                                name="start_date"
+                                class="form-control @error('start_date') is-invalid @enderror"
+                                value="{{ old('start_date', $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('Y-m-d') : '') }}"
+                                required>
+                            @error('start_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- End Date --}}
+                        <div class="col-sm-6">
+                            <label for="end_date_{{ $record->id }}" class="form-label fw-semibold small">
+                                End Date
+                                <span class="text-muted fw-normal">(leave blank if current)</span>
+                            </label>
+                            <input type="date"
+                                id="end_date_{{ $record->id }}"
+                                name="end_date"
+                                class="form-control @error('end_date') is-invalid @enderror"
+                                value="{{ old('end_date', $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('Y-m-d') : '') }}">
+                            @error('end_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Salary --}}
+                        <div class="col-sm-6">
+                            <label for="salary_{{ $record->id }}" class="form-label fw-semibold small">
+                                Salary (RWF)
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text text-muted small">RWF</span>
+                                <input type="number"
+                                    id="salary_{{ $record->id }}"
+                                    name="salary"
+                                    class="form-control @error('salary') is-invalid @enderror"
+                                    value="{{ old('salary', $record->salary) }}"
+                                    placeholder="0"
+                                    min="0"
+                                    step="1">
+                                @error('salary')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        {{-- Contract Type --}}
+                        <div class="col-sm-6">
+                            <label for="contract_type_{{ $record->id }}" class="form-label fw-semibold small">
+                                Contract Type
+                            </label>
+                            <select id="contract_type_{{ $record->id }}"
+                                name="contract_type"
+                                class="form-select @error('contract_type') is-invalid @enderror">
+                                <option value="">— Select —</option>
+                                @foreach(['Full-time','Part-time','Contract','Internship','Casual'] as $type)
+                                <option value="{{ $type }}"
+                                    {{ old('contract_type', $record->contract_type) === $type ? 'selected' : '' }}>
+                                    {{ $type }}
+                                </option>
+                                @endforeach
+                            </select>
+                            @error('contract_type')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        {{-- Notes --}}
+                        <div class="col-12">
+                            <label for="notes_{{ $record->id }}" class="form-label fw-semibold small">Notes</label>
+                            <textarea id="notes_{{ $record->id }}"
+                                name="notes"
+                                class="form-control @error('notes') is-invalid @enderror"
+                                rows="3"
+                                placeholder="Any additional notes…">{{ old('notes', $record->notes) }}</textarea>
+                            @error('notes')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer px-4 py-3 border-top bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="bi bi-check2 me-1"></i> Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
 @endsection

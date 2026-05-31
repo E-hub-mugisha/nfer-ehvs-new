@@ -571,7 +571,7 @@
     <div class="container">
         <div class="row align-items-center g-5">
 
-            <div class="col-lg-6">
+            <div class="col-lg-9">
                 <div class="hero-tag">Rwanda Workforce Registry</div>
                 <h1 class="hero-title">
                     National <span>Employment</span><br>
@@ -583,37 +583,10 @@
                 </p>
                 <div class="d-flex flex-wrap gap-3">
                     <a href="/register" class="btn-lg-gold">Get Started <i class="bi bi-arrow-right"></i></a>
-                    <a href="/verify-nid" class="btn-lg-ghost"><i class="bi bi-search"></i> Verify Employment</a>
+                    <!-- <a href="/verify-nid" class="btn-lg-ghost"><i class="bi bi-search"></i> Verify Employment</a> -->
                 </div>
             </div>
 
-            <div class="col-lg-5 offset-lg-1">
-                <div class="v-card">
-                    <div class="v-card-head">
-                        <div class="v-card-icon"><i class="bi bi-person-vcard"></i></div>
-                        <div>
-                            <p class="v-card-title">Quick NID Lookup</p>
-                            <p class="v-card-sub">Instant employment history</p>
-                        </div>
-                    </div>
-
-                    <form action="/verify-nid">
-                        <div class="mb-3">
-                            <label class="v-label">National ID Number</label>
-                            <input class="v-input" type="text" name="nid" placeholder="e.g. 1199880012345678">
-                        </div>
-                        <div class="mb-4">
-                            <label class="v-label">Full Name <span style="opacity:.5">(optional)</span></label>
-                            <input class="v-input" type="text" name="name" placeholder="First and Last name">
-                        </div>
-                        <button type="submit" class="btn-verify">
-                            <i class="bi bi-search"></i> Search Employment History
-                        </button>
-                    </form>
-
-                    <p class="v-note"><i class="bi bi-lock-fill me-1"></i>256-bit encryption · Government certified</p>
-                </div>
-            </div>
 
         </div>
     </div>
@@ -633,29 +606,6 @@
     </div>
 </div>
 
-<!-- STATS -->
-<section class="section" style="background: var(--surface); padding-top: 60px; padding-bottom: 60px;">
-    <div class="container">
-        <div class="stats-row">
-            <div class="stat-cell">
-                <div class="stat-num" data-count="25000">0</div>
-                <div class="stat-label">Employees Registered</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-num" data-count="3200">0</div>
-                <div class="stat-label">Verified Employers</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-num" data-count="1250">0</div>
-                <div class="stat-label">Verifications Done</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-num" data-count="98">0</div>
-                <div class="stat-label">Accuracy Rate</div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- FEATURES -->
 <section class="section" id="features">
@@ -704,13 +654,6 @@
             </div>
             <div class="col-md-4">
                 <div class="feat-card">
-                    <div class="feat-icon"><i class="bi bi-file-earmark-check"></i></div>
-                    <h4>Certified Documents</h4>
-                    <p>Issue government-certified employment certificates accepted by all registered institutions.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feat-card">
                     <div class="feat-icon"><i class="bi bi-shield-lock"></i></div>
                     <h4>Dispute Resolution</h4>
                     <p>Structured dispute filing and resolution workflows with government mediator oversight.</p>
@@ -749,18 +692,8 @@
                 <h5>Retrieve History</h5>
                 <p>NFER-EHVS returns the complete verified employment timeline.</p>
             </div>
-            <div class="step-cell">
-                <div class="step-num">04</div>
-                <h5>Download Certificate</h5>
-                <p>Generate an official, government-signed verification certificate.</p>
-            </div>
         </div>
 
-        <div class="mt-4">
-            <a href="/verify-nid" class="btn-lg-gold">
-                <i class="bi bi-search"></i> Try a Verification
-            </a>
-        </div>
     </div>
 </section>
 
@@ -788,12 +721,6 @@
                 <a href="#features" class="footer-link">Features</a>
                 <a href="#how" class="footer-link">How It Works</a>
                 <a href="/register" class="footer-link">Get Started</a>
-            </div>
-            <div class="col-6 col-lg-2">
-                <div class="footer-col-head">Resources</div>
-                <a href="#" class="footer-link">Documentation</a>
-                <a href="#" class="footer-link">API Reference</a>
-                <a href="#" class="footer-link">Privacy Policy</a>
             </div>
             <div class="col-lg-4">
                 <div class="footer-col-head">Government Partners</div>

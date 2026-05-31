@@ -1,7 +1,7 @@
 @php
     $icons = [
         'pending'      => 'bi-hourglass-split',
-        'under_review' => 'bi-search',
+        'under-review' => 'bi-search',
         'resolved'     => 'bi-check-circle-fill',
         'rejected'     => 'bi-x-circle-fill',
     ];

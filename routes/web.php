@@ -11,6 +11,7 @@ use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\EmploymentRecordController;
 use App\Http\Controllers\GovernmentController;
 use App\Http\Controllers\GovernmentDisputeController;
+use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransferRequestController;
@@ -28,6 +29,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/onboarding', [OnboardingController::class, 'show'])
+         ->name('onboarding.show');
+ 
+    Route::post('/onboarding/employee', [OnboardingController::class, 'storeEmployee'])
+         ->name('onboarding.employee.store');
+ 
+    Route::post('/onboarding/employer', [OnboardingController::class, 'storeEmployer'])
+         ->name('onboarding.employer.store');
+ 
+    Route::post('/onboarding/government', [OnboardingController::class, 'storeGovernment'])
+         ->name('onboarding.government.store');
 });
 
 Route::resource('employees', EmployeeController::class)
@@ -55,7 +68,7 @@ Route::post('/employee/profile/store', [EmployeeDashboardController::class, 'sto
     ->middleware(['auth'])->name('employee.profile.store');
 
 Route::get('/government/dashboard', [GovernmentController::class, 'index'])
-    ->middleware(['auth', 'role:government']);
+    ->middleware(['auth', 'role:government'])->name('government.dashboard');
 
 Route::get('/government/employees', [App\Http\Controllers\Government\EmployeeController::class, 'index'])
     ->name('government.employees.index');
@@ -101,7 +114,8 @@ Route::get('/my-employment-records', [EmployeeDashboardController::class, 'index
 
 Route::get('/my-employment-records/{id}', [EmployeeDashboardController::class, 'showRecord'])
     ->name('my.employment-records.show');
-
+Route::post('employment-records/{record}/disputes', [EmployeeDashboardController::class, 'storeDispute'])
+     ->name('my.disputes.store');
 // List disputes
 Route::get('/my-disputes', [DisputeController::class, 'index'])
     ->name('disputes.index');
@@ -123,11 +137,13 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
 
     Route::get('employees',                    [App\Http\Controllers\Employer\EmployeeController::class, 'index'])->name('employees.index');
     Route::get('employees/{employee}',         [App\Http\Controllers\Employer\EmployeeController::class, 'show'])->name('employees.show');
-
+    Route::put('employees/{employee}', [App\Http\Controllers\Employer\EmployeeController::class, 'update'])
+        ->name('employees.update');
     // Employment Records
     Route::get('get/employees/records',            [App\Http\Controllers\EmploymentRecordController::class, 'index'])->name('employees.records.index');
     Route::get('get/employees/{employee}/records', [App\Http\Controllers\EmploymentRecordController::class, 'show'])->name('employees.records.show');
-
+    Route::put('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'update'])
+        ->name('employees.records.update');
     // Employee Search
     // Route::get('search',                       [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
     // Route::post('search',                      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');

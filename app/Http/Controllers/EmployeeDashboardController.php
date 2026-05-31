@@ -243,4 +243,26 @@ class EmployeeDashboardController extends Controller
 
         return view('employment-records.show', compact('record'));
     }
+
+    public function storeDispute(Request $request, EmploymentRecord $record)
+    {
+        $request->validate([
+            'description' => 'required|min:20|string',
+            'evidence'    => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:5120',
+        ]);
+
+        $path = $request->hasFile('evidence')
+            ? $request->file('evidence')->store('disputes/evidence', 'public')
+            : null;
+
+        Dispute::create([
+            'employee_id'           => $request->employee_id,
+            'employment_record_id'  => $request->employment_record_id,
+            'description'           => $request->description,
+            'evidence'              => $path,
+            'status'                => 'pending',
+        ]);
+
+        return redirect()->back()->with('success', 'Dispute submitted successfully. We will review it within 7 business days.');
+    }
 }

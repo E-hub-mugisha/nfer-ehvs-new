@@ -300,12 +300,12 @@ class GovernmentController extends Controller
 
         DB::transaction(function () use ($transferRequest) {
 
-            // 1. Mark old employment record as inactive
+            // 1. Mark old employment record as terminated
             EmploymentRecord::where('id', $transferRequest->current_employment_record_id)
                 ->update([
-                    'employment_status' => 'inactive',
+                    'employment_status' => 'terminated',
                     'end_date'          => now()->toDateString(),
-                    'exit_reason'       => 'transfer',
+                    'exit_reason'       => 'mutual-agreement',
                     'remarks'           => "Transferred to {$transferRequest->requestingEmployer?->company_name}",
                 ]);
 

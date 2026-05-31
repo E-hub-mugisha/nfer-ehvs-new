@@ -99,7 +99,7 @@
                                     </td>
 
                                     <td>
-                                        <a href="{{ route('employment-records.show', $record->id) }}"
+                                        <a href="{{ route('my.employment-records.show', $record->id) }}"
                                            class="btn btn-sm btn-primary rounded-pill">
                                             View
                                         </a>

@@ -155,16 +155,16 @@
                                 <td>
                                     <div class="employee-cell">
                                         <span class="employee-cell__avatar">
-                                            {{ strtoupper(substr($record->employee->name ?? 'U', 0, 1)) }}
+                                            {{ strtoupper(substr($record->employee->full_name ?? 'U', 0, 1)) }}
                                         </span>
-                                        <span class="employee-cell__name">{{ $record->employee->name ?? 'Unknown' }}</span>
+                                        <span class="employee-cell__name">{{ $record->employee->full_name ?? 'Unknown' }}</span>
                                     </div>
                                 </td>
-                                <td>{{ $record->position ?? '—' }}</td>
+                                <td>{{ $record->job_title ?? '—' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($record->start_date)->format('d M Y') }}</td>
                                 <td>
-                                    <span class="badge badge--{{ $record->status === 'active' ? 'success' : 'neutral' }}">
-                                        {{ ucfirst($record->status) }}
+                                    <span class="badge badge--{{ $record->employment_status === 'active' ? 'success' : 'neutral' }}">
+                                        {{ ucfirst($record->employment_status) }}
                                     </span>
                                 </td>
                                 <td>

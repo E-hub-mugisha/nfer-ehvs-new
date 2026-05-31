@@ -144,7 +144,7 @@
                         <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
                             <div>
                                 <div class="tl-company">{{ $record->employer->company_name ?? 'Unknown Employer' }}</div>
-                                <div class="tl-position">{{ $record->position }}</div>
+                                <div class="tl-position">{{ $record->job_title ?? 'Unknown Position' }}</div>
                             </div>
                             @if($record->end_date === null)
                             <span class="tl-badge tl-badge-active">Active</span>
@@ -158,10 +158,7 @@
                                 &ndash;
                                 {{ $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('M Y') : 'Present' }}
                             </span>
-                            @if($record->salary)
-                            <span><i class="bi bi-cash-stack"></i> {{ number_format($record->salary) }} RWF</span>
-                            @endif
-                            <span><i class="bi bi-geo-alt"></i> {{ $record->employer->district ?? '—' }}</span>
+                            
                         </div>
                     </div>
 
@@ -188,7 +185,7 @@
                     <i class="bi bi-person-check me-2 text-gold"></i>
                     Profile
                 </div>
-                <a href="/my-profile" class="dash-link">Edit</a>
+                <!-- <a href="/my-profile" class="dash-link">Edit</a> -->
             </div>
             <div class="dash-card-body">
 
@@ -248,7 +245,7 @@
                         <i class="bi bi-exclamation-triangle"></i>
                     </div>
                     <div class="dispute-info">
-                        <div class="dispute-title">{{ Str::limit($dispute->subject, 38) }}</div>
+                        <div class="dispute-title">{{ Str::limit($dispute->description, 38) }}</div>
                         <div class="dispute-date">{{ $dispute->created_at->diffForHumans() }}</div>
                     </div>
                     <span class="dispute-status
@@ -263,21 +260,6 @@
                     <p class="mt-2 mb-0">No disputes filed.</p>
                 </div>
                 @endforelse
-            </div>
-        </div>
-
-        {{-- Certificates quick-link --}}
-        <div class="cert-promo animate-up" style="--d:.4s">
-            <div class="cert-promo-bg"></div>
-            <div class="cert-promo-body">
-                <i class="bi bi-file-earmark-pdf cert-promo-icon"></i>
-                <div>
-                    <div class="cert-promo-title">Employment Certificates</div>
-                    <div class="cert-promo-sub">Download verified proof of employment</div>
-                </div>
-                <a href="/certificates" class="cert-promo-btn">
-                    <i class="bi bi-download"></i>
-                </a>
             </div>
         </div>
 

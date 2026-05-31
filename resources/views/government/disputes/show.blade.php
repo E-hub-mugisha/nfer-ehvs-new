@@ -51,7 +51,7 @@
                     @method('PATCH')
                     <select name="status" class="form-select form-select-sm" style="min-width:160px;">
                         <option value="pending"      {{ $dispute->status === 'pending'      ? 'selected' : '' }}>Pending</option>
-                        <option value="under_review" {{ $dispute->status === 'under_review' ? 'selected' : '' }}>Under Review</option>
+                        <option value="under-review" {{ $dispute->status === 'under-review' ? 'selected' : '' }}>Under Review</option>
                         <option value="resolved"     {{ $dispute->status === 'resolved'     ? 'selected' : '' }}>Resolved</option>
                         <option value="rejected"     {{ $dispute->status === 'rejected'     ? 'selected' : '' }}>Rejected</option>
                     </select>

@@ -153,6 +153,8 @@ class EmployeeSeeder extends Seeder
                 'email_verified_at' => Carbon::now(),
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
+                'role'              => 'employee',
+                'user_type'         => 'employee',
             ]);
 
             // Insert the employee linked to the user

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Employer;
 use App\Models\EmploymentRecord;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
@@ -49,5 +50,30 @@ class EmployeeController extends Controller
             ->get();
 
         return view('employer.employees.show', compact('employee', 'employmentRecords'));
+    }
+
+    // EmployeeController.php
+    public function update(Request $request, Employee $employee)
+    {
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name'  => 'required|string|max:100',
+            'nid'        => 'required|string|unique:employees,nid,' . $employee->id,
+            'gender'     => 'required|in:Male,Female,Other',
+            'dob'        => 'required|date|before:today',
+            'phone'      => 'nullable|string|max:20',
+            'email'      => 'nullable|email|max:255',
+            'district'   => 'nullable|string|max:100',
+            'sector'     => 'nullable|string|max:100',
+            'photo'      => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo'] = $request->file('photo')->store('employees', 'public');
+        }
+
+        $employee->update($validated);
+
+        return back()->with('success', 'Employee profile updated.');
     }
 }

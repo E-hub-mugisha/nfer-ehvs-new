@@ -79,6 +79,8 @@ class EmployerSeeder extends Seeder
                 'email_verified_at' => Carbon::now(),
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now(),
+                'role'              => 'employer',
+                'user_type'         => 'employer',
             ]);
 
             // Insert employer linked to user

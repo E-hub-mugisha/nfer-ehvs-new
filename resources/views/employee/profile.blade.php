@@ -565,7 +565,7 @@
                 <div class="emp-body">
                     <div class="emp-title">{{ $record->job_title }}</div>
                     <div class="emp-org">
-                        {{ $record->employer->name ?? '—' }}
+                        {{ $record->employer->company_name ?? '—' }}
                         @if($record->department) &nbsp;·&nbsp; {{ $record->department }} @endif
                     </div>
                     <div class="emp-dates">
@@ -611,8 +611,8 @@
                         @endif
                     </div>
                     <div class="transfer-meta">
-                        Requested by {{ $transfer->requestingEmployer->name ?? '—' }}
-                        — from {{ $transfer->currentEmployer->name ?? '—' }}
+                        Requested by {{ $transfer->requestingEmployer->company_name ?? '—' }}
+                        — from {{ $transfer->currentEmployer->company_name ?? '—' }}
                     </div>
                     @if($transfer->proposed_start_date)
                     <div class="transfer-meta">
