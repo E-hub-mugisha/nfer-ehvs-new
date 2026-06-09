@@ -61,4 +61,11 @@ class EmploymentRecordController extends Controller
 
         return back()->with('success', 'Employment record updated.');
     }
+
+    public function destroy(EmploymentRecord $record)
+    {
+        $record->delete();
+
+        return back()->with('success', 'Employment record deleted.');
+    }
 }

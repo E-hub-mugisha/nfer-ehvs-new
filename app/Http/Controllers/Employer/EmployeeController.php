@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Employer;
 use App\Models\EmploymentRecord;
+use App\Models\TransferRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,5 +76,33 @@ class EmployeeController extends Controller
         $employee->update($validated);
 
         return back()->with('success', 'Employee profile updated.');
+    }
+
+    public function destroy(Employee $employee)
+    {
+        $employerId = Auth::user()->employer->id;
+
+        $isLinked = $employee->employmentRecords()
+            ->where('employer_id', $employerId)
+            ->exists();
+
+        abort_unless($isLinked, 403, 'You do not have permission to delete this employee.');
+
+        $records = $employee->employmentRecords()
+            ->where('employer_id', $employerId)
+            ->get();
+
+        foreach ($records as $record) {
+            TransferRequest::where('current_employment_record_id', $record->id)
+                ->delete();
+
+            $record->delete();
+        }
+
+        $employee->delete();
+
+        return redirect()
+            ->route('employer.employees.index')
+            ->with('success', 'Employee deleted successfully.');
     }
 }

@@ -139,11 +139,15 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
     Route::get('employees/{employee}',         [App\Http\Controllers\Employer\EmployeeController::class, 'show'])->name('employees.show');
     Route::put('employees/{employee}', [App\Http\Controllers\Employer\EmployeeController::class, 'update'])
         ->name('employees.update');
+    Route::delete('employees/{employee}', [App\Http\Controllers\Employer\EmployeeController::class, 'destroy'])
+        ->name('employees.destroy');
     // Employment Records
     Route::get('get/employees/records',            [App\Http\Controllers\EmploymentRecordController::class, 'index'])->name('employees.records.index');
     Route::get('get/employees/{employee}/records', [App\Http\Controllers\EmploymentRecordController::class, 'show'])->name('employees.records.show');
     Route::put('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'update'])
         ->name('employees.records.update');
+        Route::delete('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'destroy'])
+        ->name('employees.records.destroy');
     // Employee Search
     // Route::get('search',                       [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');
     // Route::post('search',                      [App\Http\Controllers\Employer\EmployeeSearchController::class, 'search'])->name('search.query');

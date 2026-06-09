@@ -85,6 +85,13 @@
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-clock-history me-1"></i> View Records
                                         </a>
+                                        <a href="{{ route('employer.employees.show', $employee) }}"
+                                           class="btn btn-sm btn-outline-secondary ms-2">
+                                           <i class="bi bi-eye me-1"></i> View Profile
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal{{ $employee->id }}">
+                                            <i class="bi bi-trash me-1"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -100,4 +107,29 @@
         </div>
     @endif
 </div>
+
+{{-- Delete Employee Modals --}}
+@foreach($employees as $employee)
+    <div class="modal fade" id="deleteEmployeeModal{{ $employee->id }}" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel{{ $employee->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteEmployeeModalLabel{{ $employee->id }}">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete employee <strong>{{ $employee->first_name }} {{ $employee->last_name }}</strong>? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ route('employer.employees.destroy', $employee) }}" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 @endsection

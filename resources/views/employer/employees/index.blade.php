@@ -396,6 +396,12 @@
                                 <i class="bi bi-eye"></i>
                                 View
                             </a>
+                            <button class="emp-btn-view" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal{{ $employee->id }}">
+                                <span class="badge bg-danger">
+                                    <i class="bi bi-trash"></i>
+                                    Delete
+                                </span>
+                            </button>
                         </td>
 
                     </tr>
@@ -416,4 +422,28 @@
 
 </div>
 
+{{-- Delete Confirmation Modals --}}
+@foreach($employees as $employee)
+<div class="modal fade" id="deleteEmployeeModal{{ $employee->id }}" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel{{ $employee->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteEmployeeModalLabel{{ $employee->id }}">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete employee <strong>{{ $employee->first_name }} {{ $employee->last_name }}</strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ route('employer.employees.destroy', $employee) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
 @endsection

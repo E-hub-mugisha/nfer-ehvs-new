@@ -11,7 +11,7 @@
                 class="btn btn-sm btn-outline-secondary me-2">
                 <i class="bi bi-arrow-left me-1"></i> Back to Employees
             </a>
-            <span class="text-muted small">Employment Records</span>
+            <span class="text-muted small">{{ $employee->first_name }} {{ $employee->last_name }} — Employment Records</span>
         </div>
     </div>
 
@@ -119,6 +119,14 @@
                                                 data-bs-target="#editModal{{ $record->id }}">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
+                                            <!-- delete button -->
+                                            <form action="{{ route('employees.records.destroy', $record->id) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="return confirm('Are you sure you want to delete this record?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
 
                                         <hr class="my-2">
