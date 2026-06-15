@@ -120,7 +120,7 @@
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                             <!-- delete button -->
-                                            <form action="{{ route('employees.records.destroy', $record->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('employer.employees.records.destroy', $record->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2" onclick="return confirm('Are you sure you want to delete this record?')">

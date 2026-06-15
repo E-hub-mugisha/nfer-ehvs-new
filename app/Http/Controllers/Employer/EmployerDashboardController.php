@@ -19,32 +19,34 @@ class EmployerDashboardController extends Controller
                 ->with('warning', 'Please complete your employer profile first.');
         }
 
+        $employerId = $employer->id;
+
         // Summary stats
-        $totalEmployees = $employer->employmentRecords()
+        $totalEmployees = EmploymentRecord::where('employer_id', $employerId)
             ->distinct('employee_id')
             ->count('employee_id');
 
-        $activeEmployees = $employer->employmentRecords()
+        $activeEmployees = EmploymentRecord::where('employer_id', $employerId)
             ->where('employment_status', 'active')
             ->distinct('employee_id')
             ->count('employee_id');
 
-        $totalRecords = $employer->employmentRecords()->count();
+        $totalRecords = EmploymentRecord::where('employer_id', $employerId)->count();
 
-        $recentRecords = $employer->employmentRecords()
+        $recentRecords = EmploymentRecord::where('employer_id', $employerId)
             ->with('employee')
             ->latest()
             ->take(5)
             ->get();
 
         // Monthly employment records for chart (last 6 months)
-        $monthlyData = $employer->employmentRecords()
+        $monthlyData = EmploymentRecord::where('employer_id', $employerId)
             ->selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, COUNT(*) as count')
             ->where('created_at', '>=', now()->subMonths(6))
             ->groupByRaw('YEAR(created_at), MONTH(created_at)')
             ->orderByRaw('YEAR(created_at), MONTH(created_at)')
             ->get()
-            ->map(fn ($row) => [
+            ->map(fn($row) => [
                 'label' => \Carbon\Carbon::create($row->year, $row->month)->format('M Y'),
                 'count' => $row->count,
             ]);

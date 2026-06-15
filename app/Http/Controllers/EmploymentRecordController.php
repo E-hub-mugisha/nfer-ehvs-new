@@ -28,16 +28,7 @@ class EmploymentRecordController extends Controller
 
     public function show(Employee $employee)
     {
-        $employerId = Employer::where('user_id', Auth::user()->id)->value('id');
-
-        $isLinked = $employee->employmentRecords()
-            ->where('employer_id', $employerId)
-            ->exists();
-
-        abort_unless($isLinked, 403, 'You do not have access to this employee profile.');
-
         $employmentRecords = $employee->employmentRecords()
-            ->where('employer_id', $employerId)
             ->latest()
             ->get();
 

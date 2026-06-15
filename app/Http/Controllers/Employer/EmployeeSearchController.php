@@ -97,7 +97,7 @@ class EmployeeSearchController extends Controller
             ->first();
 
 
-        return view('employer.search.result', compact('employee', 'employmentRecords', 'alreadyLinked', 'activeRecord', 'pendingTransfer'));
+        return view('employer.search.result', compact('employee', 'employmentRecords', 'alreadyLinked', 'activeRecord', 'pendingTransfer', 'currentEmployer'));
     }
 
     // ─────────────────────────────────────────────
