@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Government;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employer;
@@ -13,7 +13,7 @@ class EmployerController extends Controller
         $employers = Employer::latest()->paginate(10);
 
         return view(
-            'government.employers.index',
+            'admin.employers.index',
             compact('employers')
         );
     }
@@ -38,7 +38,7 @@ class EmployerController extends Controller
 
 
         return view(
-            'government.employers.show',
+            'admin.employers.show',
             compact('employer', 'stats')
         );
     }

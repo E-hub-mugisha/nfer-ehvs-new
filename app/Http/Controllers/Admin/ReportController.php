@@ -1,175 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Dispute;
 use App\Models\Employee;
 use App\Models\Employer;
 use App\Models\EmploymentRecord;
 use App\Models\TransferRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class AdminController extends Controller
+class ReportController extends Controller
 {
-    public function index()
-    {
-        // ── Core counts ──────────────────────────────────────────────
-        $stats = [
-            'total_users'       => User::count(),
-            'total_employees'   => Employee::count(),
-            'total_employers'   => Employer::count(),
-            'pending_employers' => Employer::where('status', 'pending')->count(),
-            'approved_employers' => Employer::where('status', 'approved')->count(),
-
-            'total_records'     => EmploymentRecord::count(),
-            'active_records'    => EmploymentRecord::where('employment_status', 'active')->count(),
-            'inactive_records'  => EmploymentRecord::where('employment_status', 'inactive')->count(),
-
-            'total_disputes'    => Dispute::count(),
-            'open_disputes'     => Dispute::where('status', 'open')->count(),
-            'resolved_disputes' => Dispute::where('status', 'resolved')->count(),
-
-            'total_transfers'   => TransferRequest::count(),
-            'pending_transfers' => TransferRequest::where('status', 'pending')->count(),
-            'approved_transfers' => TransferRequest::where('status', 'approved')->count(),
-        ];
-
-        // ── Recent activity feed (last 10 across all entities) ────────
-        $recentEmployers = Employer::with('user')
-            ->latest()
-            ->take(5)
-            ->get()
-            ->map(fn($e) => [
-                'type'       => 'employer_registered',
-                'icon'       => 'building',
-                'colour'     => 'blue',
-                'label'      => "New employer registered",
-                'sublabel'   => $e->company_name,
-                'badge'      => $e->status,
-                'created_at' => $e->created_at,
-            ]);
-
-        $recentDisputes = Dispute::with(['employee', 'employmentRecord.employer'])
-            ->latest()
-            ->take(5)
-            ->get()
-            ->map(fn($d) => [
-                'type'       => 'dispute_filed',
-                'icon'       => 'alert',
-                'colour'     => 'red',
-                'label'      => "Dispute filed",
-                'sublabel'   => optional($d->employee)->full_name ?? 'Unknown employee',
-                'badge'      => $d->status,
-                'created_at' => $d->created_at,
-            ]);
-
-        $recentTransfers = TransferRequest::with(['employee', 'requestingEmployer'])
-            ->latest()
-            ->take(5)
-            ->get()
-            ->map(fn($t) => [
-                'type'       => 'transfer_requested',
-                'icon'       => 'transfer',
-                'colour'     => 'yellow',
-                'label'      => "Transfer request",
-                'sublabel'   => optional($t->employee)->full_name ?? 'Unknown employee',
-                'badge'      => $t->status,
-                'created_at' => $t->created_at,
-            ]);
-
-        $recentEmployees = Employee::with('user')
-            ->latest()
-            ->take(5)
-            ->get()
-            ->map(fn($e) => [
-                'type'       => 'employee_joined',
-                'icon'       => 'user',
-                'colour'     => 'green',
-                'label'      => "Employee profile created",
-                'sublabel'   => $e->full_name,
-                'badge'      => null,
-                'created_at' => $e->created_at,
-            ]);
-
-        $activityFeed = $recentEmployers
-            ->concat($recentDisputes)
-            ->concat($recentTransfers)
-            ->concat($recentEmployees)
-            ->sortByDesc('created_at')
-            ->take(15)
-            ->values();
-
-        // ── Employment records by status (for chart data) ─────────────
-        $recordsByStatus = EmploymentRecord::select('employment_status', DB::raw('count(*) as total'))
-            ->groupBy('employment_status')
-            ->pluck('total', 'employment_status');
-
-        // ── Disputes by status ─────────────────────────────────────────
-        $disputesByStatus = Dispute::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status');
-
-        // ── Employer approval breakdown ────────────────────────────────
-        $employersByStatus = Employer::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')
-            ->pluck('total', 'status');
-
-        // ── Monthly registrations (last 6 months) ─────────────────────
-        $monthlyEmployees = Employee::select(
-            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
-            DB::raw('count(*) as total')
-        )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month');
-
-        $monthlyEmployers = Employer::select(
-            DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"),
-            DB::raw('count(*) as total')
-        )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->pluck('total', 'month');
-
-        // ── Pending actions (items requiring admin attention) ──────────
-        $pendingActions = [
-            [
-                'count'  => $stats['pending_employers'],
-                'label'  => 'Employers awaiting approval',
-                'route'  => 'government.employers.index',
-                'colour' => 'amber',
-            ],
-            [
-                'count'  => $stats['open_disputes'],
-                'label'  => 'Open disputes',
-                'route'  => 'government.disputes.index',
-                'colour' => 'red',
-            ],
-            [
-                'count'  => $stats['pending_transfers'],
-                'label'  => 'Pending transfer requests',
-                'route'  => 'government.transfer-requests.index',
-                'colour' => 'blue',
-            ],
-        ];
-
-        return view('admin.dashboard', compact(
-            'stats',
-            'activityFeed',
-            'recordsByStatus',
-            'disputesByStatus',
-            'employersByStatus',
-            'monthlyEmployees',
-            'monthlyEmployers',
-            'pendingActions',
-        ));
-    }
-
-    public function report(Request $request)
+    public function index(Request $request)
     {
         $period = $request->get('period', '12'); // months
  
@@ -287,7 +131,7 @@ class AdminController extends Controller
  
         $rates = compact('resolutionRate', 'approvalRate', 'activeRate', 'transferApprovalRate');
  
-        return view('admin.reports', compact(
+        return view('admin.reports.index', compact(
             'summary',
             'trendLabels',
             'trendEmployees',

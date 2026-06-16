@@ -31,16 +31,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/onboarding', [OnboardingController::class, 'show'])
-         ->name('onboarding.show');
- 
+        ->name('onboarding.show');
+
     Route::post('/onboarding/employee', [OnboardingController::class, 'storeEmployee'])
-         ->name('onboarding.employee.store');
- 
+        ->name('onboarding.employee.store');
+
     Route::post('/onboarding/employer', [OnboardingController::class, 'storeEmployer'])
-         ->name('onboarding.employer.store');
- 
+        ->name('onboarding.employer.store');
+
     Route::post('/onboarding/government', [OnboardingController::class, 'storeGovernment'])
-         ->name('onboarding.government.store');
+        ->name('onboarding.government.store');
 });
 
 Route::resource('employees', EmployeeController::class)
@@ -51,6 +51,48 @@ Route::resource('employers', EmployerController::class)
 
 Route::get('/admin/dashboard', [AdminController::class, 'index'])
     ->middleware(['auth', 'role:admin']);
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+
+    Route::get('/employees', [App\Http\Controllers\Admin\EmployeeController::class, 'index'])
+        ->name('employees.index');
+    Route::get('/employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'show'])
+        ->name('employees.show');
+
+    Route::get('/employers', [App\Http\Controllers\Admin\EmployerController::class, 'index'])
+        ->name('employers.index');
+    Route::get('/employers/{employer}', [App\Http\Controllers\Admin\EmployerController::class, 'show'])
+        ->name('employers.show');
+    Route::post('/employers/{employer}/approve', [App\Http\Controllers\Admin\EmployerController::class, 'approve'])->name('employers.approve');
+    Route::post('/employers/{employer}/reject', [App\Http\Controllers\Admin\EmployerController::class, 'reject'])->name('employers.reject');
+
+    Route::get('/disputes',                  [App\Http\Controllers\Admin\DisputeController::class, 'index'])->name('disputes.index');
+    Route::get('/disputes/{dispute}',        [App\Http\Controllers\Admin\DisputeController::class, 'show'])->name('disputes.show');
+    Route::patch('/disputes/{dispute}/status', [App\Http\Controllers\Admin\DisputeController::class, 'updateStatus'])->name('disputes.status');
+
+    Route::get('employment-records',          [App\Http\Controllers\Admin\EmployeeRecordController::class, 'indexEmploymentRecord'])->name('employment-records.index');
+    Route::get('employment-records/{employmentRecord}', [App\Http\Controllers\Admin\EmployeeRecordController::class, 'show'])->name('employment-records.show');
+
+    // Transfer Requests
+    Route::get('transfer-requests',          [App\Http\Controllers\Admin\TransferController::class, 'index'])->name('transfer-requests.index');
+    Route::get('transfer-requests/{transferRequest}', [App\Http\Controllers\Admin\TransferController::class, 'show'])->name('transfer-requests.show');
+    Route::patch('/transfer-requests/{transferRequest}/approve', [App\Http\Controllers\Admin\TransferController::class, 'approve'])->name('transfer-requests.approve');
+    Route::patch('/transfer-requests/{transferRequest}/reject',  [App\Http\Controllers\Admin\TransferController::class, 'reject'])->name('transfer-requests.reject');
+
+    // Reports
+    Route::get('/reports',              [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/export/{type}', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('reports.export');
+
+    // government users
+    Route::get('/government/users', [App\Http\Controllers\Admin\GovernmentController::class, 'index'])->name('government.users.index');
+    Route::get('/government/users/create', [App\Http\Controllers\Admin\GovernmentController::class, 'create'])->name('government.users.create');
+    Route::post('/government/users', [App\Http\Controllers\Admin\GovernmentController::class, 'store'])->name('government.users.store');
+    Route::get('/government/users/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'show'])->name('government.users.show');
+    Route::get('/government/users/{government}/edit', [App\Http\Controllers\Admin\GovernmentController::class, 'edit'])->name('government.users.edit');
+    Route::put('/government/users/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'update'])->name('government.users.update');
+    Route::delete('/government/users/{government}', [App\Http\Controllers\Admin\GovernmentController::class, 'destroy'])->name('government.users.destroy');
+    Route::patch('/government/users/{government}/verify', [App\Http\Controllers\Admin\GovernmentController::class, 'verify'])->name('government.users.verify');
+    Route::patch('/government/users/{government}/unverify', [App\Http\Controllers\Admin\GovernmentController::class, 'unverify'])->name('government.users.unverify');
+});
 
 Route::get('/employer/dashboard', [EmployerDashboardController::class, 'index'])
     ->middleware(['auth', 'role:employer'])->name('employer.dashboard');
@@ -70,6 +112,10 @@ Route::post('/employee/profile/store', [EmployeeDashboardController::class, 'sto
 Route::get('/government/dashboard', [GovernmentController::class, 'index'])
     ->middleware(['auth', 'role:government'])->name('government.dashboard');
 
+Route::get('/government/profile/create', [GovernmentController::class, 'create'])->name('government.profile.create');
+Route::post('/government/profile/store', [GovernmentController::class, 'store'])
+        ->name('government.profile.store');
+
 Route::get('/government/employees', [App\Http\Controllers\Government\EmployeeController::class, 'index'])
     ->name('government.employees.index');
 Route::get('/government/employees/{employee}', [App\Http\Controllers\Government\EmployeeController::class, 'show'])
@@ -79,6 +125,8 @@ Route::get('/government/employers', [App\Http\Controllers\Government\EmployerCon
     ->name('government.employers.index');
 Route::get('/government/employers/{employer}', [App\Http\Controllers\Government\EmployerController::class, 'show'])
     ->name('government.employers.show');
+Route::post('/government/employers/{employer}/approve', [App\Http\Controllers\Government\EmployerController::class, 'approve'])->name('government.employers.approve');
+Route::post('/government/employers/{employer}/reject', [App\Http\Controllers\Government\EmployerController::class, 'reject'])->name('government.employers.reject');
 
 Route::resource('employment-records', EmploymentRecordController::class);
 
@@ -115,7 +163,7 @@ Route::get('/my-employment-records', [EmployeeDashboardController::class, 'index
 Route::get('/my-employment-records/{id}', [EmployeeDashboardController::class, 'showRecord'])
     ->name('my.employment-records.show');
 Route::post('employment-records/{record}/disputes', [EmployeeDashboardController::class, 'storeDispute'])
-     ->name('my.disputes.store');
+    ->name('my.disputes.store');
 // List disputes
 Route::get('/my-disputes', [DisputeController::class, 'index'])
     ->name('disputes.index');
@@ -146,7 +194,7 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
     Route::get('get/employees/{employee}/records', [App\Http\Controllers\EmploymentRecordController::class, 'show'])->name('employees.records.show');
     Route::put('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'update'])
         ->name('employees.records.update');
-        Route::delete('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'destroy'])
+    Route::delete('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'destroy'])
         ->name('employees.records.destroy');
     // Employee Search
     // Route::get('search',                       [App\Http\Controllers\Employer\EmployeeSearchController::class, 'index'])->name('search.index');

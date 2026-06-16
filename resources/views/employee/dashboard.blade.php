@@ -128,7 +128,7 @@
                     <i class="bi bi-clock-history me-2 text-gold"></i>
                     Employment History
                 </div>
-                <a href="/my-history" class="dash-link">View all <i class="bi bi-arrow-right"></i></a>
+                <a href="/my-employment-records" class="dash-link">View all <i class="bi bi-arrow-right"></i></a>
             </div>
 
             <div class="dash-card-body p-0">

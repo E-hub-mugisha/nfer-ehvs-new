@@ -1,20 +1,14 @@
+{{-- resources/views/layouts/app.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>@yield('title', 'NFER-EHVS')</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
@@ -48,25 +42,25 @@
 
         .sidebar {
             width: var(--sidebar-w);
-            min-height: 100vh;
+            height: 100vh;
             background: var(--navy-dark);
             position: fixed;
             top: 0;
             left: 0;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
             border-right: 1px solid rgba(212, 148, 58, 0.15);
+            z-index: 1040;
+            transition: transform 0.28s cubic-bezier(.4, 0, .2, 1);
         }
 
-        /* subtle diagonal texture */
         .sidebar::before {
             content: '';
             position: absolute;
             inset: 0;
             background-image: repeating-linear-gradient(135deg,
-                    rgba(255, 255, 255, 0.015) 0px,
-                    rgba(255, 255, 255, 0.015) 1px,
+                    rgba(255, 255, 255, .015) 0px,
+                    rgba(255, 255, 255, .015) 1px,
                     transparent 1px,
                     transparent 28px);
             pointer-events: none;
@@ -79,7 +73,7 @@
             align-items: center;
             gap: 12px;
             border-bottom: 1px solid rgba(212, 148, 58, 0.2);
-            position: relative;
+            flex-shrink: 0;
         }
 
         .brand-icon {
@@ -105,12 +99,24 @@
             line-height: 1.2;
         }
 
-        .brand-sub {
-            font-size: 10px;
-            color: var(--gold);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-weight: 500;
+        /* NAV SCROLL AREA — this is what scrolls */
+        .sidebar-scroll {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .1);
+            border-radius: 2px;
         }
 
         /* SECTION LABEL */
@@ -126,7 +132,6 @@
         /* NAV LINKS */
         .sidebar-menu {
             padding: 8px 0 20px;
-            flex: 1;
         }
 
         .sidebar-menu a {
@@ -140,14 +145,13 @@
             font-size: 14px;
             font-weight: 500;
             border-left: 3px solid transparent;
-            position: relative;
         }
 
         .sidebar-menu a .nav-icon {
             width: 32px;
             height: 32px;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, .04);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -158,18 +162,18 @@
 
         .sidebar-menu a:hover {
             color: #fff;
-            background: rgba(255, 255, 255, 0.05);
-            border-left-color: rgba(212, 148, 58, 0.4);
+            background: rgba(255, 255, 255, .05);
+            border-left-color: rgba(212, 148, 58, .4);
         }
 
         .sidebar-menu a:hover .nav-icon {
-            background: rgba(212, 148, 58, 0.15);
+            background: rgba(212, 148, 58, .15);
             color: var(--gold);
         }
 
         .sidebar-menu a.active {
             color: #fff;
-            background: linear-gradient(90deg, rgba(212, 148, 58, 0.18) 0%, rgba(212, 148, 58, 0.04) 100%);
+            background: linear-gradient(90deg, rgba(212, 148, 58, .18) 0%, rgba(212, 148, 58, .04) 100%);
             border-left-color: var(--gold);
         }
 
@@ -179,10 +183,11 @@
             box-shadow: 0 3px 10px var(--gold-glow);
         }
 
-        /* LOGOUT */
+        /* SIDEBAR FOOTER (mobile logout only) */
         .sidebar-footer {
             padding: 12px 16px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            border-top: 1px solid rgba(255, 255, 255, .07);
+            flex-shrink: 0;
         }
 
         .logout-btn {
@@ -190,7 +195,7 @@
             align-items: center;
             gap: 12px;
             border: none;
-            background: rgba(239, 68, 68, 0.08);
+            background: rgba(239, 68, 68, .08);
             color: #f87171;
             width: 100%;
             text-align: left;
@@ -204,8 +209,18 @@
         }
 
         .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.16);
+            background: rgba(239, 68, 68, .16);
             color: #fca5a5;
+        }
+
+        /* OVERLAY (mobile) */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 24, 40, .55);
+            z-index: 1039;
+            backdrop-filter: blur(2px);
         }
 
         /* ── MAIN CONTENT ─────────────────────────── */
@@ -229,13 +244,36 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 0 rgba(14, 32, 57, 0.06);
+            box-shadow: 0 1px 0 rgba(14, 32, 57, .06);
         }
 
         .topbar-left {
             display: flex;
             align-items: center;
             gap: 14px;
+        }
+
+        /* Hamburger */
+        .sidebar-toggle {
+            display: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all .2s;
+            flex-shrink: 0;
+        }
+
+        .sidebar-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-pale);
         }
 
         .page-title {
@@ -258,46 +296,21 @@
             color: var(--text-muted);
         }
 
-        /* NOTIFICATION BELL */
-        .notif-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--bg-card);
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 17px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .notif-btn:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-            background: var(--gold-pale);
-        }
-
-        .notif-dot {
-            position: absolute;
-            top: 6px;
-            right: 7px;
-            width: 7px;
-            height: 7px;
-            background: var(--gold);
-            border-radius: 50%;
-            border: 2px solid #fff;
-        }
-
-        /* USER BOX */
-        .user-box {
+        /* USER DROPDOWN */
+        .user-dropdown .dropdown-toggle {
             display: flex;
             align-items: center;
             gap: 12px;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .user-dropdown .dropdown-toggle::after {
+            display: none;
+            /* hide default Bootstrap caret */
         }
 
         .user-info {
@@ -332,7 +345,71 @@
             font-size: 15px;
             font-family: 'Sora', sans-serif;
             border: 2px solid var(--gold);
-            box-shadow: 0 2px 8px rgba(212, 148, 58, 0.3);
+            box-shadow: 0 2px 8px rgba(212, 148, 58, .3);
+            flex-shrink: 0;
+        }
+
+        /* Dropdown menu */
+        .user-dropdown .dropdown-menu {
+            min-width: 200px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 8px 28px rgba(14, 32, 57, .12);
+            padding: 8px;
+            margin-top: 8px !important;
+        }
+
+        .user-dropdown .dropdown-header {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 6px 12px 4px;
+        }
+
+        .user-dropdown .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a2e45;
+            padding: 9px 12px;
+            border-radius: 9px;
+            transition: all .18s;
+        }
+
+        .user-dropdown .dropdown-item i {
+            font-size: 16px;
+            color: var(--text-muted);
+        }
+
+        .user-dropdown .dropdown-item:hover {
+            background: var(--gold-pale);
+            color: var(--navy);
+        }
+
+        .user-dropdown .dropdown-item:hover i {
+            color: var(--gold);
+        }
+
+        .user-dropdown .dropdown-divider {
+            border-color: var(--border);
+            margin: 6px 0;
+        }
+
+        .user-dropdown .dropdown-item.text-danger {
+            color: #dc2626 !important;
+        }
+
+        .user-dropdown .dropdown-item.text-danger i {
+            color: #dc2626;
+        }
+
+        .user-dropdown .dropdown-item.text-danger:hover {
+            background: rgba(239, 68, 68, .08);
+            color: #b91c1c !important;
         }
 
         /* CONTENT */
@@ -350,13 +427,13 @@
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, .1);
             color: #065f46;
             border-left: 4px solid #10b981;
         }
 
         .alert-danger {
-            background: rgba(239, 68, 68, 0.08);
+            background: rgba(239, 68, 68, .08);
             color: #991b1b;
             border-left: 4px solid #ef4444;
         }
@@ -365,12 +442,12 @@
         .dashboard-card {
             border: 1px solid var(--border);
             border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(14, 32, 57, 0.06);
-            transition: box-shadow 0.2s;
+            box-shadow: 0 2px 12px rgba(14, 32, 57, .06);
+            transition: box-shadow .2s;
         }
 
         .dashboard-card:hover {
-            box-shadow: 0 6px 24px rgba(14, 32, 57, 0.1);
+            box-shadow: 0 6px 24px rgba(14, 32, 57, .1);
         }
 
         .dashboard-icon {
@@ -383,7 +460,7 @@
             align-items: center;
             justify-content: center;
             font-size: 22px;
-            box-shadow: 0 4px 14px rgba(14, 32, 57, 0.2);
+            box-shadow: 0 4px 14px rgba(14, 32, 57, .2);
         }
 
         /* TABLE */
@@ -406,11 +483,11 @@
 
         .table tbody td {
             padding: 13px 16px;
-            border-bottom: 1px solid rgba(14, 32, 57, 0.05);
+            border-bottom: 1px solid rgba(14, 32, 57, .05);
         }
 
         .table tbody tr:hover {
-            background: rgba(212, 148, 58, 0.04);
+            background: rgba(212, 148, 58, .04);
         }
 
         .badge-status {
@@ -421,218 +498,202 @@
             letter-spacing: 0.3px;
         }
 
-        /* SCROLLBAR */
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
+        /* ── RESPONSIVE ───────────────────────────── */
 
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
+        @media (max-width: 991.98px) {
 
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.open {
+                display: block;
+            }
+
+            .sidebar-toggle {
+                display: flex;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+
+            .topbar-divider,
+            .breadcrumb-hint {
+                display: none;
+            }
+
+            .content-wrapper {
+                padding: 20px 16px;
+            }
+
+            .user-info {
+                display: none;
+                /* hide name/role on small screens, keep avatar */
+            }
         }
     </style>
-
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+    <!-- OVERLAY (mobile backdrop) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- Brand -->
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+
         <div class="sidebar-brand">
-            <div class="brand-icon">
-                <i class="bi bi-shield-check"></i>
-            </div>
+            <div class="brand-icon"><i class="bi bi-shield-check"></i></div>
             <div>
                 <div class="brand-text">NFER-EHVS</div>
-                <!-- <div class="brand-sub">Employment Hub</div> -->
             </div>
         </div>
 
-        <div class="sidebar-menu">
+        <!-- Scrollable nav area -->
+        <div class="sidebar-scroll">
+            <div class="sidebar-menu">
 
-            <!-- ADMIN NAVIGATION -->
-            @if(auth()->user()->role == 'admin')
+                @if(auth()->user()->role == 'admin')
+                <div class="nav-section-label">Main</div>
+                <a href="/admin/dashboard" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
+                    <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
+                    Dashboard
+                </a>
+                <div class="nav-section-label">Management</div>
+                <a href="/admin/government/users" class="{{ request()->is('admin/government/users*') ? 'active' : '' }}">
+                    <span class="nav-icon"><i class="bi bi-people-circle"></i></span>
+                    Government Users
+                </a>
+                <a href="/admin/employees" class="{{ request()->is('admin/employees*') ? 'active' : '' }}">
+                    <span class="nav-icon"><i class="bi bi-people"></i></span>
+                    Employees
+                </a>
+                <a href="/admin/employers" class="{{ request()->is('admin/employers*') ? 'active' : '' }}">
+                    <span class="nav-icon"><i class="bi bi-building"></i></span>
+                    Employers
+                </a>
+                <a href="/admin/employment-records">
+                    <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
+                    Employment Records
+                </a>
+                <a href="/admin/disputes">
+                    <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
+                    Disputes
+                </a>
+                <a href="{{ route('admin.transfer-requests.index') }}" class="nav-item">
+                    <span class="nav-icon"><i class="bi bi-arrow-left-right"></i></span>
+                    Transfer Requests
+                </a>
+                <div class="nav-section-label">System</div>
+                <a href="/admin/reports">
+                    <span class="nav-icon"><i class="bi bi-bar-chart"></i></span>
+                    Reports
+                </a>
+                @endif
 
-            <div class="nav-section-label">Main</div>
+                @if(auth()->user()->role == 'government')
+                <div class="nav-section-label">Overview</div>
+                <a href="/government/dashboard">
+                    <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
+                    Government Dashboard
+                </a>
+                <div class="nav-section-label">Operations</div>
+                <a href="{{ route('government.employees.index') }}">
+                    <span class="nav-icon"><i class="bi bi-building-check"></i></span>
+                    Employees
+                </a>
+                <a href="{{ route('government.employers.index') }}">
+                    <span class="nav-icon"><i class="bi bi-building"></i></span>
+                    Employers
+                </a>
+                <a href="{{ route('government.employment-records.index') }}">
+                    <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
+                    Employment Records
+                </a>
+                <a href="{{ route('government.disputes.index') }}">
+                    <span class="nav-icon"><i class="bi bi-exclamation-diamond"></i></span>
+                    Disputes
+                </a>
+                <div class="nav-section-label">Insights</div>
+                <a href="{{ route('government.reports.index') }}">
+                    <span class="nav-icon"><i class="bi bi-pie-chart"></i></span>
+                    National Reports
+                </a>
+                <a href="{{ route('government.transfer-requests.index') }}">
+                    <span class="nav-icon"><i class="bi bi-graph-up-arrow"></i></span>
+                    Transfers
+                </a>
+                @endif
 
-            <a href="/admin/dashboard" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}">
-                <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
-                Dashboard
-            </a>
+                @if(auth()->user()->role == 'employer')
+                <div class="nav-section-label">Overview</div>
+                <a href="/employer/dashboard">
+                    <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
+                    Dashboard
+                </a>
+                <div class="nav-section-label">Workforce</div>
+                <a href="{{ route('employer.employees.index') }}">
+                    <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
+                    Employees
+                </a>
+                <a href="{{ route('employer.employees.records.index') }}">
+                    <span class="nav-icon"><i class="bi bi-journal-text"></i></span>
+                    Employment Records
+                </a>
+                <a href="{{ route('employer.search.index') }}">
+                    <span class="nav-icon"><i class="bi bi-search"></i></span>
+                    Search Employee
+                </a>
+                <div class="nav-section-label">Transfers</div>
+                <a href="{{ route('employer.transfer.sent') }}">
+                    <span class="nav-icon"><i class="bi bi-arrow-right-circle"></i></span>
+                    Sent Requests
+                </a>
+                <a href="{{ route('employer.transfer.received') }}">
+                    <span class="nav-icon"><i class="bi bi-arrow-left-circle"></i></span>
+                    Received Requests
+                </a>
+                <div class="nav-section-label">Admin</div>
+                <a href="{{ route('employer.disputes.index') }}">
+                    <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
+                    Disputes
+                </a>
+                @endif
 
-            <div class="nav-section-label">Management</div>
+                @if(auth()->user()->role == 'employee')
+                <div class="nav-section-label">My Space</div>
+                <a href="/employee/dashboard">
+                    <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
+                    Dashboard
+                </a>
+                <a href="/employee/profile">
+                    <span class="nav-icon"><i class="bi bi-person"></i></span>
+                    My Profile
+                </a>
+                <a href="/my-employment-records">
+                    <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
+                    Employment Records
+                </a>
+                <a href="/my-disputes">
+                    <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
+                    Claims & Disputes
+                </a>
+                @endif
 
-            <a href="/employees" class="{{ request()->is('employees*') ? 'active' : '' }}">
-                <span class="nav-icon"><i class="bi bi-people"></i></span>
-                Employees
-            </a>
+            </div>
+        </div><!-- /sidebar-scroll -->
 
-            <a href="/employers" class="{{ request()->is('employers*') ? 'active' : '' }}">
-                <span class="nav-icon"><i class="bi bi-building"></i></span>
-                Employers
-            </a>
-
-            <a href="/employment-records">
-                <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
-                Employment Records
-            </a>
-
-            <a href="/disputes">
-                <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
-                Disputes
-            </a>
-
-            <div class="nav-section-label">System</div>
-
-            <a href="/reports">
-                <span class="nav-icon"><i class="bi bi-bar-chart"></i></span>
-                Reports
-            </a>
-
-            <a href="/audit-logs">
-                <span class="nav-icon"><i class="bi bi-shield-check"></i></span>
-                Audit Logs
-            </a>
-
-            @endif
-
-            <!-- GOVERNMENT NAVIGATION -->
-            @if(auth()->user()->role == 'government')
-
-            <div class="nav-section-label">Overview</div>
-
-            <a href="/government/dashboard">
-                <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
-                Government Dashboard
-            </a>
-
-            <div class="nav-section-label">Operations</div>
-
-            <a href="{{ route('government.employees.index') }}">
-                <span class="nav-icon"><i class="bi bi-building-check"></i></span>
-                Employees
-            </a>
-
-            <a href="{{ route('government.employers.index') }}">
-                <span class="nav-icon"><i class="bi bi-building"></i></span>
-                Employers
-            </a>
-
-            <a href="{{ route('government.employment-records.index') }}">
-                <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
-                Employment Records
-            </a>
-
-            <a href="{{ route('government.disputes.index') }}">
-                <span class="nav-icon"><i class="bi bi-exclamation-diamond"></i></span>
-                Disputes
-            </a>
-
-            <div class="nav-section-label">Insights</div>
-
-            <a href="{{ route('government.reports.index') }}">
-                <span class="nav-icon"><i class="bi bi-pie-chart"></i></span>
-                National Reports
-            </a>
-
-            <a href="{{ route('government.transfer-requests.index') }}">
-                <span class="nav-icon"><i class="bi bi-graph-up-arrow"></i></span>
-                Transfers
-            </a>
-
-            @endif
-
-            <!-- EMPLOYER NAVIGATION -->
-            @if(auth()->user()->role == 'employer')
-
-            <div class="nav-section-label">Overview</div>
-
-            <a href="/employer/dashboard">
-                <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
-                Dashboard
-            </a>
-
-            <div class="nav-section-label">Workforce</div>
-
-            <a href="{{ route('employer.employees.index') }}">
-                <span class="nav-icon"><i class="bi bi-person-plus"></i></span>
-                Employees
-            </a>
-
-            <a href="{{ route('employer.employees.records.index') }}">
-                <span class="nav-icon"><i class="bi bi-journal-text"></i></span>
-                Employment Records
-            </a>
-
-            <a href="{{ route('employer.search.index') }}">
-                <span class="nav-icon"><i class="bi bi-search"></i></span>
-                Search Employee
-            </a>
-
-            <!-- sent transfer requests -->
-            <div class="nav-section-label">Transfers</div>
-
-            <a href="{{ route('employer.transfer.sent') }}">
-                <span class="nav-icon"><i class="bi bi-arrow-right-circle"></i></span>
-                Sent Requests
-            </a>
-
-            <a href="{{ route('employer.transfer.received') }}">
-                <span class="nav-icon"><i class="bi bi-arrow-left-circle"></i></span>
-                Received Requests
-            </a>
-
-            <div class="nav-section-label">Admin</div>
-
-            <a href="{{ route('employer.disputes.index') }}">
-                <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
-                Disputes
-            </a>
-
-            <!-- <a href="/reports">
-                <span class="nav-icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
-                Reports
-            </a> -->
-
-            @endif
-
-            <!-- EMPLOYEE NAVIGATION -->
-            @if(auth()->user()->role == 'employee')
-
-            <div class="nav-section-label">My Space</div>
-
-            <a href="/employee/dashboard">
-                <span class="nav-icon"><i class="bi bi-grid-1x2"></i></span>
-                Dashboard
-            </a>
-
-            <a href="/employee/profile">
-                <span class="nav-icon"><i class="bi bi-person"></i></span>
-                My Profile
-            </a>
-
-            <a href="/my-employment-records">
-                <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
-                Employment Records
-            </a>
-
-            <a href="/my-disputes">
-                <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
-                Claims & Disputes
-            </a>
-
-            @endif
-
-        </div><!-- /sidebar-menu -->
-
-        <!-- FOOTER LOGOUT -->
-        <div class="sidebar-footer">
+        <!-- Mobile-only footer logout -->
+        <div class="sidebar-footer d-lg-none">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button class="logout-btn">
@@ -651,6 +712,11 @@
         <div class="topbar">
 
             <div class="topbar-left">
+                <!-- Hamburger (mobile only) -->
+                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+
                 <h5 class="page-title">@yield('title', 'Dashboard')</h5>
                 <div class="topbar-divider"></div>
                 <span class="breadcrumb-hint">NFER-EHVS</span>
@@ -658,29 +724,43 @@
 
             <div class="d-flex align-items-center gap-3">
 
-                <!-- <a href="/notifications" class="notif-btn">
-                    <i class="bi bi-bell"></i>
-                    <span class="notif-dot"></span>
-                </a> -->
+                <!-- USER DROPDOWN -->
+                <div class="dropdown user-dropdown">
+                    <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div class="user-info">
+                            <div class="user-name">{{ auth()->user()->name }}</div>
+                            <div class="user-role">{{ auth()->user()->role }}</div>
+                        </div>
+                        <div class="avatar">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                    </button>
 
-                <div class="user-box">
-                    <div class="user-info">
-                        <div class="user-name">{{ auth()->user()->name }}</div>
-                        <div class="user-role">{{ auth()->user()->role }}</div>
-                    </div>
-                    <div class="avatar">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <h6 class="dropdown-header">{{ auth()->user()->name }}</h6>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item text-danger w-100 border-0 bg-transparent">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    Sign Out
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
 
             </div>
-
         </div><!-- /topbar -->
 
         <!-- PAGE CONTENT -->
         <div class="content-wrapper">
 
-            <!-- ALERTS -->
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show mb-4">
                 <i class="bi bi-check-circle-fill me-2"></i>
@@ -709,15 +789,44 @@
             </div>
             @endif
 
-            <!-- CONTENT -->
             @yield('content')
 
         </div>
 
     </div><!-- /main-content -->
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggle = document.getElementById('sidebarToggle');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        toggle.addEventListener('click', () => {
+            sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        // Close sidebar on nav link click (mobile UX)
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 992) closeSidebar();
+            });
+        });
+    </script>
 
 </body>
 

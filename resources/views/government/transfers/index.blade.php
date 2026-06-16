@@ -765,7 +765,7 @@
                             <button class="btn-view" onclick="viewTransfer({{ $tr->id }})">
                                 <i class="fas fa-eye"></i>View
                             </button>
-                            @if($tr->isPending())
+                            <!-- @if($tr->isPending())
                             <form method="POST" action="{{ route('government.transfer-requests.approve', $tr) }}" style="display:inline;">
                                 @csrf @method('PATCH')
                                 <button type="submit" class="btn-approve"
@@ -780,7 +780,7 @@
                             <button class="btn-view" onclick="viewReason('{{ addslashes($tr->rejection_reason) }}')">
                                 <i class="fas fa-comment-alt me-1"></i>Reason
                             </button>
-                            @endif
+                            @endif -->
                         </td>
                     </tr>
                     @empty

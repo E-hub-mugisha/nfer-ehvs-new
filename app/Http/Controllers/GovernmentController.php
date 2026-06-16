@@ -6,6 +6,7 @@ use App\Models\Dispute;
 use App\Models\Employee;
 use App\Models\Employer;
 use App\Models\EmploymentRecord;
+use App\Models\Government;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TransferRequest;
@@ -15,6 +16,19 @@ class GovernmentController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+
+        // If user role is government and profile doesn't exist
+        if ($user->role === 'government') {
+
+            $government = Government::where('user_id', $user->id)->first();
+
+            if (!$government) {
+                return redirect()
+                    ->route('government.profile.create')
+                    ->with('warning', 'Please complete your government profile first.');
+            }
+        }
         // ── KPI Cards ─────────────────────────────────────────────────────────
         $totalEmployees        = Employee::count();
         $totalEmployers        = Employer::count();
@@ -345,5 +359,43 @@ class GovernmentController extends Controller
         ]);
 
         return back()->with('success', 'Transfer request rejected.');
+    }
+
+    public function create()
+    {
+        $government = Government::where('user_id', Auth::id())->first();
+
+        if ($government) {
+            return redirect()->route('government.dashboard');
+        }
+
+        return view('government.profile.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'government_type' => 'required|string|max:255',
+            'established_year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'contact_email' => 'required|email|max:255',
+            'website' => 'nullable|url|max:255',
+        ]);
+
+        Government::create([
+            'user_id' => Auth::id(),
+            'name' => $validated['name'],
+            'country' => $validated['country'],
+            'government_type' => $validated['government_type'],
+            'established_year' => $validated['established_year'] ?? null,
+            'contact_email' => $validated['contact_email'],
+            'website' => $validated['website'] ?? null,
+            'is_verified' => false,
+        ]);
+
+        return redirect()
+            ->route('government.dashboard')
+            ->with('success', 'Government profile completed successfully.');
     }
 }
