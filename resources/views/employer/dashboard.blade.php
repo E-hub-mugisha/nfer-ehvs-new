@@ -168,7 +168,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ route('employer.employees.records.show', $record) }}" class="table__link">View</a>
+                                    <a href="{{ route('employer.employees.records.show', $record->employee->id) }}" class="table__link">View</a>
                                 </td>
                             </tr>
                             @endforeach

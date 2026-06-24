@@ -585,10 +585,10 @@
                     <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
                     Employment Records
                 </a>
-                <a href="/admin/disputes">
+                <!-- <a href="/admin/disputes">
                     <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
                     Disputes
-                </a>
+                </a> -->
                 <a href="{{ route('admin.transfer-requests.index') }}" class="nav-item">
                     <span class="nav-icon"><i class="bi bi-arrow-left-right"></i></span>
                     Transfer Requests
@@ -619,10 +619,10 @@
                     <span class="nav-icon"><i class="bi bi-file-earmark-text"></i></span>
                     Employment Records
                 </a>
-                <a href="{{ route('government.disputes.index') }}">
+                <!-- <a href="{{ route('government.disputes.index') }}">
                     <span class="nav-icon"><i class="bi bi-exclamation-diamond"></i></span>
                     Disputes
-                </a>
+                </a> -->
                 <div class="nav-section-label">Insights</div>
                 <a href="{{ route('government.reports.index') }}">
                     <span class="nav-icon"><i class="bi bi-pie-chart"></i></span>
@@ -662,11 +662,11 @@
                     <span class="nav-icon"><i class="bi bi-arrow-left-circle"></i></span>
                     Received Requests
                 </a>
-                <div class="nav-section-label">Admin</div>
+                <!-- <div class="nav-section-label">Admin</div>
                 <a href="{{ route('employer.disputes.index') }}">
                     <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
                     Disputes
-                </a>
+                </a> -->
                 @endif
 
                 @if(auth()->user()->role == 'employee')
@@ -683,10 +683,10 @@
                     <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
                     Employment Records
                 </a>
-                <a href="/my-disputes">
+                <!-- <a href="/my-disputes">
                     <span class="nav-icon"><i class="bi bi-exclamation-circle"></i></span>
                     Claims & Disputes
-                </a>
+                </a> -->
                 @endif
 
             </div>

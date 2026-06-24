@@ -35,14 +35,7 @@ return new class extends Migration
                 'contract-ended'
             ])->default('active');
 
-            $table->enum('exit_reason', [
-                'resignation',
-                'dismissal',
-                'contract-expiry',
-                'redundancy',
-                'retirement',
-                'mutual-agreement'
-            ])->nullable();
+            $table->string('exit_reason')->nullable();
 
             $table->text('remarks')->nullable();
 

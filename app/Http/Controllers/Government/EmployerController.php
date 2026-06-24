@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Government;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employer;
+use App\Models\EmploymentRecord;
+use App\Models\TransferRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EmployerController extends Controller
 {
@@ -54,5 +57,40 @@ class EmployerController extends Controller
         $request->validate(['reason' => 'required|string|max:1000']);
         $employer->update(['status' => 'rejected', 'rejection_reason' => $request->reason]);
         return back()->with('success', 'Employer rejected.');
+    }
+
+    public function destroy(Employer $employer)
+    {
+        DB::transaction(function () use ($employer) {
+
+            $employmentRecordIds = $employer->employmentRecords()->pluck('id');
+
+            TransferRequest::whereIn(
+                'current_employment_record_id',
+                $employmentRecordIds
+            )->delete();
+
+            EmploymentRecord::whereIn('id', $employmentRecordIds)->delete();
+
+            $employer->delete();
+        });
+
+        return redirect()->route('government.employers.index')->with('success', 'Employer deleted.');
+    }
+
+    public function update(Request $request, Employer $employer)
+    {
+        $validated = $request->validate([
+            'company_name' => 'required|string|max:255',
+            'email'        => 'required|email|max:255|unique:employers,email,' . $employer->id,
+            'phone'        => 'nullable|string|max:20',
+            'rdb_number'   => 'nullable|string|max:100',
+            'tin_number'   => 'nullable|string|max:100',
+            'address'      => 'nullable|string|max:500',
+        ]);
+
+        $employer->update($validated);
+
+        return redirect()->back()->with('success', 'Employer details updated successfully.');
     }
 }

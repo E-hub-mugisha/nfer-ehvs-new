@@ -127,6 +127,9 @@ Route::get('/government/employers/{employer}', [App\Http\Controllers\Government\
     ->name('government.employers.show');
 Route::post('/government/employers/{employer}/approve', [App\Http\Controllers\Government\EmployerController::class, 'approve'])->name('government.employers.approve');
 Route::post('/government/employers/{employer}/reject', [App\Http\Controllers\Government\EmployerController::class, 'reject'])->name('government.employers.reject');
+Route::post('/government/employers/{employer}/delete', [App\Http\Controllers\Government\EmployerController::class, 'destroy'])->name('government.employers.destroy');
+Route::put('government/employers/{employer}', [App\Http\Controllers\Government\EmployerController::class, 'update'])
+    ->name('government.employers.update');
 
 Route::resource('employment-records', EmploymentRecordController::class);
 
@@ -191,7 +194,7 @@ Route::middleware(['auth', 'role:employer'])->prefix('employer')->name('employer
         ->name('employees.destroy');
     // Employment Records
     Route::get('get/employees/records',            [App\Http\Controllers\EmploymentRecordController::class, 'index'])->name('employees.records.index');
-    Route::get('get/employees/{employee}/records', [App\Http\Controllers\EmploymentRecordController::class, 'show'])->name('employees.records.show');
+    Route::get('get/employees/{id}/records', [App\Http\Controllers\EmploymentRecordController::class, 'show'])->name('employees.records.show');
     Route::put('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'update'])
         ->name('employees.records.update');
     Route::delete('get/employment-records/{record}', [App\Http\Controllers\EmploymentRecordController::class, 'destroy'])

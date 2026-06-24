@@ -26,8 +26,9 @@ class EmploymentRecordController extends Controller
         return view('employer.employees.records.index', compact('employees'));
     }
 
-    public function show(Employee $employee)
+    public function show($id)
     {
+        $employee = Employee::findOrFail($id);
         $employmentRecords = $employee->employmentRecords()
             ->latest()
             ->get();

@@ -32,9 +32,7 @@
         margin: 0;
     }
 
-    .detail-card-body {
-        padding: 24px;
-    }
+    .detail-card-body { padding: 24px; }
 
     .employer-hero {
         background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-light) 100%);
@@ -203,6 +201,51 @@
         border-color: rgba(239, 68, 68, .4);
     }
 
+    /* ── Edit button ── */
+    .btn-edit {
+        background: rgba(255, 255, 255, .1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, .25);
+        border-radius: 10px;
+        padding: 11px 22px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all .22s;
+    }
+
+    .btn-edit:hover {
+        background: rgba(255, 255, 255, .18);
+        border-color: rgba(255, 255, 255, .4);
+    }
+
+    /* Edit button inside card header */
+    .btn-edit-sm {
+        background: rgba(212, 148, 58, .1);
+        color: var(--gold, #d4943a);
+        border: 1px solid rgba(212, 148, 58, .25);
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all .2s;
+        text-decoration: none;
+    }
+
+    .btn-edit-sm:hover {
+        background: rgba(212, 148, 58, .18);
+        color: var(--gold, #d4943a);
+    }
+
     .rejection-notice {
         background: rgba(239, 68, 68, .06);
         border: 1px solid rgba(239, 68, 68, .2);
@@ -218,16 +261,87 @@
     }
 
     .modal-header {
-        padding: 20px 24px 0;
+        padding: 22px 26px 0;
         border: none;
     }
 
-    .modal-body  { padding: 20px 24px; }
+    .modal-body  { padding: 20px 26px; }
 
     .modal-footer {
-        padding: 0 24px 20px;
+        padding: 0 26px 22px;
         border: none;
         gap: 10px;
+    }
+
+    /* ── Edit modal form styles ── */
+    .edit-form-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--text-muted, #6b7280);
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .edit-form-control {
+        width: 100%;
+        border: 1px solid var(--border, #e5e7eb);
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 10px 14px;
+        font-family: 'DM Sans', sans-serif;
+        color: #1a2e45;
+        background: #fff;
+        transition: border-color .2s, box-shadow .2s;
+        outline: none;
+    }
+
+    .edit-form-control:focus {
+        border-color: var(--gold, #d4943a);
+        box-shadow: 0 0 0 3px rgba(212, 148, 58, .12);
+    }
+
+    .edit-form-control.is-invalid {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, .1);
+    }
+
+    .edit-form-group { margin-bottom: 18px; }
+
+    .edit-section-title {
+        font-family: 'Sora', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted, #6b7280);
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border, #e5e7eb);
+        margin-bottom: 16px;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, var(--gold, #d4943a), #c07d28);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 11px 26px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all .22s;
+        box-shadow: 0 3px 12px rgba(212, 148, 58, .35);
+    }
+
+    .btn-save:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(212, 148, 58, .45);
     }
 
     .form-label {
@@ -314,6 +428,11 @@
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
+            <!-- Edit button in hero -->
+            <button type="button" class="btn-edit" data-bs-toggle="modal" data-bs-target="#editModal">
+                <i class="bi bi-pencil-square"></i> Edit
+            </button>
+
             @if($employer->status !== 'approved')
             <form method="POST" action="{{ route('government.employers.approve', $employer) }}">
                 @csrf
@@ -328,6 +447,10 @@
                 <i class="bi bi-x-circle"></i> Reject
             </button>
             @endif
+
+            <button type="button" class="btn-reject" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="bi bi-trash"></i> Delete
+            </button>
         </div>
     </div>
 
@@ -371,6 +494,9 @@
         <div class="detail-card mb-4">
             <div class="detail-card-header">
                 <h6><i class="bi bi-building me-2"></i>Company Details</h6>
+                <button type="button" class="btn-edit-sm" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <i class="bi bi-pencil"></i> Edit
+                </button>
             </div>
             <div class="detail-card-body">
                 <div class="info-grid">
@@ -565,7 +691,156 @@
     </div>
 </div>
 
-<!-- REJECT MODAL -->
+{{-- ═══════════════════════════════════════════
+     EDIT MODAL
+═══════════════════════════════════════════ --}}
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="editModalLabel"
+                        style="font-family:'Sora',sans-serif; font-weight:700; color:#1a2e45; font-size:18px;">
+                        Edit Employer Details
+                    </h5>
+                    <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0;">
+                        Changes will be saved immediately.
+                    </p>
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="POST" action="{{ route('government.employers.update', $employer) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+
+                    {{-- Company identity --}}
+                    <div class="edit-section-title"><i class="bi bi-building me-2"></i>Company Information</div>
+
+                    <div class="row g-3 mb-2">
+                        <div class="col-12">
+                            <div class="edit-form-group">
+                                <label class="edit-form-label" for="edit_company_name">Company Name <span class="text-danger">*</span></label>
+                                <input
+                                    type="text"
+                                    id="edit_company_name"
+                                    name="company_name"
+                                    class="edit-form-control @error('company_name') is-invalid @enderror"
+                                    value="{{ old('company_name', $employer->company_name) }}"
+                                    required>
+                                @error('company_name')
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="edit-form-group">
+                                <label class="edit-form-label" for="edit_rdb_number">RDB Number</label>
+                                <input
+                                    type="text"
+                                    id="edit_rdb_number"
+                                    name="rdb_number"
+                                    class="edit-form-control @error('rdb_number') is-invalid @enderror"
+                                    value="{{ old('rdb_number', $employer->rdb_number) }}">
+                                @error('rdb_number')
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="edit-form-group">
+                                <label class="edit-form-label" for="edit_tin_number">TIN Number</label>
+                                <input
+                                    type="text"
+                                    id="edit_tin_number"
+                                    name="tin_number"
+                                    class="edit-form-control @error('tin_number') is-invalid @enderror"
+                                    value="{{ old('tin_number', $employer->tin_number) }}">
+                                @error('tin_number')
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="edit-form-group mb-0">
+                                <label class="edit-form-label" for="edit_address">Address</label>
+                                <input
+                                    type="text"
+                                    id="edit_address"
+                                    name="address"
+                                    class="edit-form-control @error('address') is-invalid @enderror"
+                                    value="{{ old('address', $employer->address) }}">
+                                @error('address')
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color:var(--border); margin:22px 0;">
+
+                    {{-- Contact --}}
+                    <div class="edit-section-title"><i class="bi bi-envelope me-2"></i>Contact Information</div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="edit-form-group mb-0">
+                                <label class="edit-form-label" for="edit_email">Email Address <span class="text-danger">*</span></label>
+                                <input
+                                    type="email"
+                                    id="edit_email"
+                                    name="email"
+                                    class="edit-form-control @error('email') is-invalid @enderror"
+                                    value="{{ old('email', $employer->email) }}"
+                                    required>
+                                @error('email')
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="edit-form-group mb-0">
+                                <label class="edit-form-label" for="edit_phone">Phone Number</label>
+                                <input
+                                    type="text"
+                                    id="edit_phone"
+                                    name="phone"
+                                    class="edit-form-control @error('phone') is-invalid @enderror"
+                                    value="{{ old('phone', $employer->phone) }}">
+                                @error('phone')
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"
+                        style="border-radius:10px; font-weight:500;">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check2-circle"></i> Save Changes
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════
+     REJECT MODAL
+═══════════════════════════════════════════ --}}
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -628,10 +903,70 @@
     </div>
 </div>
 
+{{-- ═══════════════════════════════════════════
+     DELETE MODAL
+═══════════════════════════════════════════ --}}
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="deleteModalLabel"
+                        style="font-family:'Sora',sans-serif; font-weight:700; color:#1a2e45; font-size:18px;">
+                        Delete Employer
+                    </h5>
+                    <p style="font-size:13px; color:var(--text-muted); margin:4px 0 0;">
+                        This action cannot be undone.
+                    </p>
+                </div>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="POST" action="{{ route('government.employers.destroy', $employer) }}">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body">
+                    <div class="d-flex align-items-center gap-3 p-3 mb-2"
+                        style="background:rgba(239,68,68,.06); border:1px solid rgba(239,68,68,.2); border-radius:12px;">
+                        <div class="employer-logo" style="width:46px;height:46px;font-size:18px;border-radius:12px;flex-shrink:0;">
+                            {{ strtoupper(substr($employer->company_name, 0, 1)) }}
+                        </div>
+                        <div>
+                            <div style="font-weight:600; font-size:14px; color:#1a2e45;">{{ $employer->company_name }}</div>
+                            <div style="font-size:12px; color:var(--text-muted);">{{ $employer->email }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal"
+                        style="border-radius:10px; font-weight:500;">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-reject px-4">
+                        <i class="bi bi-trash"></i> Confirm Deletion
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 @if($errors->has('reason'))
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         new bootstrap.Modal(document.getElementById('rejectModal')).show();
+    });
+</script>
+@endif
+
+{{-- Re-open edit modal on validation error --}}
+@if($errors->hasAny(['company_name', 'email', 'phone', 'rdb_number', 'tin_number', 'address']))
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        new bootstrap.Modal(document.getElementById('editModal')).show();
     });
 </script>
 @endif
