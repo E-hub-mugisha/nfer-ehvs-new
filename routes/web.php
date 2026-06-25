@@ -57,6 +57,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         ->name('employees.index');
     Route::get('/employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'show'])
         ->name('employees.show');
+    Route::delete('employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'destroy'])
+        ->name('.employees.destroy');
 
     Route::get('/employers', [App\Http\Controllers\Admin\EmployerController::class, 'index'])
         ->name('employers.index');
@@ -72,6 +74,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     Route::get('employment-records',          [App\Http\Controllers\Admin\EmployeeRecordController::class, 'indexEmploymentRecord'])->name('employment-records.index');
     Route::get('employment-records/{employmentRecord}', [App\Http\Controllers\Admin\EmployeeRecordController::class, 'show'])->name('employment-records.show');
+    Route::delete('employment-records/{employmentRecord}', [App\Http\Controllers\Admin\EmployeeRecordController::class, 'destroy'])
+        ->name('employment-records.destroy');
 
     // Transfer Requests
     Route::get('transfer-requests',          [App\Http\Controllers\Admin\TransferController::class, 'index'])->name('transfer-requests.index');

@@ -96,4 +96,13 @@ class EmployeeRecordController extends Controller
 
         return view('admin.employment-records.show', compact('employmentRecord', 'history', 'transfers'));
     }
+
+    public function destroy(EmploymentRecord $employmentRecord)
+    {
+        $employmentRecord->delete();
+
+        return redirect()
+            ->route('admin.employment-records.index')
+            ->with('success', 'Employment record deleted with all related records.');
+    }
 }

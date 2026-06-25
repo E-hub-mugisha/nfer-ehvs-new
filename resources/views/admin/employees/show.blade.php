@@ -9,218 +9,445 @@
         background: #fff;
         border: 1px solid var(--border);
         border-radius: 16px;
-        box-shadow: 0 2px 12px rgba(14,32,57,.06);
+        box-shadow: 0 2px 12px rgba(14, 32, 57, .06);
         overflow: hidden;
     }
+
     .detail-card-header {
         padding: 18px 24px;
         border-bottom: 1px solid var(--border);
-        display: flex; align-items: center; justify-content: space-between;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         background: #fafbfc;
     }
+
     .detail-card-header h6 {
-        font-family: 'Sora', sans-serif; font-size: 13px;
-        font-weight: 600; text-transform: uppercase;
-        letter-spacing: 0.8px; color: var(--text-muted); margin: 0;
+        font-family: 'Sora', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        margin: 0;
     }
-    .detail-card-body { padding: 24px; }
+
+    .detail-card-body {
+        padding: 24px;
+    }
 
     /* Hero */
     .emp-hero {
         background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy-light) 100%);
-        border-radius: 16px; padding: 28px;
-        color: #fff; position: relative; overflow: hidden; margin-bottom: 24px;
+        border-radius: 16px;
+        padding: 28px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 24px;
     }
+
     .emp-hero::before {
-        content: ''; position: absolute;
-        top: -40px; right: -40px;
-        width: 180px; height: 180px; border-radius: 50%;
-        background: rgba(212,148,58,.1);
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(212, 148, 58, .1);
     }
+
     .emp-hero::after {
-        content: ''; position: absolute;
-        bottom: -60px; right: 60px;
-        width: 140px; height: 140px; border-radius: 50%;
-        background: rgba(212,148,58,.06);
+        content: '';
+        position: absolute;
+        bottom: -60px;
+        right: 60px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(212, 148, 58, .06);
     }
 
     .hero-avatar {
-        width: 80px; height: 80px; border-radius: 20px;
-        display: flex; align-items: center; justify-content: center;
-        font-family: 'Sora', sans-serif; font-weight: 700;
-        font-size: 30px; flex-shrink: 0; overflow: hidden;
-        border: 3px solid rgba(212,148,58,.5);
-        box-shadow: 0 4px 16px rgba(0,0,0,.2);
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Sora', sans-serif;
+        font-weight: 700;
+        font-size: 30px;
+        flex-shrink: 0;
+        overflow: hidden;
+        border: 3px solid rgba(212, 148, 58, .5);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
     }
-    .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-avatar-male   { background: rgba(59,130,246,.25); color: #93c5fd; }
-    .hero-avatar-female { background: rgba(236,72,153,.25); color: #f9a8d4; }
+
+    .hero-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hero-avatar-male {
+        background: rgba(59, 130, 246, .25);
+        color: #93c5fd;
+    }
+
+    .hero-avatar-female {
+        background: rgba(236, 72, 153, .25);
+        color: #f9a8d4;
+    }
 
     .hero-name {
         font-family: 'Sora', sans-serif;
-        font-size: 22px; font-weight: 700; line-height: 1.2;
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
     }
-    .hero-meta { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+    .hero-meta {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-top: 4px;
+    }
 
     .hero-stat-pill {
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.12);
-        border-radius: 10px; padding: 10px 16px;
-        text-align: center; min-width: 90px;
+        background: rgba(255, 255, 255, .08);
+        border: 1px solid rgba(255, 255, 255, .12);
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        min-width: 90px;
     }
+
     .hero-stat-value {
         font-family: 'Sora', sans-serif;
-        font-size: 20px; font-weight: 700;
-        color: var(--gold); line-height: 1;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--gold);
+        line-height: 1;
     }
+
     .hero-stat-label {
-        font-size: 10px; color: var(--text-dim);
-        margin-top: 3px; text-transform: uppercase; letter-spacing: 0.6px;
+        font-size: 10px;
+        color: var(--text-dim);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
     }
 
     /* Info grid */
-    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .info-item label {
-        font-size: 11px; font-weight: 600;
-        text-transform: uppercase; letter-spacing: 0.8px;
-        color: var(--text-muted); display: block; margin-bottom: 4px;
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
     }
+
+    .info-item label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        display: block;
+        margin-bottom: 4px;
+    }
+
     .info-item p {
-        font-size: 14px; font-weight: 500;
-        color: #1a2e45; margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1a2e45;
+        margin: 0;
     }
 
     /* Gender pill */
     .gender-pill {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 5px 12px; border-radius: 20px;
-        font-size: 11px; font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
     }
-    .gp-male   { background: rgba(59,130,246,.1);  color: #1d4ed8; }
-    .gp-female { background: rgba(236,72,153,.1); color: #be185d; }
+
+    .gp-male {
+        background: rgba(59, 130, 246, .1);
+        color: #1d4ed8;
+    }
+
+    .gp-female {
+        background: rgba(236, 72, 153, .1);
+        color: #be185d;
+    }
 
     /* NID */
     .nid-code {
-        font-family: 'Sora', sans-serif; font-size: 13px;
-        font-weight: 600; color: var(--navy);
-        background: rgba(14,32,57,.06);
-        padding: 4px 10px; border-radius: 7px;
-        letter-spacing: 0.5px; display: inline-block;
+        font-family: 'Sora', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy);
+        background: rgba(14, 32, 57, .06);
+        padding: 4px 10px;
+        border-radius: 7px;
+        letter-spacing: 0.5px;
+        display: inline-block;
     }
 
     /* Timeline */
-    .timeline-item { display: flex; gap: 16px; margin-bottom: 0; }
+    .timeline-item {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 0;
+    }
+
     .timeline-line {
-        display: flex; flex-direction: column; align-items: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         flex-shrink: 0;
     }
+
     .timeline-dot {
-        width: 14px; height: 14px; border-radius: 50%;
-        background: var(--gold); border: 3px solid #fff;
-        box-shadow: 0 0 0 2px var(--gold); margin-top: 4px; flex-shrink: 0;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--gold);
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 2px var(--gold);
+        margin-top: 4px;
+        flex-shrink: 0;
     }
+
     .timeline-dot-inactive {
         background: var(--text-muted);
         box-shadow: 0 0 0 2px var(--text-muted);
     }
+
     .timeline-connector {
-        width: 2px; flex: 1; background: var(--border);
-        margin: 6px 0; min-height: 20px;
+        width: 2px;
+        flex: 1;
+        background: var(--border);
+        margin: 6px 0;
+        min-height: 20px;
     }
-    .timeline-content { flex: 1; padding-bottom: 24px; }
+
+    .timeline-content {
+        flex: 1;
+        padding-bottom: 24px;
+    }
+
     .timeline-record-card {
-        background: #fff; border: 1px solid var(--border);
-        border-radius: 14px; overflow: hidden;
-        box-shadow: 0 1px 6px rgba(14,32,57,.05);
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 1px 6px rgba(14, 32, 57, .05);
     }
+
     .timeline-record-card.current {
-        border-color: rgba(212,148,58,.35);
-        box-shadow: 0 2px 12px rgba(212,148,58,.12);
+        border-color: rgba(212, 148, 58, .35);
+        box-shadow: 0 2px 12px rgba(212, 148, 58, .12);
     }
+
     .record-card-header {
         padding: 14px 18px;
-        background: #fafbfc; border-bottom: 1px solid var(--border);
-        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+        background: #fafbfc;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
     }
-    .record-card-header.current { background: rgba(212,148,58,.06); }
-    .record-card-body { padding: 16px 18px; }
+
+    .record-card-header.current {
+        background: rgba(212, 148, 58, .06);
+    }
+
+    .record-card-body {
+        padding: 16px 18px;
+    }
 
     .emp-status-pill {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 4px 11px; border-radius: 20px;
-        font-size: 11px; font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
     }
-    .esp-active     { background: rgba(16,185,129,.1);  color: #065f46; }
-    .esp-inactive   { background: rgba(107,114,128,.1); color: #374151; }
-    .esp-terminated { background: rgba(239,68,68,.1);   color: #991b1b; }
-    .esp-resigned   { background: rgba(234,179,8,.1);   color: #854d0e; }
+
+    .esp-active {
+        background: rgba(16, 185, 129, .1);
+        color: #065f46;
+    }
+
+    .esp-inactive {
+        background: rgba(107, 114, 128, .1);
+        color: #374151;
+    }
+
+    .esp-terminated {
+        background: rgba(239, 68, 68, .1);
+        color: #991b1b;
+    }
+
+    .esp-resigned {
+        background: rgba(234, 179, 8, .1);
+        color: #854d0e;
+    }
 
     .record-meta-row {
-        display: grid; grid-template-columns: 1fr 1fr;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 12px 20px;
     }
+
     .record-meta-item label {
-        font-size: 10px; font-weight: 600;
-        text-transform: uppercase; letter-spacing: 0.7px;
-        color: var(--text-muted); display: block; margin-bottom: 2px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text-muted);
+        display: block;
+        margin-bottom: 2px;
     }
+
     .record-meta-item p {
-        font-size: 13px; font-weight: 500; color: #1a2e45; margin: 0;
+        font-size: 13px;
+        font-weight: 500;
+        color: #1a2e45;
+        margin: 0;
     }
 
     /* Transfer + Dispute tables */
-    .sub-table { font-size: 13px; }
-    .sub-table thead th {
-        font-family: 'Sora', sans-serif; font-size: 10px;
-        font-weight: 600; text-transform: uppercase;
-        letter-spacing: 0.7px; color: var(--text-muted);
-        background: #f8fafc; border-bottom: 2px solid var(--border);
-        padding: 11px 14px; white-space: nowrap;
+    .sub-table {
+        font-size: 13px;
     }
+
+    .sub-table thead th {
+        font-family: 'Sora', sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text-muted);
+        background: #f8fafc;
+        border-bottom: 2px solid var(--border);
+        padding: 11px 14px;
+        white-space: nowrap;
+    }
+
     .sub-table tbody td {
         padding: 11px 14px;
-        border-bottom: 1px solid rgba(14,32,57,.05);
+        border-bottom: 1px solid rgba(14, 32, 57, .05);
         vertical-align: middle;
     }
-    .sub-table tbody tr:last-child td { border-bottom: none; }
-    .sub-table tbody tr:hover { background: rgba(212,148,58,.03); }
+
+    .sub-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .sub-table tbody tr:hover {
+        background: rgba(212, 148, 58, .03);
+    }
 
     .tr-pill {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 4px 11px; border-radius: 20px;
-        font-size: 11px; font-weight: 600; white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
     }
-    .tr-pending  { background: rgba(234,179,8,.12); color: #854d0e; }
-    .tr-approved { background: rgba(16,185,129,.1); color: #065f46; }
-    .tr-rejected { background: rgba(239,68,68,.1);  color: #991b1b; }
+
+    .tr-pending {
+        background: rgba(234, 179, 8, .12);
+        color: #854d0e;
+    }
+
+    .tr-approved {
+        background: rgba(16, 185, 129, .1);
+        color: #065f46;
+    }
+
+    .tr-rejected {
+        background: rgba(239, 68, 68, .1);
+        color: #991b1b;
+    }
 
     .dispute-pill {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 4px 11px; border-radius: 20px;
-        font-size: 11px; font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
     }
-    .dp-open     { background: rgba(239,68,68,.1);  color: #991b1b; }
-    .dp-resolved { background: rgba(16,185,129,.1); color: #065f46; }
-    .dp-pending  { background: rgba(234,179,8,.12); color: #854d0e; }
 
-    .empty-sub { padding: 40px 24px; text-align: center; }
-    .empty-sub i { font-size: 32px; color: var(--border); display: block; margin-bottom: 10px; }
+    .dp-open {
+        background: rgba(239, 68, 68, .1);
+        color: #991b1b;
+    }
+
+    .dp-resolved {
+        background: rgba(16, 185, 129, .1);
+        color: #065f46;
+    }
+
+    .dp-pending {
+        background: rgba(234, 179, 8, .12);
+        color: #854d0e;
+    }
+
+    .empty-sub {
+        padding: 40px 24px;
+        text-align: center;
+    }
+
+    .empty-sub i {
+        font-size: 32px;
+        color: var(--border);
+        display: block;
+        margin-bottom: 10px;
+    }
 
     @media (max-width: 767px) {
-        .info-grid { grid-template-columns: 1fr; gap: 14px; }
-        .record-meta-row { grid-template-columns: 1fr; }
-        .hero-name { font-size: 18px; }
-        .hero-stat-pill { min-width: 70px; }
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .record-meta-row {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-name {
+            font-size: 18px;
+        }
+
+        .hero-stat-pill {
+            min-width: 70px;
+        }
     }
 </style>
 
 <!-- BREADCRUMB -->
 <div class="d-flex align-items-center gap-2 mb-4" style="font-size:13px; color:var(--text-muted);">
-    <a href="{{ route('government.employees.index') }}" style="color:var(--text-muted); text-decoration:none;">
+    <a href="{{ route('admin.employees.index') }}" style="color:var(--text-muted); text-decoration:none;">
         Employees
     </a>
     <i class="bi bi-chevron-right" style="font-size:11px;"></i>
     <span style="color:#1a2e45; font-weight:500;">{{ $employee->full_name }}</span>
+
 </div>
 
 <!-- HERO -->
@@ -247,16 +474,28 @@
             </div>
             <div class="hero-meta">
                 @if($employee->email)
-                    <i class="bi bi-envelope me-1"></i>{{ $employee->email }}
-                    &nbsp;&nbsp;
+                <i class="bi bi-envelope me-1"></i>{{ $employee->email }}
+                &nbsp;&nbsp;
                 @endif
                 @if($employee->phone)
-                    <i class="bi bi-telephone me-1"></i>{{ $employee->phone }}
+                <i class="bi bi-telephone me-1"></i>{{ $employee->phone }}
                 @endif
             </div>
             <div class="hero-meta mt-1">
                 <i class="bi bi-geo-alt me-1"></i>{{ $employee->district ?? '—' }}
                 @if($employee->sector), {{ $employee->sector }}@endif
+            </div>
+
+            <div class="d-flex gap-3 mt-3 flex-wrap position-relative" style="z-index:1;">
+                <button type="button"
+                    class="btn btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteEmployeeModal"
+                    style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);
+                   border-radius:9px;padding:7px 16px;font-size:13px;
+                   font-weight:600;color:#fca5a5;">
+                    <i class="bi bi-trash3 me-1"></i>Delete Employee
+                </button>
             </div>
         </div>
     </div>
@@ -399,7 +638,7 @@
                     <div class="timeline-line">
                         <div class="timeline-dot {{ $isCurrent ? '' : 'timeline-dot-inactive' }}"></div>
                         @if(!$loop->last)
-                            <div class="timeline-connector"></div>
+                        <div class="timeline-connector"></div>
                         @endif
                     </div>
                     <div class="timeline-content">
@@ -442,11 +681,11 @@
                                         <label>Duration</label>
                                         <p>
                                             @php
-                                                $start = \Carbon\Carbon::parse($record->start_date);
-                                                $end   = $record->end_date
-                                                    ? \Carbon\Carbon::parse($record->end_date)
-                                                    : now();
-                                                $diff  = $start->diff($end);
+                                            $start = \Carbon\Carbon::parse($record->start_date);
+                                            $end = $record->end_date
+                                            ? \Carbon\Carbon::parse($record->end_date)
+                                            : now();
+                                            $diff = $start->diff($end);
                                             @endphp
                                             @if($diff->y > 0){{ $diff->y }}y @endif
                                             {{ $diff->m }}m
@@ -468,7 +707,7 @@
 
                                 @if($record->disputes->count() > 0)
                                 <div class="mt-3 p-3"
-                                     style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:10px;">
+                                    style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:10px;">
                                     <div style="font-size:11px;font-weight:600;text-transform:uppercase;
                                                 letter-spacing:0.7px;color:#991b1b;margin-bottom:8px;">
                                         <i class="bi bi-exclamation-triangle me-1"></i>
@@ -599,6 +838,59 @@
             @endif
         </div>
 
+    </div>
+</div>
+
+{{-- DELETE MODAL --}}
+<div class="modal fade" id="deleteEmployeeModal" tabindex="-1" aria-labelledby="deleteEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px; border:none; overflow:hidden;">
+            <div class="modal-header" style="background:#fff; border-bottom:1px solid var(--border); padding:20px 24px;">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width:42px;height:42px;border-radius:11px;background:rgba(239,68,68,.1);
+                                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="bi bi-trash3-fill" style="color:#dc2626;font-size:17px;"></i>
+                    </div>
+                    <div>
+                        <h6 class="modal-title" id="deleteEmployeeModalLabel"
+                            style="font-family:'Sora',sans-serif;font-weight:700;font-size:15px;color:#1a2e45;margin:0;">
+                            Delete Employee
+                        </h6>
+                        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">This action cannot be undone.</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding:24px;">
+                <div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);
+                            border-radius:12px;padding:16px;">
+                    <p style="font-size:14px;color:#7f1d1d;margin:0;">
+                        You are about to permanently delete
+                        <strong>{{ $employee->full_name }}</strong>
+                        (NID: <span class="nid-code" style="font-size:12px;">{{ $employee->nid }}</span>).
+                        All associated employment records, transfer requests, and disputes will also be removed.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px;border-top:1px solid var(--border);background:#fafbfc;">
+                <button type="button" class="btn btn-sm"
+                    data-bs-dismiss="modal"
+                    style="border:1px solid var(--border);border-radius:9px;
+                               padding:8px 20px;font-size:13px;font-weight:600;color:var(--text-muted);">
+                    Cancel
+                </button>
+                <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        style="background:#dc2626;border:none;border-radius:9px;
+                                   padding:8px 20px;font-size:13px;font-weight:600;
+                                   color:#fff;cursor:pointer;">
+                        <i class="bi bi-trash3 me-1"></i>Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

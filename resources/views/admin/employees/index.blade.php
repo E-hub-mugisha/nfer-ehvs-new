@@ -401,7 +401,7 @@
                     </td>
 
                     <td>
-                        <a href="{{ route('government.employees.show', $employee) }}" class="btn-view">
+                        <a href="{{ route('admin.employees.show', $employee) }}" class="btn-view">
                             <i class="bi bi-eye"></i> View
                         </a>
                     </td>
