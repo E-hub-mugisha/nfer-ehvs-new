@@ -251,7 +251,7 @@
         font-family: 'Sora', sans-serif;
     }
 
-    /* Action button */
+    /* Action buttons */
     .btn-view {
         display: inline-flex;
         align-items: center;
@@ -273,6 +273,33 @@
         background: var(--navy);
         color: var(--gold);
         transform: translateY(-1px);
+    }
+
+    .btn-tbl-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: transparent;
+        border: 1px solid #fca5a5;
+        color: #dc2626;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background .15s, border-color .15s;
+        flex-shrink: 0;
+        padding: 0;
+    }
+
+    .btn-tbl-delete:hover {
+        background: rgba(239,68,68,.09);
+        border-color: #dc2626;
+    }
+
+    .td-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     /* Empty state */
@@ -318,6 +345,107 @@
         color: var(--navy);
     }
 
+    /* Delete modal */
+    .emp-del-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(14,32,57,.45);
+        backdrop-filter: blur(3px);
+        z-index: 1050;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .emp-del-overlay.active { display: flex; }
+
+    .emp-del-modal {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 2rem 2rem 1.75rem;
+        max-width: 430px;
+        width: calc(100% - 2rem);
+        box-shadow: 0 24px 64px rgba(14,32,57,.18);
+        text-align: center;
+        animation: emp-del-in .18s ease;
+    }
+
+    @keyframes emp-del-in {
+        from { opacity: 0; transform: scale(.95) translateY(8px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .emp-del-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(239,68,68,.09);
+        border: 1px solid rgba(239,68,68,.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.25rem;
+        color: #dc2626;
+        font-size: 24px;
+    }
+
+    .emp-del-title {
+        font-family: 'Sora', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1a2e45;
+        margin: 0 0 .55rem;
+    }
+
+    .emp-del-body {
+        font-size: .875rem;
+        color: var(--text-muted);
+        line-height: 1.65;
+        margin: 0 0 1.5rem;
+    }
+
+    .emp-del-body strong { color: #1a2e45; font-weight: 600; }
+
+    .emp-del-actions {
+        display: flex;
+        gap: .65rem;
+        justify-content: center;
+    }
+
+    .btn-emp-confirm-delete {
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .55rem 1.4rem;
+        font-size: .875rem;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .15s;
+    }
+
+    .btn-emp-confirm-delete:hover { background: #b91c1c; }
+
+    .btn-emp-cancel-delete {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        border-radius: 10px;
+        padding: .55rem 1.2rem;
+        font-size: .875rem;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color .15s, color .15s;
+    }
+
+    .btn-emp-cancel-delete:hover {
+        border-color: #6b7280;
+        color: #1a2e45;
+    }
+
     @media (max-width: 767px) {
         .hide-mobile { display: none; }
         .filters-bar { gap: 8px; }
@@ -341,13 +469,6 @@
 </div>
 
 <!-- STATS ROW -->
-@php
-    $total    = $employers->total();
-    $approved = $employers->getCollection()->where('status', 'approved')->count();
-    $pending  = $employers->getCollection()->where('status', 'pending')->count();
-    $rejected = $employers->getCollection()->where('status', 'rejected')->count();
-@endphp
-
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
         <div class="employers-stat-card">
@@ -438,7 +559,7 @@
                     <th>Status</th>
                     <th class="hide-mobile">Records</th>
                     <th class="hide-mobile">Registered</th>
-                    <th style="width:110px;">Action</th>
+                    <th style="width:130px;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -505,9 +626,21 @@
                     </td>
 
                     <td>
-                        <a href="{{ route('government.employers.show', $employer->id) }}" class="btn-view">
-                            <i class="bi bi-eye"></i> View
-                        </a>
+                        <div class="td-actions">
+                            <a href="{{ route('admin.employers.show', $employer->id) }}" class="btn-view">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <button
+                                type="button"
+                                class="btn-tbl-delete"
+                                title="Delete employer"
+                                onclick="openEmpDeleteModal(
+                                    {{ $employer->id }},
+                                    '{{ addslashes($employer->company_name) }}'
+                                )">
+                                <i class="bi bi-trash3" style="font-size:13px;"></i>
+                            </button>
+                        </div>
                     </td>
 
                 </tr>
@@ -541,7 +674,34 @@
 
 </div>
 
+<!-- DELETE MODAL -->
+<div id="emp-delete-modal" class="emp-del-overlay" onclick="closeEmpDeleteModal(event)">
+    <div class="emp-del-modal">
+        <div class="emp-del-icon">
+            <i class="bi bi-trash3-fill"></i>
+        </div>
+        <h3 class="emp-del-title">Delete Employer</h3>
+        <p class="emp-del-body">
+            You're about to permanently delete <strong id="emp-del-name"></strong> and all associated data.
+            This action <strong>cannot be undone</strong>.
+        </p>
+        <div class="emp-del-actions">
+            <form id="emp-delete-form" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn-emp-confirm-delete">
+                    <i class="bi bi-trash3 me-1"></i> Yes, Delete
+                </button>
+            </form>
+            <button type="button" class="btn-emp-cancel-delete" onclick="closeEmpDeleteModal()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Table filter
     const searchInput  = document.getElementById('employerSearch');
     const statusFilter = document.getElementById('statusFilter');
     const rows         = document.querySelectorAll('#employersTable tbody tr');
@@ -549,23 +709,38 @@
     function filterTable() {
         const q      = searchInput.value.toLowerCase().trim();
         const status = statusFilter.value.toLowerCase();
-
         rows.forEach(row => {
-            const name  = row.dataset.name  || '';
-            const email = row.dataset.email || '';
-            const rdb   = row.dataset.rdb   || '';
-            const tin   = row.dataset.tin   || '';
-            const st    = row.dataset.status || '';
-
-            const matchSearch = !q || name.includes(q) || email.includes(q) || rdb.includes(q) || tin.includes(q);
-            const matchStatus = !status || st === status;
-
+            const matchSearch = !q ||
+                (row.dataset.name  || '').includes(q) ||
+                (row.dataset.email || '').includes(q) ||
+                (row.dataset.rdb   || '').includes(q) ||
+                (row.dataset.tin   || '').includes(q);
+            const matchStatus = !status || row.dataset.status === status;
             row.style.display = (matchSearch && matchStatus) ? '' : 'none';
         });
     }
 
     searchInput.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
+
+    // Delete modal
+    function openEmpDeleteModal(id, name) {
+        document.getElementById('emp-del-name').textContent = name;
+        document.getElementById('emp-delete-form').action =
+            '{{ url("admin/employers") }}/' + id;
+        document.getElementById('emp-delete-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmpDeleteModal(e) {
+        if (e && e.target !== document.getElementById('emp-delete-modal')) return;
+        document.getElementById('emp-delete-modal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeEmpDeleteModal();
+    });
 </script>
 
 @endsection

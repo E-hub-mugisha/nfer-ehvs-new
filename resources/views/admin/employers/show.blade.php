@@ -203,6 +203,29 @@
         border-color: rgba(239, 68, 68, .4);
     }
 
+    /* Delete button (hero) */
+    .btn-delete-employer {
+        background: rgba(255,255,255,.08);
+        color: #fca5a5;
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 10px;
+        padding: 11px 18px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all .22s;
+    }
+
+    .btn-delete-employer:hover {
+        background: rgba(239,68,68,.25);
+        border-color: rgba(239,68,68,.45);
+        color: #fff;
+    }
+
     .rejection-notice {
         background: rgba(239, 68, 68, .06);
         border: 1px solid rgba(239, 68, 68, .2);
@@ -275,6 +298,120 @@
     .emp-status-terminated { background: rgba(239, 68, 68, .1);  color: #991b1b; }
     .emp-status-resigned   { background: rgba(234, 179, 8, .1);  color: #854d0e; }
 
+    /* Delete confirm modal */
+    .emp-del-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(14,32,57,.5);
+        backdrop-filter: blur(3px);
+        z-index: 1060;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .emp-del-overlay.active { display: flex; }
+
+    .emp-del-modal {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 2rem 2rem 1.75rem;
+        max-width: 430px;
+        width: calc(100% - 2rem);
+        box-shadow: 0 24px 64px rgba(14,32,57,.2);
+        text-align: center;
+        animation: emp-del-in .18s ease;
+    }
+
+    @keyframes emp-del-in {
+        from { opacity: 0; transform: scale(.95) translateY(8px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .emp-del-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(239,68,68,.09);
+        border: 1px solid rgba(239,68,68,.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.25rem;
+        color: #dc2626;
+        font-size: 24px;
+    }
+
+    .emp-del-title {
+        font-family: 'Sora', sans-serif;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1a2e45;
+        margin: 0 0 .55rem;
+    }
+
+    .emp-del-body {
+        font-size: .875rem;
+        color: var(--text-muted);
+        line-height: 1.65;
+        margin: 0 0 .5rem;
+    }
+
+    .emp-del-body strong { color: #1a2e45; font-weight: 600; }
+
+    .emp-del-warning {
+        background: rgba(239,68,68,.06);
+        border: 1px solid rgba(239,68,68,.18);
+        border-radius: 10px;
+        padding: .75rem 1rem;
+        font-size: .8rem;
+        color: #991b1b;
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    .emp-del-warning i { margin-right: .35rem; }
+
+    .emp-del-actions {
+        display: flex;
+        gap: .65rem;
+        justify-content: center;
+    }
+
+    .btn-emp-confirm-delete {
+        background: #dc2626;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: .6rem 1.4rem;
+        font-size: .875rem;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background .15s;
+    }
+
+    .btn-emp-confirm-delete:hover { background: #b91c1c; }
+
+    .btn-emp-cancel-delete {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        border-radius: 10px;
+        padding: .6rem 1.2rem;
+        font-size: .875rem;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color .15s, color .15s;
+    }
+
+    .btn-emp-cancel-delete:hover {
+        border-color: #6b7280;
+        color: #1a2e45;
+    }
+
     @media (max-width: 767px) {
         .info-grid { grid-template-columns: 1fr; gap: 14px; }
         .stat-pill { min-width: 80px; }
@@ -284,7 +421,7 @@
 
 <!-- BREADCRUMB -->
 <div class="d-flex align-items-center gap-2 mb-4" style="font-size:13px; color:var(--text-muted);">
-    <a href="/government/employers" style="color:var(--text-muted); text-decoration:none;">Employers</a>
+    <a href="/admin/employers" style="color:var(--text-muted); text-decoration:none;">Employers</a>
     <i class="bi bi-chevron-right" style="font-size:11px;"></i>
     <span style="color:#1a2e45; font-weight:500;">{{ $employer->company_name }}</span>
 </div>
@@ -315,7 +452,7 @@
 
         <div class="d-flex gap-2 flex-wrap">
             @if($employer->status !== 'approved')
-            <form method="POST" action="{{ route('government.employers.approve', $employer) }}">
+            <form method="POST" action="{{ route('admin.employers.approve', $employer) }}">
                 @csrf
                 <button type="submit" class="btn-approve">
                     <i class="bi bi-check-circle"></i> Approve
@@ -328,6 +465,14 @@
                 <i class="bi bi-x-circle"></i> Reject
             </button>
             @endif
+
+            {{-- Delete button, always visible --}}
+            <button
+                type="button"
+                class="btn-delete-employer"
+                onclick="document.getElementById('emp-delete-modal').classList.add('active'); document.body.style.overflow='hidden'">
+                <i class="bi bi-trash3"></i> Delete
+            </button>
         </div>
     </div>
 
@@ -565,7 +710,7 @@
     </div>
 </div>
 
-<!-- REJECT MODAL -->
+<!-- REJECT MODAL (Bootstrap) -->
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -583,7 +728,7 @@
                 <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form method="POST" action="{{ route('government.employers.reject', $employer) }}">
+            <form method="POST" action="{{ route('admin.employers.reject', $employer) }}">
                 @csrf
                 <div class="modal-body">
                     <div class="d-flex align-items-center gap-3 p-3 mb-4"
@@ -628,6 +773,35 @@
     </div>
 </div>
 
+<!-- DELETE CONFIRM MODAL (custom, above Bootstrap z-index) -->
+<div id="emp-delete-modal" class="emp-del-overlay" onclick="closeEmpDeleteModal(event)">
+    <div class="emp-del-modal">
+        <div class="emp-del-icon">
+            <i class="bi bi-trash3-fill"></i>
+        </div>
+        <h3 class="emp-del-title">Delete Employer</h3>
+        <p class="emp-del-body">
+            You're about to permanently delete <strong>{{ $employer->company_name }}</strong>.
+        </p>
+        <div class="emp-del-warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            All employment records, transfer requests, and related data will be permanently removed. This cannot be undone.
+        </div>
+        <div class="emp-del-actions">
+            <form method="POST" action="{{ route('admin.employers.destroy', $employer) }}">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn-emp-confirm-delete">
+                    <i class="bi bi-trash3 me-1"></i> Yes, Delete
+                </button>
+            </form>
+            <button type="button" class="btn-emp-cancel-delete" onclick="closeEmpDeleteModal()">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
 @if($errors->has('reason'))
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -635,5 +809,17 @@
     });
 </script>
 @endif
+
+<script>
+    function closeEmpDeleteModal(e) {
+        if (e && e.target !== document.getElementById('emp-delete-modal')) return;
+        document.getElementById('emp-delete-modal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeEmpDeleteModal();
+    });
+</script>
 
 @endsection

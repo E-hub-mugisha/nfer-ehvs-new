@@ -34,4 +34,23 @@ class Employer extends Model
     {
         return $this->hasMany(TransferRequest::class, 'current_employer_id');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($employer) {
+
+            // delete direct relations
+            $employer->sentTransferRequests()->delete();
+            $employer->receivedTransferRequests()->delete();
+
+            // delete nested relations
+            foreach ($employer->employmentRecords as $record) {
+                $record->transferRequests()->delete();
+            }
+
+            $employer->employmentRecords()->delete();
+        });
+    }
 }

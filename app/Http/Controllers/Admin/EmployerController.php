@@ -55,4 +55,13 @@ class EmployerController extends Controller
         $employer->update(['status' => 'rejected', 'rejection_reason' => $request->reason]);
         return back()->with('success', 'Employer rejected.');
     }
+
+    public function destroy(Employer $employer)
+    {
+        $employer->delete();
+
+        return redirect()
+            ->route('admin.employers.index')
+            ->with('success', 'Employer deleted with all related records.');
+    }
 }

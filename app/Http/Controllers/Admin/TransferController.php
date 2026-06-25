@@ -71,4 +71,16 @@ class TransferController extends Controller
         return redirect()->route('admin.transfer-requests.show', $transferRequest)
             ->with('success', 'Transfer rejected.');
     }
+
+    /**
+     * Permanently delete a transfer request.
+     */
+    public function destroy(TransferRequest $transferRequest)
+    {
+        $transferRequest->delete();
+ 
+        return redirect()
+            ->route('admin.transfer-requests.index')
+            ->with('success', 'Transfer request #' . $transferRequest->id . ' deleted.');
+    }
 }

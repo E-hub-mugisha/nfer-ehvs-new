@@ -32,4 +32,8 @@ class EmploymentRecord extends Model
     {
         return $this->hasMany(Dispute::class);
     }
+    public function transferRequests()
+    {
+        return $this->hasMany(TransferRequest::class, 'current_employment_record_id');
+    }
 }
