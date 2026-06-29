@@ -183,9 +183,7 @@
         <a href="{{ route('government.reports.export', 'transfers') }}?from={{ $from }}&to={{ $to }}" class="btn-export btn-export-tr">
             <i class="fas fa-exchange-alt"></i>Transfer Requests
         </a>
-        <a href="{{ route('government.reports.export', 'disputes') }}?from={{ $from }}&to={{ $to }}" class="btn-export btn-export-disp">
-            <i class="fas fa-exclamation-triangle"></i>Disputes
-        </a>
+    
     </div>
 
     {{-- ── KPI Strip ─────────────────────────────────────────────────────── --}}
@@ -230,23 +228,7 @@
             <div class="chart-title">Performance Rates</div>
             <div class="chart-sub">Key resolution metrics for this period</div>
             <div class="rate-grid">
-                <div class="rate-card">
-                    <div class="rate-title">Dispute Resolution</div>
-                    <div class="rate-ring">
-                        <svg viewBox="0 0 36 36" width="110" height="110">
-                            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#eef0f8" stroke-width="3"/>
-                            <circle cx="18" cy="18" r="15.9" fill="none"
-                                stroke="{{ $resolutionRate >= 70 ? '#16a34a' : ($resolutionRate >= 40 ? '#d97706' : '#dc2626') }}"
-                                stroke-width="3"
-                                stroke-dasharray="{{ $resolutionRate }}, 100"
-                                stroke-linecap="round"/>
-                        </svg>
-                        <div class="pct" style="color:{{ $resolutionRate >= 70 ? '#16a34a' : ($resolutionRate >= 40 ? '#d97706' : '#dc2626') }}">
-                            {{ $resolutionRate }}%
-                        </div>
-                    </div>
-                    <div class="rate-sub">{{ $disputesByStatus['resolved'] ?? 0 }} of {{ array_sum($disputesByStatus) }} disputes resolved</div>
-                </div>
+                
                 <div class="rate-card">
                     <div class="rate-title">Transfer Approval</div>
                     <div class="rate-ring">
@@ -268,13 +250,7 @@
 
     {{-- ── 3-Col: Disputes, Transfers, Employment Status ─────────────────── --}}
     <div class="charts-3col fade-up d4">
-        <div class="chart-card">
-            <div class="chart-title">Disputes by Status</div>
-            <div class="chart-sub">Period breakdown</div>
-            <div style="display:flex;align-items:center;justify-content:center;min-height:180px;">
-                <canvas id="disputeDoughnut" style="max-width:180px;max-height:180px;"></canvas>
-            </div>
-        </div>
+        
         <div class="chart-card">
             <div class="chart-title">Transfers by Status</div>
             <div class="chart-sub">Period breakdown</div>
@@ -337,12 +313,6 @@
             </div>
         </div>
 
-        {{-- Disputes vs Transfers Monthly --}}
-        <div class="chart-card">
-            <div class="chart-title">Disputes vs Transfers</div>
-            <div class="chart-sub">Monthly comparison over selected period</div>
-            <canvas id="dvtChart" height="200"></canvas>
-        </div>
     </div>
 
 </div>

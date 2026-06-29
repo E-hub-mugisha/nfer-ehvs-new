@@ -279,57 +279,15 @@
                             @enderror
                         </div>
 
-                        {{-- Salary --}}
-                        <div class="col-sm-6">
-                            <label for="salary_{{ $record->id }}" class="form-label fw-semibold small">
-                                Salary (RWF)
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text text-muted small">RWF</span>
-                                <input type="number"
-                                    id="salary_{{ $record->id }}"
-                                    name="salary"
-                                    class="form-control @error('salary') is-invalid @enderror"
-                                    value="{{ old('salary', $record->salary) }}"
-                                    placeholder="0"
-                                    min="0"
-                                    step="1">
-                                @error('salary')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        {{-- Contract Type --}}
-                        <div class="col-sm-6">
-                            <label for="contract_type_{{ $record->id }}" class="form-label fw-semibold small">
-                                Contract Type
-                            </label>
-                            <select id="contract_type_{{ $record->id }}"
-                                name="contract_type"
-                                class="form-select @error('contract_type') is-invalid @enderror">
-                                <option value="">— Select —</option>
-                                @foreach(['Full-time','Part-time','Contract','Internship','Casual'] as $type)
-                                <option value="{{ $type }}"
-                                    {{ old('contract_type', $record->contract_type) === $type ? 'selected' : '' }}>
-                                    {{ $type }}
-                                </option>
-                                @endforeach
-                            </select>
-                            @error('contract_type')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        {{-- Notes --}}
+                        {{-- remark --}}
                         <div class="col-12">
-                            <label for="notes_{{ $record->id }}" class="form-label fw-semibold small">Notes</label>
-                            <textarea id="notes_{{ $record->id }}"
-                                name="notes"
-                                class="form-control @error('notes') is-invalid @enderror"
+                            <label for="remark_{{ $record->id }}" class="form-label fw-semibold small">remark</label>
+                            <textarea id="remark_{{ $record->id }}"
+                                name="remark"
+                                class="form-control @error('remark') is-invalid @enderror"
                                 rows="3"
-                                placeholder="Any additional notes…">{{ old('notes', $record->notes) }}</textarea>
-                            @error('notes')
+                                placeholder="Any additional remark…">{{ old('remark', $record->remark) }}</textarea>
+                            @error('remark')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

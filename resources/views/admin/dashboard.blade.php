@@ -677,14 +677,7 @@
                 <span class="red">{{ number_format($stats['inactive_records']) }}</span> inactive
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">Disputes</div>
-            <div class="stat-value">{{ number_format($stats['total_disputes']) }}</div>
-            <div class="stat-sub">
-                <span class="red">{{ number_format($stats['open_disputes']) }}</span> open ·
-                <span class="green">{{ number_format($stats['resolved_disputes']) }}</span> resolved
-            </div>
-        </div>
+        
         <div class="stat-card">
             <div class="stat-label">Transfer Requests</div>
             <div class="stat-value">{{ number_format($stats['total_transfers']) }}</div>
@@ -726,28 +719,7 @@
                 </div>
 
                 {{-- Dispute status chart --}}
-                <div class="panel">
-                    <div class="panel-header">
-                        <div class="panel-title">Dispute Status</div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="chart-wrap">
-                            <canvas id="disputeChart"></canvas>
-                        </div>
-                        <div class="donut-legend">
-                            @php
-                            $dColours = ['open' => '#ef4444', 'resolved' => '#10b981', 'closed' => '#94a3b8', 'pending' => '#f59e0b'];
-                            @endphp
-                            @foreach($disputesByStatus as $status => $count)
-                            <div class="legend-row">
-                                <div class="legend-dot" style="background:{{ $dColours[$status] ?? '#94a3b8' }}"></div>
-                                <div class="legend-label">{{ $status }}</div>
-                                <div class="legend-count">{{ $count }}</div>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+                
             </div>
 
             {{-- Monthly registrations bar chart --}}

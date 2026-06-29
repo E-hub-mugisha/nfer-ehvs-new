@@ -271,10 +271,7 @@
             <div class="hero-stat-value">{{ $employee->transferRequests->count() }}</div>
             <div class="hero-stat-label">Transfers</div>
         </div>
-        <div class="hero-stat-pill">
-            <div class="hero-stat-value">{{ $employee->disputes->count() }}</div>
-            <div class="hero-stat-label">Disputes</div>
-        </div>
+        
         <div class="hero-stat-pill">
             <div class="hero-stat-value">
                 {{ \Carbon\Carbon::parse($employee->dob)->age }}
@@ -466,22 +463,6 @@
                                     @endif
                                 </div>
 
-                                @if($record->disputes->count() > 0)
-                                <div class="mt-3 p-3"
-                                     style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);border-radius:10px;">
-                                    <div style="font-size:11px;font-weight:600;text-transform:uppercase;
-                                                letter-spacing:0.7px;color:#991b1b;margin-bottom:8px;">
-                                        <i class="bi bi-exclamation-triangle me-1"></i>
-                                        {{ $record->disputes->count() }} Dispute(s) on this record
-                                    </div>
-                                    @foreach($record->disputes as $d)
-                                    <div style="font-size:12px;color:#7f1d1d;margin-bottom:4px;">
-                                        <span class="dispute-pill dp-{{ $d->status }} me-2">{{ ucfirst($d->status) }}</span>
-                                        {{ Str::limit($d->description, 80) }}
-                                    </div>
-                                    @endforeach
-                                </div>
-                                @endif
                             </div>
                         </div>
                     </div>
@@ -534,62 +515,6 @@
                                 <span class="tr-pill tr-{{ $tr->status }}">
                                     {{ ucfirst($tr->status) }}
                                 </span>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
-        </div>
-
-        <!-- Disputes -->
-        <div class="detail-card">
-            <div class="detail-card-header">
-                <h6><i class="bi bi-exclamation-circle me-2"></i>Disputes</h6>
-                <span style="font-size:12px;color:var(--text-muted);">
-                    {{ $employee->disputes->count() }} total
-                </span>
-            </div>
-
-            @if($employee->disputes->isEmpty())
-            <div class="empty-sub">
-                <i class="bi bi-shield-check"></i>
-                <p style="font-size:14px;color:var(--text-muted);margin:0;">No disputes on record.</p>
-            </div>
-            @else
-            <div style="overflow-x:auto;">
-                <table class="table sub-table mb-0">
-                    <thead>
-                        <tr>
-                            <th>Employer</th>
-                            <th>Job Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Filed On</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($employee->disputes->sortByDesc('created_at') as $dispute)
-                        <tr>
-                            <td style="white-space:nowrap;">
-                                {{ $dispute->employmentRecord->employer->company_name ?? '—' }}
-                            </td>
-                            <td style="white-space:nowrap;">
-                                {{ $dispute->employmentRecord->job_title ?? '—' }}
-                            </td>
-                            <td>
-                                <span title="{{ $dispute->description }}" style="cursor:help;">
-                                    {{ Str::limit($dispute->description, 60) }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="dispute-pill dp-{{ $dispute->status }}">
-                                    {{ ucfirst($dispute->status) }}
-                                </span>
-                            </td>
-                            <td style="white-space:nowrap;font-size:12px;color:var(--text-muted);">
-                                {{ $dispute->created_at->format('d M Y') }}
                             </td>
                         </tr>
                         @endforeach

@@ -857,14 +857,7 @@
                     </svg>
                     Employment Records
                 </a>
-                <a href="{{ route('admin.reports.export', 'disputes') }}" class="export-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="8" x2="12" y2="12" />
-                        <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                    Disputes
-                </a>
+                
                 <a href="{{ route('admin.reports.export', 'transfers') }}" class="export-item">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="17 1 21 5 17 9" />
@@ -883,11 +876,7 @@
 
     {{-- ── Rate cards ─────────────────────────────────────────── --}}
     <div class="rate-grid">
-        <div class="rate-card green">
-            <div class="rate-label">Dispute Resolution Rate</div>
-            <div class="rate-value green">{{ $rates['resolutionRate'] }}%</div>
-            <div class="rate-sub">{{ number_format($summary['resolved_disputes']) }} of {{ number_format($summary['total_disputes']) }} disputes resolved</div>
-        </div>
+        
         <div class="rate-card blue">
             <div class="rate-label">Employer Approval Rate</div>
             <div class="rate-value blue">{{ $rates['approvalRate'] }}%</div>
@@ -921,11 +910,7 @@
             <div class="summary-cell-value blue">{{ number_format($summary['active_records']) }}</div>
             <div class="summary-cell-sub">of {{ number_format($summary['total_records']) }} total</div>
         </div>
-        <div class="summary-cell">
-            <div class="summary-cell-label">Open Disputes</div>
-            <div class="summary-cell-value red">{{ number_format($summary['open_disputes']) }}</div>
-            <div class="summary-cell-sub">{{ $summary['resolved_disputes'] }} resolved</div>
-        </div>
+        
         <div class="summary-cell">
             <div class="summary-cell-label">Pending Transfers</div>
             <div class="summary-cell-value amber">{{ number_format($summary['pending_transfers']) }}</div>
@@ -985,32 +970,7 @@
             </div>
         </div>
 
-        {{-- Disputes by status --}}
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">Disputes</div>
-            </div>
-            <div class="panel-body">
-                <div class="chart-wrap"><canvas id="disputesChart"></canvas></div>
-                <div class="donut-legend">
-                    @php
-                    $dTotal = $disputesByStatus->sum();
-                    $dColours = ['open' => '#ef4444', 'resolved' => '#10b981', 'closed' => '#94a3b8', 'pending' => '#f59e0b'];
-                    @endphp
-                    @foreach($disputesByStatus as $status => $count)
-                    <div class="legend-row">
-                        <div class="legend-dot" style="background:{{ $dColours[$status] ?? '#6366f1' }}"></div>
-                        <div class="legend-label">{{ $status }}</div>
-                        <div class="legend-count">{{ number_format($count) }}</div>
-                        <div class="legend-pct">{{ $dTotal ? round($count/$dTotal*100) : 0 }}%</div>
-                    </div>
-                    @endforeach
-                    @if($disputesByStatus->isEmpty())
-                    <div style="color:var(--text-dim);font-size:12px;">No disputes yet.</div>
-                    @endif
-                </div>
-            </div>
-        </div>
+        
 
         {{-- Transfers by status --}}
         <div class="panel">

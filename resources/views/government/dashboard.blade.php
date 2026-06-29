@@ -280,17 +280,7 @@
             <div class="kpi-sub">of <strong>{{ number_format($totalEmploymentRecords) }}</strong> total records</div>
         </div>
 
-        {{-- Pending Disputes --}}
-        <div class="kpi-card danger fade-up delay-4">
-            <div class="kpi-delta {{ $disputeGrowth['direction'] }}">
-                <i class="fas fa-arrow-{{ $disputeGrowth['direction'] == 'up' ? 'up' : 'down' }}"></i>
-                {{ $disputeGrowth['value'] }}%
-            </div>
-            <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="kpi-value">{{ number_format($pendingDisputes) }}</div>
-            <div class="kpi-label">Pending Disputes</div>
-            <div class="kpi-sub">of <strong>{{ number_format($totalDisputes) }}</strong> total disputes</div>
-        </div>
+        
     </div>
 
     {{-- Row 2 KPIs --}}
@@ -307,23 +297,7 @@
             <div class="kpi-label">Approved Transfers</div>
             <div class="kpi-sub">All time</div>
         </div>
-        <div class="kpi-card gold fade-up delay-3">
-            <div class="kpi-icon"><i class="fas fa-folder-open"></i></div>
-            <div class="kpi-value">{{ number_format($disputesByStatus['resolved'] ?? 0) }}</div>
-            <div class="kpi-label">Resolved Disputes</div>
-            <div class="kpi-sub">All time</div>
-        </div>
-        <div class="kpi-card green fade-up delay-4">
-            <div class="kpi-icon"><i class="fas fa-percent"></i></div>
-            @php
-                $resolutionRate = $totalDisputes > 0
-                    ? round((($disputesByStatus['resolved'] ?? 0) / $totalDisputes) * 100, 1)
-                    : 0;
-            @endphp
-            <div class="kpi-value">{{ $resolutionRate }}%</div>
-            <div class="kpi-label">Resolution Rate</div>
-            <div class="kpi-sub">Disputes closed vs total</div>
-        </div>
+        
     </div>
 
     {{-- ── Line Chart: Monthly Trends ──────────────────────────────────── --}}
@@ -333,13 +307,7 @@
             <div class="chart-sub">New employees & employment records — last 12 months</div>
             <div class="chart-wrap"><canvas id="trendChart" height="120"></canvas></div>
         </div>
-        <div class="chart-card">
-            <div class="chart-title">Dispute Status</div>
-            <div class="chart-sub">Current breakdown by status</div>
-            <div class="chart-wrap d-flex align-items-center justify-content-center" style="min-height:220px;">
-                <canvas id="disputeChart" style="max-width:220px;max-height:220px;"></canvas>
-            </div>
-        </div>
+        
     </div>
 
     {{-- ── 3-col Charts ─────────────────────────────────────────────────── --}}
@@ -382,54 +350,6 @@
         </div>
     </div>
 
-    {{-- ── Recent Disputes Table ────────────────────────────────────────── --}}
-    <div class="table-card fade-up delay-5">
-        <div class="table-card-header">
-            <h6 class="title"><i class="fas fa-exclamation-circle me-2" style="color:var(--danger)"></i>Recent Disputes</h6>
-            <a href="{{ route('government.disputes.index') }}" class="view-all">View All &rarr;</a>
-        </div>
-        <div class="table-scroll">
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Employee</th>
-                        <th>Employer</th>
-                        <th>Job Title</th>
-                        <th>Description</th>
-                        <th>Status</th>
-                        <th>Submitted</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($recentDisputes as $dispute)
-                    <tr>
-                        <td style="color:var(--muted);font-size:.8rem;">{{ $dispute->id }}</td>
-                        <td>
-                            <div class="emp-cell">
-                                <div class="emp-avatar">
-                                    {{ strtoupper(substr($dispute->employee?->first_name ?? 'N', 0, 1) . substr($dispute->employee?->last_name ?? 'A', 0, 1)) }}
-                                </div>
-                                <div>
-                                    <div class="emp-name">{{ $dispute->employee?->full_name ?? '—' }}</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ $dispute->employmentRecord?->employer?->company_name ?? '—' }}</td>
-                        <td style="color:var(--muted);">{{ $dispute->employmentRecord?->job_title ?? '—' }}</td>
-                        <td>{{ Str::limit($dispute->description, 55) }}</td>
-                        <td>
-                            <span class="pill pill-{{ strtolower($dispute->status) }}">{{ $dispute->status }}</span>
-                        </td>
-                        <td style="color:var(--muted);font-size:.8rem;">{{ $dispute->created_at->format('d M Y') }}</td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="7" class="text-center py-4" style="color:var(--muted);">No disputes recorded yet</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 
     {{-- ── Recent Transfer Requests Table ──────────────────────────────── --}}
     <div class="table-card fade-up delay-6">
