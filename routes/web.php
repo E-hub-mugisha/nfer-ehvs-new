@@ -57,8 +57,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         ->name('employees.index');
     Route::get('/employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'show'])
         ->name('employees.show');
+    Route::post('/employees/create', [App\Http\Controllers\Admin\EmployeeController::class, 'store'])
+        ->name('employees.store');
+    Route::put('employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'update'])
+        ->name('employees.update');
     Route::delete('employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'destroy'])
-        ->name('.employees.destroy');
+        ->name('employees.destroy');
 
     Route::get('/employers', [App\Http\Controllers\Admin\EmployerController::class, 'index'])
         ->name('employers.index');

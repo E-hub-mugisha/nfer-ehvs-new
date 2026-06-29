@@ -496,6 +496,15 @@
                    font-weight:600;color:#fca5a5;">
                     <i class="bi bi-trash3 me-1"></i>Delete Employee
                 </button>
+                <button type="button"
+                    class="btn btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editEmployeeModal"
+                    style="background:rgba(212,148,58,.18);border:1px solid rgba(212,148,58,.35);
+   border-radius:9px;padding:7px 16px;font-size:13px;
+   font-weight:600;color:var(--gold);">
+                    <i class="bi bi-pencil me-1"></i>Edit
+                </button>
             </div>
         </div>
     </div>
@@ -510,10 +519,7 @@
             <div class="hero-stat-value">{{ $employee->transferRequests->count() }}</div>
             <div class="hero-stat-label">Transfers</div>
         </div>
-        <div class="hero-stat-pill">
-            <div class="hero-stat-value">{{ $employee->disputes->count() }}</div>
-            <div class="hero-stat-label">Disputes</div>
-        </div>
+        
         <div class="hero-stat-pill">
             <div class="hero-stat-value">
                 {{ \Carbon\Carbon::parse($employee->dob)->age }}
@@ -782,62 +788,82 @@
             @endif
         </div>
 
-        <!-- Disputes -->
-        <div class="detail-card">
-            <div class="detail-card-header">
-                <h6><i class="bi bi-exclamation-circle me-2"></i>Disputes</h6>
-                <span style="font-size:12px;color:var(--text-muted);">
-                    {{ $employee->disputes->count() }} total
-                </span>
-            </div>
+    </div>
+</div>
 
-            @if($employee->disputes->isEmpty())
-            <div class="empty-sub">
-                <i class="bi bi-shield-check"></i>
-                <p style="font-size:14px;color:var(--text-muted);margin:0;">No disputes on record.</p>
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius:16px; border:none;">
+            <div class="modal-header" style="border-bottom:1px solid var(--border); padding:20px 24px;">
+                <h6 class="modal-title" style="font-family:'Sora',sans-serif; font-weight:700; color:#1a2e45;">
+                    Edit Employee
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            @else
-            <div style="overflow-x:auto;">
-                <table class="table sub-table mb-0">
-                    <thead>
-                        <tr>
-                            <th>Employer</th>
-                            <th>Job Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Filed On</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($employee->disputes->sortByDesc('created_at') as $dispute)
-                        <tr>
-                            <td style="white-space:nowrap;">
-                                {{ $dispute->employmentRecord->employer->company_name ?? '—' }}
-                            </td>
-                            <td style="white-space:nowrap;">
-                                {{ $dispute->employmentRecord->job_title ?? '—' }}
-                            </td>
-                            <td>
-                                <span title="{{ $dispute->description }}" style="cursor:help;">
-                                    {{ Str::limit($dispute->description, 60) }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="dispute-pill dp-{{ $dispute->status }}">
-                                    {{ ucfirst($dispute->status) }}
-                                </span>
-                            </td>
-                            <td style="white-space:nowrap;font-size:12px;color:var(--text-muted);">
-                                {{ $dispute->created_at->format('d M Y') }}
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            @endif
+            <form action="{{ route('admin.employees.update', $employee) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body" style="padding:24px;">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">National ID (NID) *</label>
+                            <input type="text" name="nid" class="form-control" value="{{ old('nid', $employee->nid) }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ old('first_name', $employee->first_name) }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ old('last_name', $employee->last_name) }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Gender *</label>
+                            <select name="gender" class="form-select" required>
+                                <option value="Male" @selected($employee->gender==='Male' )>Male</option>
+                                <option value="Female" @selected($employee->gender==='Female' )>Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth *</label>
+                            <input type="date" name="dob" class="form-control"
+                                value="{{ old('dob', \Carbon\Carbon::parse($employee->dob)->format('Y-m-d')) }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ old('phone', $employee->phone) }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email', $employee->email) }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Photo</label>
+                            <input type="file" name="photo" class="form-control" accept="image/*">
+                            @if($employee->photo)
+                            <div class="form-text">Current: {{ basename($employee->photo) }} (upload to replace)</div>
+                            @endif
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">District *</label>
+                            <input name="district" class="form-control" value="{{ $employee->district }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sector *</label>
+                            <input name="sector" class="form-control" required value="{{ $employee->sector }}" >
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border);">
+                    <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="border:1px solid var(--border);">Cancel</button>
+                    <button type="submit" class="btn-view"><i class="bi bi-check-lg"></i> Save Changes</button>
+                </div>
+            </form>
         </div>
-
     </div>
 </div>
 
