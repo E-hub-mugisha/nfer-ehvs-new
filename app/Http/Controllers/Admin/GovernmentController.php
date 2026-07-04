@@ -77,6 +77,8 @@ class GovernmentController extends Controller
             'established_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
             'contact_email'    => ['required', 'email:rfc,dns', 'max:255', 'unique:governments,contact_email', 'unique:users,email'],
             'website'          => ['required', 'url', 'max:255', 'regex:/^https?:\/\//'],
+            'rdb_number'        => ['nullable', 'string', 'max:100'],
+            'tin_number'        => ['nullable', 'string', 'max:100'],
         ], $this->governmentMessages());
 
         // Generate a random, human-readable password
@@ -121,6 +123,8 @@ class GovernmentController extends Controller
             'established_year' => ['sometimes', 'integer', 'min:1800', 'max:' . date('Y')],
             'contact_email'    => ['sometimes', 'email:rfc,dns', 'max:255', Rule::unique('governments', 'contact_email')->ignore($government->id)],
             'website'          => ['sometimes', 'url', 'max:255', 'regex:/^https?:\/\//'],
+            'rdb_number'        => ['nullable', 'string', 'max:100'],
+            'tin_number'        => ['nullable', 'string', 'max:100'],
         ], $this->governmentMessages());
 
         DB::transaction(function () use ($validated, $government) {

@@ -399,6 +399,8 @@ class GovernmentController extends Controller
             'country'           => ['required', 'string', 'max:100'],
             'government_type'   => ['required', Rule::in(['Ministry', 'Department', 'Agency', 'Authority'])],
             'established_year'  => ['nullable', 'integer', 'min:1900', 'max:' . date('Y')],
+            'rdb_number'        => ['nullable', 'string', 'max:100'],
+            'tin_number'        => ['nullable', 'string', 'max:100'],
             'contact_email'     => [
                 'required', 'email:rfc,dns', 'max:255',
                 'unique:governments,contact_email', 'unique:users,email',
@@ -422,6 +424,8 @@ class GovernmentController extends Controller
             'contact_email'     => $validated['contact_email'],
             'website'           => $validated['website'] ?? null,
             'is_verified'       => false,
+            'tin_number'        => $request->tin_number ?? null,
+            'rdb_number'        => $request->rdb_number ?? null,
         ]);
 
         return redirect()
