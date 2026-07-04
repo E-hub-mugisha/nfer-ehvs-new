@@ -19,6 +19,8 @@ return new class extends Migration
             $table->year('established_year');
             $table->string('contact_email')->unique();
             $table->string('website');
+            $table->string('tin_number')->unique();
+            $table->string('rdb_number')->unique();
             $table->boolean('is_verified')->default(false);
             $table->timestamp('verified_at')->nullable();
             $table->unsignedBigInteger('verified_by')->nullable();

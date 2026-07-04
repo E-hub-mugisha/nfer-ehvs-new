@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class GovernmentController extends Controller
 {
@@ -41,28 +42,52 @@ class GovernmentController extends Controller
     }
 
     /**
+     * Normalize raw input before validation.
+     */
+    private function normalizeGovernmentInput(Request $request): void
+    {
+        $request->merge([
+            'contact_email' => $request->contact_email ? strtolower(trim($request->contact_email)) : null,
+            'name'          => $request->name ? trim($request->name) : null,
+            'website'       => $request->website ? trim($request->website) : null,
+        ]);
+    }
+
+    private function governmentMessages(): array
+    {
+        return [
+            'name.min'              => 'Government name must be at least 2 characters.',
+            'established_year.max'  => 'Established year cannot be in the future.',
+            'contact_email.unique'  => 'This email is already registered to another government entity or user.',
+            'website.regex'         => 'Website must start with http:// or https://.',
+        ];
+    }
+
+    /**
      * Store a newly created government + linked user account.
      */
     public function store(Request $request)
     {
+        $this->normalizeGovernmentInput($request);
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'country' => 'required|string|max:100',
-            'government_type' => 'required|in:Ministry,Department,Agency,Authority',
-            'established_year' => 'required|integer|min:1800|max:' . date('Y'),
-            'contact_email' => 'required|email|unique:governments,contact_email|unique:users,email',
-            'website' => 'required|url',
-        ]);
+            'name'             => ['required', 'string', 'max:255', 'min:2'],
+            'country'          => ['required', 'string', 'max:100'],
+            'government_type'  => ['required', Rule::in(['Ministry', 'Department', 'Agency', 'Authority'])],
+            'established_year' => ['required', 'integer', 'min:1800', 'max:' . date('Y')],
+            'contact_email'    => ['required', 'email:rfc,dns', 'max:255', 'unique:governments,contact_email', 'unique:users,email'],
+            'website'          => ['required', 'url', 'max:255', 'regex:/^https?:\/\//'],
+        ], $this->governmentMessages());
 
         // Generate a random, human-readable password
         $plainPassword = Str::password(12);
 
         $government = DB::transaction(function () use ($validated, $plainPassword) {
             $user = User::create([
-                'name' => $validated['name'],
-                'email' => $validated['contact_email'],
+                'name'     => $validated['name'],
+                'email'    => $validated['contact_email'],
                 'password' => Hash::make($plainPassword),
-                'role' => 'government', // matches isGovernment() check
+                'role'     => 'government', // matches isGovernment() check
             ]);
 
             return Government::create([
@@ -87,14 +112,16 @@ class GovernmentController extends Controller
      */
     public function update(Request $request, Government $government)
     {
+        $this->normalizeGovernmentInput($request);
+
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'country' => 'sometimes|string|max:100',
-            'government_type' => 'sometimes|in:Ministry,Department,Agency,Authority',
-            'established_year' => 'sometimes|integer|min:1800|max:' . date('Y'),
-            'contact_email' => 'sometimes|email|unique:governments,contact_email,' . $government->id,
-            'website' => 'sometimes|url',
-        ]);
+            'name'             => ['sometimes', 'string', 'max:255', 'min:2'],
+            'country'          => ['sometimes', 'string', 'max:100'],
+            'government_type'  => ['sometimes', Rule::in(['Ministry', 'Department', 'Agency', 'Authority'])],
+            'established_year' => ['sometimes', 'integer', 'min:1800', 'max:' . date('Y')],
+            'contact_email'    => ['sometimes', 'email:rfc,dns', 'max:255', Rule::unique('governments', 'contact_email')->ignore($government->id)],
+            'website'          => ['sometimes', 'url', 'max:255', 'regex:/^https?:\/\//'],
+        ], $this->governmentMessages());
 
         DB::transaction(function () use ($validated, $government) {
             $government->update($validated);
@@ -108,7 +135,6 @@ class GovernmentController extends Controller
                 }
 
                 if (isset($validated['contact_email']) && $validated['contact_email'] !== $government->user->email) {
-                    // Avoid clashing with another user's email
                     $emailTaken = User::where('email', $validated['contact_email'])
                         ->where('id', '!=', $government->user->id)
                         ->exists();
@@ -147,7 +173,7 @@ class GovernmentController extends Controller
         }
 
         $validated = $request->validate([
-            'verification_notes' => 'nullable|string|max:500',
+            'verification_notes' => ['nullable', 'string', 'max:500'],
         ]);
 
         $government->verify($request->user(), $validated['verification_notes'] ?? null);

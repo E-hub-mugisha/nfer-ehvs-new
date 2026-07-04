@@ -519,10 +519,7 @@
             <div class="hero-stat-value">{{ $employee->transferRequests->count() }}</div>
             <div class="hero-stat-label">Transfers</div>
         </div>
-<<<<<<< HEAD
-=======
-        
->>>>>>> 590859cfd1be133ea9187b0b24fca8f94381ad8f
+
         <div class="hero-stat-pill">
             <div class="hero-stat-value">
                 {{ \Carbon\Carbon::parse($employee->dob)->age }}

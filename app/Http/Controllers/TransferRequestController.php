@@ -88,7 +88,11 @@ class TransferRequestController extends Controller
     {
         $this->authorizeAsCurrentEmployer($transfer);
 
-        DB::transaction(function () use ($transfer) {
+        $data = $request->validate([
+            'rejection_reason' => 'nullable|string|max:500',
+        ]);
+
+        DB::transaction(function () use ($transfer, $data) {
             // 1. Close the current employment record
             $transfer->currentEmploymentRecord->update([
                 'end_date'           => now()->toDateString(),
@@ -109,6 +113,7 @@ class TransferRequestController extends Controller
             // 3. Mark transfer as approved
             $transfer->update([
                 'status'       => 'approved',
+                'rejection_reason' => $data['rejection_reason'] ?? null,
                 'responded_at' => now(),
             ]);
         });

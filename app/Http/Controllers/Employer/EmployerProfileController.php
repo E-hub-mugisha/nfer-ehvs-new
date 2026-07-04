@@ -11,6 +11,54 @@ use App\Models\Employer;
 class EmployerProfileController extends Controller
 {
     /**
+     * Shared validation rules for employer profile fields.
+     */
+    private function rules(?int $employerId = null): array
+    {
+        return [
+            'company_name' => ['required', 'string', 'max:255', 'regex:/^[\pL0-9\s\.\,\-\&]+$/u'],
+
+            'rdb_number' => [
+                'nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/',
+                $employerId
+                    ? Rule::unique('employers', 'rdb_number')->ignore($employerId)
+                    : 'unique:employers,rdb_number',
+            ],
+
+            'tin_number' => [
+                'nullable', 'string', 'regex:/^[0-9]{9}$/',
+                $employerId
+                    ? Rule::unique('employers', 'tin_number')->ignore($employerId)
+                    : 'unique:employers,tin_number',
+            ],
+
+            'email' => [
+                'required', 'email', 'max:255',
+                $employerId
+                    ? Rule::unique('employers', 'email')->ignore($employerId)
+                    : 'unique:employers,email',
+            ],
+
+            'phone' => ['nullable', 'string', 'regex:/^(\+?250|0)?7[0-9]{8}$/'],
+
+            'address' => ['nullable', 'string', 'max:500'],
+        ];
+    }
+
+    /**
+     * Shared custom messages for employer profile validation.
+     */
+    private function messages(): array
+    {
+        return [
+            'company_name.regex' => 'Company name may only contain letters, numbers, spaces, and . , - &.',
+            'rdb_number.regex'    => 'RDB number may only contain letters and numbers.',
+            'tin_number.regex'    => 'TIN number must be exactly 9 digits.',
+            'phone.regex'         => 'Please enter a valid Rwandan phone number (e.g. 078XXXXXXX or +2507XXXXXXXX).',
+        ];
+    }
+
+    /**
      * Show the profile creation form (for new employers).
      */
     public function create()
@@ -32,14 +80,8 @@ class EmployerProfileController extends Controller
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
-            'company_name' => ['required', 'string', 'max:255'],
-            'rdb_number'   => ['nullable', 'string', 'max:100', 'unique:employers,rdb_number'],
-            'tin_number'   => ['nullable', 'string', 'max:100', 'unique:employers,tin_number'],
-            'email'        => ['required', 'email', 'max:255', 'unique:employers,email'],
-            'phone'        => ['nullable', 'string', 'max:30'],
-            'address'      => ['nullable', 'string', 'max:500'],
-        ]);
+        $validated = $request->validate($this->rules(), $this->messages());
+
         $validated['user_id'] = $user->id;
         $validated['status']  = 'pending';
 
@@ -79,23 +121,7 @@ class EmployerProfileController extends Controller
                 ->with('warning', 'Employer profile not found. Please create one first.');
         }
 
-        $validated = $request->validate([
-            'company_name' => ['required', 'string', 'max:255'],
-            'rdb_number'   => [
-                'nullable', 'string', 'max:100',
-                Rule::unique('employers', 'rdb_number')->ignore($employer->id),
-            ],
-            'tin_number'   => [
-                'nullable', 'string', 'max:100',
-                Rule::unique('employers', 'tin_number')->ignore($employer->id),
-            ],
-            'email'        => [
-                'required', 'email', 'max:255',
-                Rule::unique('employers', 'email')->ignore($employer->id),
-            ],
-            'phone'        => ['nullable', 'string', 'max:30'],
-            'address'      => ['nullable', 'string', 'max:500'],
-        ]);
+        $validated = $request->validate($this->rules($employer->id), $this->messages());
 
         $employer->update($validated);
 

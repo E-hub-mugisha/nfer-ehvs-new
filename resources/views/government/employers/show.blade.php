@@ -475,13 +475,13 @@
 </div>
 
 <!-- REJECTION NOTICE -->
-@if($employer->status === 'rejected' && $employer->rejection_reason)
+@if($employer->status === 'rejected' && $employer->verification_notes)
 <div class="rejection-notice mb-4">
     <div class="d-flex align-items-center gap-2 mb-1">
         <i class="bi bi-exclamation-circle-fill text-danger"></i>
         <strong style="font-size:14px; color:#991b1b;">Rejection Reason</strong>
     </div>
-    <p style="font-size:14px; color:#7f1d1d; margin:0;">{{ $employer->rejection_reason }}</p>
+    <p style="font-size:14px; color:#7f1d1d; margin:0;">{{ $employer->verification_notes }}</p>
 </div>
 @endif
 
@@ -876,14 +876,14 @@
                         Rejection Reason <span class="text-danger">*</span>
                     </label>
                     <textarea
-                        name="reason"
-                        id="reason"
+                        name="verification_notes"
+                        id="verification_notes"
                         rows="4"
-                        class="form-control @error('reason') is-invalid @enderror"
+                        class="form-control @error('verification_notes') is-invalid @enderror"
                         placeholder="e.g. Incomplete RDB registration documents, unable to verify TIN number..."
-                        required>{{ old('reason') }}</textarea>
+                        required>{{ old('verification_notes') }}</textarea>
 
-                    @error('reason')
+                    @error('verification_notes')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -954,7 +954,7 @@
     </div>
 </div>
 
-@if($errors->has('reason'))
+@if($errors->has('verification_notes'))
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         new bootstrap.Modal(document.getElementById('rejectModal')).show();

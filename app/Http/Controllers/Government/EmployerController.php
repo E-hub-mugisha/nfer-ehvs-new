@@ -8,6 +8,7 @@ use App\Models\EmploymentRecord;
 use App\Models\TransferRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class EmployerController extends Controller
 {
@@ -54,8 +55,8 @@ class EmployerController extends Controller
 
     public function reject(Request $request, Employer $employer)
     {
-        $request->validate(['reason' => 'required|string|max:1000']);
-        $employer->update(['status' => 'rejected', 'rejection_reason' => $request->reason]);
+        $request->validate(['verification_notes' => 'required|string|max:1000']);
+        $employer->update(['status' => 'rejected', 'verification_notes' => $request->verification_notes]);
         return back()->with('success', 'Employer rejected.');
     }
 
@@ -81,12 +82,23 @@ class EmployerController extends Controller
     public function update(Request $request, Employer $employer)
     {
         $validated = $request->validate([
-            'company_name' => 'required|string|max:255',
-            'email'        => 'required|email|max:255|unique:employers,email,' . $employer->id,
-            'phone'        => 'nullable|string|max:20',
-            'rdb_number'   => 'nullable|string|max:100',
-            'tin_number'   => 'nullable|string|max:100',
-            'address'      => 'nullable|string|max:500',
+            'company_name' => ['required', 'string', 'max:255', 'regex:/^[\pL0-9\s\.\,\-\&]+$/u'],
+            'email'        => ['required', 'email', 'max:255', Rule::unique('employers', 'email')->ignore($employer->id)],
+            'phone'        => ['nullable', 'string', 'regex:/^(\+?250|0)?7[0-9]{8}$/'],
+            'rdb_number'   => [
+                'nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/',
+                Rule::unique('employers', 'rdb_number')->ignore($employer->id),
+            ],
+            'tin_number'   => [
+                'nullable', 'string', 'regex:/^[0-9]{9}$/',
+                Rule::unique('employers', 'tin_number')->ignore($employer->id),
+            ],
+            'address'      => ['nullable', 'string', 'max:500'],
+        ], [
+            'company_name.regex' => 'Company name may only contain letters, numbers, spaces, and . , - &.',
+            'phone.regex'         => 'Please enter a valid Rwandan phone number (e.g. 078XXXXXXX or +2507XXXXXXXX).',
+            'rdb_number.regex'    => 'RDB number may only contain letters and numbers.',
+            'tin_number.regex'    => 'TIN number must be exactly 9 digits.',
         ]);
 
         $employer->update($validated);

@@ -14,7 +14,8 @@ class Employer extends Model
         'phone',
         'address',
         'status',
-        'user_id'
+        'user_id',
+        'verification_notes'
     ];
 
     public function user()

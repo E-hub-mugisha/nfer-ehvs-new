@@ -116,21 +116,29 @@ class EmployeeSearchController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nid'        => ['required', 'string', 'unique:employees,nid'],
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name'  => ['required', 'string', 'max:100'],
+            'nid'        => ['required', 'string', 'regex:/^[0-9]{16}$/', 'unique:employees,nid'],
+            'first_name' => ['required', 'string', 'max:100', 'regex:/^[\pL\s\'\-]+$/u'],
+            'last_name'  => ['required', 'string', 'max:100', 'regex:/^[\pL\s\'\-]+$/u'],
             'gender'     => ['required', 'in:Male,Female'],
-            'dob'        => ['required', 'date', 'before:today'],
-            'phone'      => ['required', 'string', 'max:20'],
+            'dob'        => ['required', 'date', 'before:' . now()->subYears(16)->toDateString()],
+            'phone'      => ['required', 'string', 'regex:/^(\+?250|0)?7[0-9]{8}$/'],
             'email'      => ['required', 'email', 'unique:users,email'],
-            'district'   => ['required', 'string', 'max:100'],
-            'sector'     => ['required', 'string', 'max:100'],
+            'district'   => ['required', 'string', 'max:100', 'regex:/^[\pL\s\-]+$/u'],
+            'sector'     => ['required', 'string', 'max:100', 'regex:/^[\pL\s\-]+$/u'],
             'photo'      => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
 
             // Initial employment record
             'department'    => ['nullable', 'string', 'max:150'],
             'start_date'    => ['required', 'date'],
             'salary'        => ['nullable', 'numeric', 'min:0'],
+        ], [
+            'nid.regex'        => 'NID must be exactly 16 digits.',
+            'first_name.regex' => 'First name may only contain letters (no numbers).',
+            'last_name.regex'  => 'Last name may only contain letters (no numbers).',
+            'dob.before'       => 'Employee must be at least 16 years old.',
+            'phone.regex'      => 'Please enter a valid Rwandan phone number (e.g. 078XXXXXXX or +2507XXXXXXXX).',
+            'district.regex'   => 'District may only contain letters.',
+            'sector.regex'     => 'Sector may only contain letters.',
         ]);
 
         DB::beginTransaction();
@@ -210,7 +218,7 @@ class EmployeeSearchController extends Controller
             'department'    => ['nullable', 'string', 'max:150'],
             'employment_status' => ['required', 'in:active,resigned,terminated'],
             'start_date'    => ['required', 'date'],
-            'end_date'      => ['nullable', 'date'],
+            'end_date'      => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
         $alreadyLinked = $employee->employmentRecords()

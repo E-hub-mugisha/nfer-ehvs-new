@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\TransferRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class GovernmentController extends Controller
 {
@@ -348,13 +349,16 @@ class GovernmentController extends Controller
     {
         abort_if(!$transferRequest->isPending(), 422, 'Only pending requests can be rejected.');
 
-        $request->validate([
-            'rejection_reason' => ['required', 'string', 'max:1000'],
+        $validated = $request->validate([
+            'rejection_reason' => ['required', 'string', 'min:10', 'max:1000'],
+        ], [
+            'rejection_reason.required' => 'Please provide a reason for rejecting this transfer request.',
+            'rejection_reason.min'      => 'Rejection reason must be at least 10 characters so the employer understands the decision.',
         ]);
 
         $transferRequest->update([
             'status'           => 'rejected',
-            'rejection_reason' => $request->rejection_reason,
+            'rejection_reason' => $validated['rejection_reason'],
             'responded_at'     => now(),
         ]);
 
@@ -372,26 +376,52 @@ class GovernmentController extends Controller
         return view('government.profile.create');
     }
 
+    /**
+     * Normalize raw profile input before validation.
+     */
+    private function normalizeGovernmentProfileInput(Request $request): void
+    {
+        $request->merge([
+            'name'              => $request->name ? trim($request->name) : null,
+            'country'           => $request->country ? trim($request->country) : null,
+            'contact_email'     => $request->contact_email ? strtolower(trim($request->contact_email)) : null,
+            'website'           => $request->website ? trim($request->website) : null,
+            'established_year'  => $request->established_year !== null ? (int) $request->established_year : null,
+        ]);
+    }
+
     public function store(Request $request)
     {
+        $this->normalizeGovernmentProfileInput($request);
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'government_type' => 'required|string|max:255',
-            'established_year' => 'nullable|integer|min:1900|max:' . date('Y'),
-            'contact_email' => 'required|email|max:255',
-            'website' => 'nullable|url|max:255',
+            'name'              => ['required', 'string', 'min:2', 'max:255'],
+            'country'           => ['required', 'string', 'max:100'],
+            'government_type'   => ['required', Rule::in(['Ministry', 'Department', 'Agency', 'Authority'])],
+            'established_year'  => ['nullable', 'integer', 'min:1900', 'max:' . date('Y')],
+            'contact_email'     => [
+                'required', 'email:rfc,dns', 'max:255',
+                'unique:governments,contact_email', 'unique:users,email',
+            ],
+            'website'           => ['nullable', 'url', 'max:255', 'regex:/^https?:\/\//'],
+        ], [
+            'name.min'                => 'Government name must be at least 2 characters.',
+            'government_type.in'      => 'Please select a valid government entity type.',
+            'established_year.max'    => 'Established year cannot be in the future.',
+            'established_year.min'    => 'Established year must be 1900 or later.',
+            'contact_email.unique'    => 'This email is already registered to another government entity or user.',
+            'website.regex'           => 'Website must start with http:// or https://.',
         ]);
 
         Government::create([
-            'user_id' => Auth::id(),
-            'name' => $validated['name'],
-            'country' => $validated['country'],
-            'government_type' => $validated['government_type'],
-            'established_year' => $validated['established_year'] ?? null,
-            'contact_email' => $validated['contact_email'],
-            'website' => $validated['website'] ?? null,
-            'is_verified' => false,
+            'user_id'           => Auth::id(),
+            'name'              => $validated['name'],
+            'country'           => $validated['country'],
+            'government_type'   => $validated['government_type'],
+            'established_year'  => $validated['established_year'] ?? null,
+            'contact_email'     => $validated['contact_email'],
+            'website'           => $validated['website'] ?? null,
+            'is_verified'       => false,
         ]);
 
         return redirect()

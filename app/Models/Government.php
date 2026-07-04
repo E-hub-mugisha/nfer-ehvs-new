@@ -21,7 +21,9 @@ class Government extends Model
         'verified_at',
         'verified_by',
         'verification_notes',
-        'user_id'
+        'user_id',
+        'tin_number',
+        'rdb_number'
     ];
 
     protected $casts = [

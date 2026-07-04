@@ -57,16 +57,24 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'nid'        => 'required|string|unique:employees,nid,' . $employee->id,
-            'gender'     => 'required|in:Male,Female,Other',
-            'dob'        => 'required|date|before:today',
-            'phone'      => 'nullable|string|max:20',
-            'email'      => 'nullable|email|max:255',
-            'district'   => 'nullable|string|max:100',
-            'sector'     => 'nullable|string|max:100',
-            'photo'      => 'nullable|image|max:2048',
+            'first_name' => ['required', 'string', 'max:100', 'regex:/^[\pL\s\'\-]+$/u'],
+            'last_name'  => ['required', 'string', 'max:100', 'regex:/^[\pL\s\'\-]+$/u'],
+            'nid'        => ['required', 'string', 'regex:/^[0-9]{16}$/', 'unique:employees,nid,' . $employee->id],
+            'gender'     => ['required', 'in:Male,Female,Other'],
+            'dob'        => ['required', 'date', 'before:' . now()->subYears(16)->toDateString()],
+            'phone'      => ['nullable', 'string', 'regex:/^(\+?250|0)?7[0-9]{8}$/'],
+            'email'      => ['nullable', 'email', 'max:255'],
+            'district'   => ['nullable', 'string', 'max:100', 'regex:/^[\pL\s\-]+$/u'],
+            'sector'     => ['nullable', 'string', 'max:100', 'regex:/^[\pL\s\-]+$/u'],
+            'photo'      => ['nullable', 'image', 'max:2048'],
+        ], [
+            'first_name.regex' => 'First name may only contain letters (no numbers).',
+            'last_name.regex'  => 'Last name may only contain letters (no numbers).',
+            'nid.regex'        => 'NID must be exactly 16 digits.',
+            'dob.before'       => 'Employee must be at least 16 years old.',
+            'phone.regex'      => 'Please enter a valid Rwandan phone number (e.g. 078XXXXXXX or +2507XXXXXXXX).',
+            'district.regex'   => 'District may only contain letters.',
+            'sector.regex'     => 'Sector may only contain letters.',
         ]);
 
         if ($request->hasFile('photo')) {

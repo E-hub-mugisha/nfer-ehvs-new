@@ -113,12 +113,12 @@
                                             </span>
 
                                             {{-- Edit button — targets this record's own modal by unique ID --}}
-                                            <button type="button"
+                                            <!-- <button type="button"
                                                 class="btn btn-sm btn-outline-primary py-0 px-2"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#editModal{{ $record->id }}">
                                                 <i class="bi bi-pencil"></i>
-                                            </button>
+                                            </button> -->
                                             <!-- delete button -->
                                             <form action="{{ route('employer.employees.records.destroy', $record->id) }}" method="POST" class="d-inline">
                                                 @csrf

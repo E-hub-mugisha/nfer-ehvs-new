@@ -175,33 +175,55 @@ class EmployeeDashboardController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nid'        => 'required|string|max:255|unique:employees,nid',
-            'first_name' => 'required|string|max:255',
-            'last_name'  => 'required|string|max:255',
-            'gender'     => 'required|in:male,female,other',
-            'dob'        => 'required|date',
-            'phone'      => 'required|string|max:20',
-            'email'      => 'required|email|max:255',
-            'photo'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'district'   => 'required|string|max:255',
-            'sector'     => 'required|string|max:255',
-        ]);
+{
+    // Normalize input before validation
+    $request->merge([
+        'nid'        => preg_replace('/\s+/', '', (string) $request->nid),
+        'phone'      => $request->phone ? preg_replace('/[\s\-]/', '', $request->phone) : null,
+        'email'      => $request->email ? strtolower(trim($request->email)) : null,
+        'first_name' => $request->first_name ? trim($request->first_name) : null,
+        'last_name'  => $request->last_name ? trim($request->last_name) : null,
+    ]);
 
-        // Handle photo upload
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')
-                ->store('employees/photos', 'public');
-        }
+    $validated = $request->validate([
+        'nid'        => ['required', 'digits:16', 'unique:employees,nid'],
+        'first_name' => ['required', 'string', 'max:100', 'regex:/^[\p{L}\'\-\s]+$/u'],
+        'last_name'  => ['required', 'string', 'max:100', 'regex:/^[\p{L}\'\-\s]+$/u'],
+        'gender'     => ['required', 'in:male,female,other'],
+        'dob'        => ['required', 'date', 'before:-16 years', 'after:-100 years'],
+        'phone'      => ['required', 'regex:/^(\+?250|0)7[2-9][0-9]{7}$/'],
+        'email'      => [
+            'required', 'email:rfc,dns', 'max:255',
+            'unique:employees,email', 'unique:users,email',
+        ],
+        'photo'      => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048', 'dimensions:min_width=200,min_height=200'],
+        'district'   => ['required', 'string', 'max:100'],
+        'sector'     => ['required', 'string', 'max:100'],
+    ], [
+        'nid.digits'          => 'The National ID must be exactly 16 digits.',
+        'nid.unique'          => 'An employee with this National ID already exists.',
+        'first_name.regex'    => 'First name may only contain letters, spaces, and hyphens.',
+        'last_name.regex'     => 'Last name may only contain letters, spaces, and hyphens.',
+        'dob.before'          => 'You must be at least 16 years old.',
+        'dob.after'           => 'Please enter a valid date of birth.',
+        'phone.regex'         => 'Enter a valid Rwandan phone number (e.g. 078XXXXXXX or +2507XXXXXXXX).',
+        'email.unique'        => 'This email is already registered.',
+        'photo.dimensions'    => 'Photo must be at least 200x200 pixels.',
+    ]);
 
-        $validated['user_id'] = Auth::id();
-
-        Employee::create($validated);
-
-        return redirect()->route('employee.dashboard')
-            ->with('success', 'Profile created successfully.');
+    // Handle photo upload
+    if ($request->hasFile('photo')) {
+        $validated['photo'] = $request->file('photo')
+            ->store('employees/photos', 'public');
     }
+
+    $validated['user_id'] = Auth::id();
+
+    Employee::create($validated);
+
+    return redirect()->route('employee.dashboard')
+        ->with('success', 'Profile created successfully.');
+}
 
     /**
      * Show logged-in employee profile
