@@ -583,6 +583,20 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- RDB Number and TIN Number -->
+                    <div class="detail-item">
+                        <label>RDB Number</label>
+                        <div class="val {{ !$government->rdb_number ? 'empty' : '' }}">
+                            {{ $government->rdb_number ?? 'Not provided' }}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <label>TIN Number</label>
+                        <div class="val {{ !$government->tin_number ? 'empty' : '' }}">
+                            {{ $government->tin_number ?? 'Not provided' }}
+                        </div>
+                    </div>
                     <div class="detail-item detail-full">
                         <label>Registered By</label>
                         <div class="val">

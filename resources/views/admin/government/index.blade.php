@@ -814,6 +814,18 @@
                     </div>
                 </div>
 
+                <!-- rdbnumber and tin number -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>RDB Number</label>
+                        <input type="text" name="rdb_number" value="{{ old('rdb_number') }}" placeholder="RDB-XXXX-XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>TIN Number</label>
+                        <input type="text" name="tin_number" value="{{ old('tin_number') }}" placeholder="TIN-XXXX-XXXX">
+                    </div>
+                </div>
+
             </div>
             <div class="modal-foot">
                 <button type="button" class="btn-outline" onclick="closeModal('createModal')">Cancel</button>
@@ -881,6 +893,18 @@
                     <div class="form-group">
                         <label>Official Website</label>
                         <input type="url" name="website" id="edit_website">
+                    </div>
+                </div>
+
+                <!-- RDB Number and TIN Number -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>RDB Number</label>
+                        <input type="text" name="rdb_number" value="{{ old('rdb_number') }}" placeholder="RDB-XXXX-XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>TIN Number</label>
+                        <input type="text" name="tin_number" value="{{ old('tin_number') }}" placeholder="TIN-XXXX-XXXX">
                     </div>
                 </div>
             </div>
