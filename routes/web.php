@@ -58,7 +58,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'show'])
         ->name('employees.show');
     Route::delete('employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'destroy'])
-        ->name('.employees.destroy');
+        ->name('employees.destroy');
 
     Route::get('/employers', [App\Http\Controllers\Admin\EmployerController::class, 'index'])
         ->name('employers.index');

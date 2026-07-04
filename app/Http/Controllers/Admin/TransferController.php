@@ -26,11 +26,11 @@ class TransferController extends Controller
             $query->whereHas(
                 'employee',
                 fn($q) =>
-                $q->where('full_name', 'like', "%{$request->search}%")
+                $q->where('first_name', 'like', "%{$request->search}%")
             )->orWhereHas(
                 'requestingEmployer',
                 fn($q) =>
-                $q->where('name', 'like', "%{$request->search}%")
+                $q->where('company_name', 'like', "%{$request->search}%")
             );
         }
 
