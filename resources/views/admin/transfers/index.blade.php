@@ -71,11 +71,11 @@
                         <td class="td-id">{{ $tr->id }}</td>
                         <td class="td-name">
                             <a href="{{ route('admin.transfer-requests.show', $tr) }}">
-                                {{ $tr->employee->full_name ?? '—' }}
+                                {{ $tr->employee->first_name ?? '—' }} {{ $tr->employee->last_name ?? '—' }}
                             </a>
                         </td>
-                        <td>{{ $tr->currentEmployer->name ?? '—' }}</td>
-                        <td>{{ $tr->requestingEmployer->name ?? '—' }}</td>
+                        <td>{{ $tr->currentEmployer->company_name ?? '—' }}</td>
+                        <td>{{ $tr->requestingEmployer->company_name ?? '—' }}</td>
                         <td>
                             <span class="td-role">{{ $tr->proposed_job_title }}</span>
                             @if($tr->proposed_department)

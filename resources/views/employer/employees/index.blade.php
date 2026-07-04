@@ -396,12 +396,12 @@
                                 <i class="bi bi-eye"></i>
                                 View
                             </a>
-                            <button class="emp-btn-view" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal{{ $employee->id }}">
+                            <!-- <button class="emp-btn-view" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal{{ $employee->id }}">
                                 <span class="badge bg-danger">
                                     <i class="bi bi-trash"></i>
                                     Delete
                                 </span>
-                            </button>
+                            </button> -->
                         </td>
 
                     </tr>

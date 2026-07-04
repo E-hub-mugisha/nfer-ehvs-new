@@ -57,6 +57,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         ->name('employees.index');
     Route::get('/employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'show'])
         ->name('employees.show');
+    Route::post('/employees/create', [App\Http\Controllers\Admin\EmployeeController::class, 'store'])
+        ->name('employees.store');
+    Route::put('employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'update'])
+        ->name('employees.update');
     Route::delete('employees/{employee}', [App\Http\Controllers\Admin\EmployeeController::class, 'destroy'])
         ->name('employees.destroy');
 
@@ -133,7 +137,7 @@ Route::get('/government/employers/{employer}', [App\Http\Controllers\Government\
     ->name('government.employers.show');
 Route::post('/government/employers/{employer}/approve', [App\Http\Controllers\Government\EmployerController::class, 'approve'])->name('government.employers.approve');
 Route::post('/government/employers/{employer}/reject', [App\Http\Controllers\Government\EmployerController::class, 'reject'])->name('government.employers.reject');
-Route::post('/government/employers/{employer}/delete', [App\Http\Controllers\Government\EmployerController::class, 'destroy'])->name('government.employers.destroy');
+Route::delete('/government/employers/{employer}/delete', [App\Http\Controllers\Government\EmployerController::class, 'destroy'])->name('government.employers.destroy');
 Route::put('government/employers/{employer}', [App\Http\Controllers\Government\EmployerController::class, 'update'])
     ->name('government.employers.update');
 

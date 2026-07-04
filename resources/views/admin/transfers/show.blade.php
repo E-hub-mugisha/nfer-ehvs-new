@@ -27,7 +27,7 @@
         {{-- Employee --}}
         <div class="show-card">
             <div class="card-label">Employee</div>
-            <div class="card-name">{{ $transferRequest->employee->full_name ?? '—' }}</div>
+            <div class="card-name">{{ $transferRequest->employee->first_name ?? '—' }} {{ $transferRequest->employee->last_name ?? '—' }}</div>
             @if($transferRequest->employee)
             <div class="card-sub">{{ $transferRequest->employee->email ?? '' }}</div>
             <a href="{{ route('admin.employees.show', $transferRequest->employee) }}" class="card-link">View profile →</a>
@@ -37,7 +37,7 @@
         {{-- Current Employer --}}
         <div class="show-card">
             <div class="card-label">Current Employer</div>
-            <div class="card-name">{{ $transferRequest->currentEmployer->name ?? '—' }}</div>
+            <div class="card-name">{{ $transferRequest->currentEmployer->company_name ?? '—' }}</div>
             @if($transferRequest->currentEmploymentRecord)
             <div class="card-sub">{{ $transferRequest->currentEmploymentRecord->job_title ?? '' }}</div>
             @if($transferRequest->currentEmploymentRecord->department)
@@ -49,7 +49,7 @@
         {{-- Requesting Employer --}}
         <div class="show-card accent">
             <div class="card-label">Requesting Employer</div>
-            <div class="card-name">{{ $transferRequest->requestingEmployer->name ?? '—' }}</div>
+            <div class="card-name">{{ $transferRequest->requestingEmployer->company_name ?? '—' }}</div>
             <div class="card-sub">Proposed role:</div>
             <div class="card-proposed-title">{{ $transferRequest->proposed_job_title }}</div>
             @if($transferRequest->proposed_department)

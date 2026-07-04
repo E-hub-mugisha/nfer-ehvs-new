@@ -589,7 +589,7 @@
         <h1 class="gov-header-title">Government Registry</h1>
         <p class="gov-header-sub">{{ $governments->total() }} registered {{ Str::plural('entity', $governments->total()) }} · {{ $governments->where('is_verified', true)->count() ?? '' }} verified</p>
     </div>
-    @can('admin')
+
     <button class="btn-gold" onclick="openModal('createModal')">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -597,7 +597,7 @@
         </svg>
         Register Government
     </button>
-    @endcan
+
 </div>
 
 {{-- ── FILTER BAR ──────────────────────────────────────── --}}
@@ -679,7 +679,7 @@
                                 <circle cx="12" cy="12" r="3" />
                             </svg>
                         </a>
-                        @can('admin')
+
                         {{-- Verify / Unverify --}}
                         @if(!$gov->is_verified)
                         <button class="btn-icon verify" title="Verify government"
@@ -689,7 +689,7 @@
                             </svg>
                         </button>
                         @else
-                        <form method="POST" action="{{ route('admin.governments.unverify', $gov) }}" style="display:inline;"
+                        <form method="POST" action="{{ route('admin.government.users.unverify', $gov) }}" style="display:inline;"
                             onsubmit="return confirm('Remove verification from {{ addslashes($gov->name) }}?')">
                             @csrf @method('PATCH')
                             <button type="submit" class="btn-icon danger" title="Revoke verification">
@@ -700,6 +700,14 @@
                             </button>
                         </form>
                         @endif
+                        {{-- Edit --}}
+                        <button class="btn-icon" title="Edit government"
+                            onclick='openEditModal(@json($gov))'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                        </button>
                         {{-- Delete --}}
                         <form method="POST" action="{{ route('admin.government.users.destroy', $gov) }}" style="display:inline;"
                             onsubmit="return confirm('Permanently delete {{ addslashes($gov->name) }}?')">
@@ -714,7 +722,7 @@
                                 </svg>
                             </button>
                         </form>
-                        @endcan
+
                     </div>
                 </td>
             </tr>
@@ -746,7 +754,7 @@
 {{-- ══════════════════════════════════════════════════════
      CREATE MODAL
 ══════════════════════════════════════════════════════ --}}
-@can('admin')
+
 <div class="modal-backdrop" id="createModal" onclick="closeOnBackdrop(event,'createModal')">
     <div class="modal-box">
         <div class="modal-head">
@@ -783,7 +791,7 @@
                         <label>Government Type <span style="color:var(--gold)">*</span></label>
                         <select name="government_type" required>
                             <option value="">— Select type —</option>
-                            @foreach(['Republic','Monarchy','Federal','Parliamentary','Presidential','Theocracy','Other'] as $t)
+                            @foreach(['Ministry','Department','Agency','Authority'] as $t)
                             <option value="{{ $t }}" @selected(old('government_type')===$t)>{{ $t }}</option>
                             @endforeach
                         </select>
@@ -822,7 +830,67 @@
     </div>
 </div>
 
+{{-- ══════════════════════════════════════════════════════
+     EDIT MODAL
+══════════════════════════════════════════════════════ --}}
+<div class="modal-backdrop" id="editModal" onclick="closeOnBackdrop(event,'editModal')">
+    <div class="modal-box">
+        <div class="modal-head">
+            <div>
+                <p class="modal-head-title">Edit Government</p>
+                <p class="modal-head-sub">Update entity details</p>
+            </div>
+            <button class="modal-close" onclick="closeModal('editModal')" type="button">✕</button>
+        </div>
 
+        <form method="POST" id="editForm" action="">
+            @csrf
+            @method('PUT')
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Government Name <span style="color:var(--gold)">*</span></label>
+                        <input type="text" name="name" id="edit_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Country <span style="color:var(--gold)">*</span></label>
+                        <input type="text" name="country" id="edit_country" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Government Type <span style="color:var(--gold)">*</span></label>
+                        <select name="government_type" id="edit_government_type" required>
+                            @foreach(['Ministry','Department','Agency','Authority'] as $t)
+                            <option value="{{ $t }}">{{ $t }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Established Year</label>
+                        <input type="number" name="established_year" id="edit_established_year" min="1800" max="{{ date('Y') }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Contact Email</label>
+                        <input type="email" name="contact_email" id="edit_contact_email">
+                    </div>
+                    <div class="form-group">
+                        <label>Official Website</label>
+                        <input type="url" name="website" id="edit_website">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button type="button" class="btn-outline" onclick="closeModal('editModal')">Cancel</button>
+                <button type="submit" class="btn-gold">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
 {{-- ══════════════════════════════════════════════════════
      VERIFY MODAL
 ══════════════════════════════════════════════════════ --}}
@@ -866,9 +934,7 @@
         </form>
     </div>
 </div>
-@endcan
 
-@push('scripts')
 <script>
     function openModal(id) {
         document.getElementById(id).classList.add('open');
@@ -886,14 +952,25 @@
 
     function openVerifyModal(govId, govName) {
         document.getElementById('verifyGovName').textContent = govName;
-        document.getElementById('verifyForm').action = `/admin/governments/${govId}/verify`;
+        document.getElementById('verifyForm').action = `/admin/government/users/${govId}/verify`;
         openModal('verifyModal');
     }
     // Re-open create modal on validation errors
     @if($errors -> any())
     document.addEventListener('DOMContentLoaded', () => openModal('createModal'));
     @endif
+
+    function openEditModal(gov) {
+    document.getElementById('editForm').action = `/admin/government/users/${gov.id}`;
+    document.getElementById('edit_name').value = gov.name ?? '';
+    document.getElementById('edit_country').value = gov.country ?? '';
+    document.getElementById('edit_government_type').value = gov.government_type ?? '';
+    document.getElementById('edit_established_year').value = gov.established_year ?? '';
+    document.getElementById('edit_contact_email').value = gov.contact_email ?? '';
+    document.getElementById('edit_website').value = gov.website ?? '';
+    openModal('editModal');
+}
 </script>
-@endpush
+
 
 @endsection

@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Government;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rules\Enum;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class GovernmentController extends Controller
 {
-    /**
-     * Display a listing of all governments.
-     */
     public function index(Request $request)
     {
         $query = Government::with('user');
@@ -36,15 +35,13 @@ class GovernmentController extends Controller
             $query->where('is_verified', false);
         }
 
-        $governments = $query
-            ->latest()
-            ->paginate(10);
+        $governments = $query->latest()->paginate(10);
 
         return view('admin.government.index', compact('governments'));
     }
 
     /**
-     * Store a newly created government in storage.
+     * Store a newly created government + linked user account.
      */
     public function store(Request $request)
     {
@@ -53,27 +50,40 @@ class GovernmentController extends Controller
             'country' => 'required|string|max:100',
             'government_type' => 'required|in:Ministry,Department,Agency,Authority',
             'established_year' => 'required|integer|min:1800|max:' . date('Y'),
-            'contact_email' => 'required|email|unique:governments,contact_email',
+            'contact_email' => 'required|email|unique:governments,contact_email|unique:users,email',
             'website' => 'required|url',
         ]);
 
-        $government = Government::create($validated);
+        // Generate a random, human-readable password
+        $plainPassword = Str::password(12);
 
-        return redirect()->route('admin.governments.index')->with('success', 'Government created successfully.');
+        $government = DB::transaction(function () use ($validated, $plainPassword) {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['contact_email'],
+                'password' => Hash::make($plainPassword),
+                'role' => 'government', // matches isGovernment() check
+            ]);
+
+            return Government::create([
+                ...$validated,
+                'user_id' => $user->id,
+            ]);
+        });
+
+        return redirect()
+            ->route('admin.government.users.index')
+            ->with('success', "Government created successfully. Login email: {$government->contact_email} | Temporary password: {$plainPassword}");
     }
 
-    /**
-     * Display the specified government.
-     */
     public function show(Government $government)
     {
         $government->load('user', 'verifiedBy');
         return view('admin.government.show', compact('government'));
     }
 
-
     /**
-     * Update the specified government in storage.
+     * Update the specified government AND keep its linked user in sync.
      */
     public function update(Request $request, Government $government)
     {
@@ -86,27 +96,50 @@ class GovernmentController extends Controller
             'website' => 'sometimes|url',
         ]);
 
-        $government->update($validated);
+        DB::transaction(function () use ($validated, $government) {
+            $government->update($validated);
 
-        return redirect()->route('admin.governments.index')->with('success', 'Government updated successfully.');
+            // Keep the linked User record in sync (name + login email)
+            if ($government->user) {
+                $userUpdates = [];
+
+                if (isset($validated['name'])) {
+                    $userUpdates['name'] = $validated['name'];
+                }
+
+                if (isset($validated['contact_email']) && $validated['contact_email'] !== $government->user->email) {
+                    // Avoid clashing with another user's email
+                    $emailTaken = User::where('email', $validated['contact_email'])
+                        ->where('id', '!=', $government->user->id)
+                        ->exists();
+
+                    if (!$emailTaken) {
+                        $userUpdates['email'] = $validated['contact_email'];
+                    }
+                }
+
+                if (!empty($userUpdates)) {
+                    $government->user->update($userUpdates);
+                }
+            }
+        });
+
+        return redirect()
+            ->route('admin.government.users.index')
+            ->with('success', 'Government updated successfully.');
     }
 
-    /**
-     * Delete the specified government from storage.
-     */
     public function destroy(Government $government)
     {
         $government->delete();
 
-        return redirect()->route('admin.governments.index')->with('success', 'Government deleted successfully');
+        return redirect()
+            ->route('admin.government.users.index')
+            ->with('success', 'Government deleted successfully');
     }
 
-    /**
-     * Verify a government (admin only).
-     */
     public function verify(Request $request, Government $government)
     {
-        // Check if user is admin
         if (!$request->user() || $request->user()->role !== 'admin') {
             return redirect()
                 ->route('admin.government.users.index')
@@ -117,10 +150,7 @@ class GovernmentController extends Controller
             'verification_notes' => 'nullable|string|max:500',
         ]);
 
-        $government->verify(
-            $request->user(),
-            $validated['verification_notes'] ?? null
-        );
+        $government->verify($request->user(), $validated['verification_notes'] ?? null);
 
         return redirect()
             ->route('admin.government.users.index')
@@ -129,16 +159,11 @@ class GovernmentController extends Controller
 
     public function unverify(Request $request, Government $government)
     {
-        // Check if user is admin
         if (!$request->user() || $request->user()->role !== 'admin') {
             return redirect()
                 ->route('admin.government.users.index')
                 ->with('error', 'Unauthorized');
         }
-
-        $validated = $request->validate([
-            'verification_notes' => 'nullable|string|max:500',
-        ]);
 
         $government->unverify();
 
@@ -147,28 +172,19 @@ class GovernmentController extends Controller
             ->with('success', 'Government unverified successfully');
     }
 
-    /**
-     * Get list of verified governments only.
-     */
     public function verified()
     {
         $governments = Government::verified()->orderBy('name')->get();
-
         return view('admin.government.index', compact('governments'));
     }
 
-    /**
-     * Get list of unverified governments only.
-     */
     public function unverified()
     {
-        // Check if user is admin
         if (!auth()->check() || !auth()->user()->isAdmin()) {
-            return redirect()->route('admin.governments.index')->with('error', 'Unauthorized');
+            return redirect()->route('admin.government.users.index')->with('error', 'Unauthorized');
         }
 
         $governments = Government::unverified()->orderBy('created_at', 'desc')->get();
-
         return view('admin.government.index', compact('governments'));
     }
 }

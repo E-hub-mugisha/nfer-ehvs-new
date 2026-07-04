@@ -206,6 +206,9 @@
     <div style="font-size:12px; color:var(--text-muted); padding-top:4px;">
         <i class="bi bi-calendar3 me-1"></i>{{ now()->format('d M Y') }}
     </div>
+    <button type="button" class="btn-view" data-bs-toggle="modal" data-bs-target="#createEmployeeModal" style="background:var(--gold,#d4943a);">
+    <i class="bi bi-plus-lg"></i> Register Employee
+</button>
 </div>
 
 <!-- STATS -->
@@ -430,6 +433,89 @@
         </p>
     </div>
     @endif
+</div>
+
+<div class="modal fade" id="createEmployeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius:16px; border:none;">
+            <div class="modal-header" style="border-bottom:1px solid var(--border); padding:20px 24px;">
+                <h6 class="modal-title" style="font-family:'Sora',sans-serif; font-weight:700; color:#1a2e45;">
+                    Register Employee
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('admin.employees.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body" style="padding:24px;">
+                    @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">National ID (NID) *</label>
+                            <input type="text" name="nid" class="form-control" value="{{ old('nid') }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ old('first_name') }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ old('last_name') }}" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Gender *</label>
+                            <select name="gender" class="form-select" required>
+                                <option value="">— Select —</option>
+                                <option value="Male" @selected(old('gender')==='Male' )>Male</option>
+                                <option value="Female" @selected(old('gender')==='Female' )>Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Birth *</label>
+                            <input type="date" name="dob" class="form-control" value="{{ old('dob') }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" value="{{ old('email') }}">
+                            <div class="form-text">If provided, a system login account will be created automatically.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Photo</label>
+                            <input type="file" name="photo" class="form-control" accept="image/*">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">District *</label>
+                            <input type="district" name="district"  class="form-control" required>
+                                
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Sector *</label>
+                            <input type="sector" name="sector" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top:1px solid var(--border);">
+                    <button type="button" class="btn btn-sm" data-bs-dismiss="modal" style="border:1px solid var(--border);">Cancel</button>
+                    <button type="submit" class="btn-view"><i class="bi bi-check-lg"></i> Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script>
