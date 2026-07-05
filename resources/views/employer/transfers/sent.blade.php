@@ -685,6 +685,13 @@
                                                                 <span class="tr-detail-item-value">{{ $req->rejection_reason }}</span>
                                                             </div>
                                                         @endif
+
+                                                        @if($req->status === 'approved' && $req->rejection_reason)
+                                                            <div class="tr-detail-item full">
+                                                                <span class="tr-detail-item-label">Verification Note</span>
+                                                                <span class="tr-detail-item-value">{{ $req->rejection_reason }}</span>
+                                                            </div>
+                                                        @endif
                                                     </div>
                                                 @else
                                                     <div class="tr-detail-footer-note">
